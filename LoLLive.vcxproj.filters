@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="VideoFetch">
+      <UniqueIdentifier>{6371e2b2-4365-43e6-8e3a-574b4d396808}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VideoAnalyze">
+      <UniqueIdentifier>{cda527cc-8ff7-48fc-92b7-bd2dcfe8b1fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Frontend">
+      <UniqueIdentifier>{f5000bb8-34fa-4a41-b36d-afd2d279d27b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="VideoFetcher.h">
+      <Filter>VideoFetch</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="VideoFetcher.cpp">
+      <Filter>VideoFetch</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Frontend</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
