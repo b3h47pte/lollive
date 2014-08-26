@@ -2,6 +2,13 @@
 #include <stdio.h>
 #include <assert.h>
 
+// TODO: Need to print out some sort of error
+#define CHECK_FALSE_SETFLAG_JUMP(x,flag,label) \
+if (!x) {\
+  flag = false; \
+  goto label;\
+}
+
 VideoFetcher::VideoFetcher(std::string Url, std::function<void(void*)> Callback): mURL(Url), mCallback(Callback) {
 
 }
@@ -52,6 +59,8 @@ bool VideoFetcher::BeginStreamPlayback(std::string& streamUrl) {
   GstElement* source = NULL;
   GstElement* convert = NULL;
   GstElement* sink = NULL;
+  GstElement* filter = NULL;
+  GstCaps* filterCaps = NULL;
   GstBus* bus = NULL;
   bool retFlag = true;
   
@@ -61,43 +70,32 @@ bool VideoFetcher::BeginStreamPlayback(std::string& streamUrl) {
   // Create the pipeline element
   std::string pipelineName = "lollive-pipeline";
   pipeline = gst_pipeline_new(pipelineName.c_str());
-  if (!pipeline) {
-    // TODO: ERROR
-    retFlag = false;
-    goto cleanup;
-  }
+  CHECK_FALSE_SETFLAG_JUMP(pipeline, retFlag, cleanup);
 
   // Create the individual pipeline stage elements
   // For the source, we use the passed in streamUrl.
   // For the sink, we want to create images and pass them back to whoever requested this stream.
   source = gst_element_factory_make("uridecodebin", "source");
-  if (!source) {
-    // TODO: ERROR
-    retFlag = false;
-    goto cleanup;
-  }
+  CHECK_FALSE_SETFLAG_JUMP(source, retFlag, cleanup);
 
   convert = gst_element_factory_make("videoconvert", "convert");
-  if (!convert) {
-    // TODO: ERROR
-    retFlag = false;
-    goto cleanup;
-  }
+  CHECK_FALSE_SETFLAG_JUMP(convert, retFlag, cleanup);
+
+  // Need to filter it so that we only get the screenshots we want
+  // TODO: Provide ourselves with a parameter to specify how often we want screenshots. For now, default to 1 screenshot/second.
+  filter = gst_element_factory_make("videorate", "filter");
+  CHECK_FALSE_SETFLAG_JUMP(filter, retFlag, cleanup);
+
+  // Set the capabilities of the filter so that we get the framerate we desire.
+  filterCaps = gst_caps_new_simple("video/x-raw", "framerate", GST_TYPE_FRACTION, 1, 1, NULL);
 
   sink = gst_element_factory_make("autovideosink", "sink"); // TEMPORARY. Change to a file system thingy.
-  if (!sink) {
-    // TODO: ERROR
-    retFlag = false;
-    goto cleanup;
-  }
+  CHECK_FALSE_SETFLAG_JUMP(sink, retFlag, cleanup);
 
   // Setup the pipeline
-  gst_bin_add_many(GST_BIN(pipeline), source, convert, sink, NULL);
-  if (!gst_element_link(convert, sink)) {
-    // TODO: ERROR
-    retFlag = false;
-    goto cleanup;
-  }
+  gst_bin_add_many(GST_BIN(pipeline), source, convert, filter, sink, NULL);
+  CHECK_FALSE_SETFLAG_JUMP(gst_element_link(convert, filter), retFlag, cleanup);
+  CHECK_FALSE_SETFLAG_JUMP(gst_element_link_filtered(filter, sink, filterCaps), retFlag, cleanup);
 
   // This sets up the source to stream from the stream URL.
   g_object_set(source, "uri", streamUrl.c_str(), NULL);
@@ -148,6 +146,7 @@ cleanup:
   gst_element_set_state(pipeline, GST_STATE_NULL);
   if (bus) gst_object_unref(bus);
   if (pipeline) gst_object_unref(pipeline);
+  if (filterCaps) gst_caps_unref(filterCaps);
   return retFlag;
 }
 
