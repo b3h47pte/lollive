@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <functional>
+#include <stdint.h>
 #include <gst/gst.h>
 
 /*
@@ -11,10 +12,11 @@
  * return a stream of images via a callback provided to it.
  */
 typedef std::string& IMAGE_PATH_TYPE;
+typedef uint64_t IMAGE_TIMESTAMP_TYPE;
 
 class VideoFetcher {
 public:
-  VideoFetcher(std::string Id, std::string Url, std::function<void(IMAGE_PATH_TYPE)> Callback);
+  VideoFetcher(std::string Id, std::string Url, std::function<void(IMAGE_PATH_TYPE, IMAGE_TIMESTAMP_TYPE)> Callback);
   ~VideoFetcher();
 
   // Starts the process of getting the stream from the URL, getting the video stream and spitting out images.
@@ -25,7 +27,7 @@ private:
   std::string mImagePath;
   std::string mID;
   std::string mURL;
-  std::function<void(IMAGE_PATH_TYPE)> mCallback;
+  std::function<void(IMAGE_PATH_TYPE, IMAGE_TIMESTAMP_TYPE)> mCallback;
 
   // Retrieve Stream URL
   std::string GetStreamURL();

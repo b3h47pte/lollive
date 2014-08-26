@@ -1,8 +1,10 @@
 #include "VideoFetcher.h"
 #include <stdio.h>
 #include <assert.h>
-#include <windows.h>
 #include <string>
+
+
+#include <windows.h>
 
 // TODO: Need to print out some sort of error
 #define CHECK_FALSE_SETFLAG_JUMP(x,flag,label) \
@@ -11,7 +13,7 @@ if (!x) {\
   goto label;\
 }
 
-VideoFetcher::VideoFetcher(std::string inID, std::string Url, std::function<void(IMAGE_PATH_TYPE)> Callback) : mID(inID), mURL(Url), mCallback(Callback) {
+VideoFetcher::VideoFetcher(std::string inID, std::string Url, std::function<void(IMAGE_PATH_TYPE, IMAGE_TIMESTAMP_TYPE)> Callback) : mID(inID), mURL(Url), mCallback(Callback) {
 
 }
 
@@ -114,9 +116,11 @@ bool VideoFetcher::BeginStreamPlayback(std::string& streamUrl) {
   // Print out images to files as I don't want to keep all the images in memory since it can get expensive.
   sink = gst_element_factory_make("multifilesink", "sink"); 
   CHECK_FALSE_SETFLAG_JUMP(sink, retFlag, cleanup);
-  // We need to be notified every time a PNG is generated.
+  // Make sure the PNG is generated in the right place
   outputLocation = mImagePath + "/frame%d.png";
   g_object_set(sink, "location", outputLocation.c_str(), NULL);
+  // We need to be notified every time a PNG is generated to activate our callback.
+  g_object_set(sink, "post-messages", TRUE, NULL);
 
   // Setup the pipeline
   gst_bin_add_many(GST_BIN(pipeline), source, convert, filter, toPng, sink, NULL);
@@ -144,7 +148,7 @@ bool VideoFetcher::BeginStreamPlayback(std::string& streamUrl) {
 
   bool bComplete = false;
   while (!bComplete) {
-    msg = gst_bus_timed_pop_filtered(bus, GST_CLOCK_TIME_NONE, GstMessageType(GST_MESSAGE_ERROR | GST_MESSAGE_EOS));
+    msg = gst_bus_timed_pop_filtered(bus, GST_CLOCK_TIME_NONE, GstMessageType(GST_MESSAGE_ERROR | GST_MESSAGE_EOS | GST_MESSAGE_ELEMENT));
     if (!msg) continue;
 
     GError *err = NULL;
@@ -162,6 +166,21 @@ bool VideoFetcher::BeginStreamPlayback(std::string& streamUrl) {
     case GST_MESSAGE_EOS:
       bComplete = true;
       break;
+    case GST_MESSAGE_ELEMENT:
+    {
+      // Check to see if it's the multifilesink telling us that it printed out another file. 
+      // In that case, notify the client about the event with the file name as well as its timestamp.
+      const GstStructure* data = gst_message_get_structure(msg);
+      // First check our name and make sure it is GstMultiFileSink
+      const gchar* name = gst_structure_get_name(data);
+      if (strcmp(name, "GstMultiFileSink") == 0) {
+        std::string path = gst_structure_get_string(data, "filename");
+        uint64_t timestamp;
+        gst_structure_get_uint64(data, "timestamp", &timestamp);
+        mCallback(path, timestamp);
+      }
+      break;
+    }
     default:
       break;
     }
