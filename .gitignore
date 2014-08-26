@@ -2,3 +2,5 @@
 *.swp
 /x64/*
 *.suo
+/Debug/*
+/Release/*
