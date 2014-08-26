@@ -10,11 +10,11 @@
  * This class takes the URL of a livestream (a Twitch link or a Youtube link, etc.) and will
  * return a stream of images via a callback provided to it.
  */
-typedef void* IMAGE_PTR_TYPE;
+typedef std::string& IMAGE_PATH_TYPE;
 
 class VideoFetcher {
 public:
-  VideoFetcher(std::string Id, std::string Url, std::function<void(IMAGE_PTR_TYPE)> Callback);
+  VideoFetcher(std::string Id, std::string Url, std::function<void(IMAGE_PATH_TYPE)> Callback);
   ~VideoFetcher();
 
   // Starts the process of getting the stream from the URL, getting the video stream and spitting out images.
@@ -25,7 +25,7 @@ private:
   std::string mImagePath;
   std::string mID;
   std::string mURL;
-  std::function<void(IMAGE_PTR_TYPE)> mCallback;
+  std::function<void(IMAGE_PATH_TYPE)> mCallback;
 
   // Retrieve Stream URL
   std::string GetStreamURL();

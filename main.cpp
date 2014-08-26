@@ -1,7 +1,7 @@
 #include <gst/gst.h>
 #include "VideoFetcher.h"
 
-void test(void* t) {
+void test(IMAGE_PATH_TYPE t) {
 
 }
 

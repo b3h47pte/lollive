@@ -11,7 +11,7 @@ if (!x) {\
   goto label;\
 }
 
-VideoFetcher::VideoFetcher(std::string inID, std::string Url, std::function<void(void*)> Callback): mID(inID), mURL(Url), mCallback(Callback) {
+VideoFetcher::VideoFetcher(std::string inID, std::string Url, std::function<void(IMAGE_PATH_TYPE)> Callback) : mID(inID), mURL(Url), mCallback(Callback) {
 
 }
 
