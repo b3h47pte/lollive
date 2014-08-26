@@ -58,8 +58,9 @@ bool VideoFetcher::BeginStreamPlayback(std::string& streamUrl) {
   GstElement* pipeline = NULL;
   GstElement* source = NULL;
   GstElement* convert = NULL;
-  GstElement* sink = NULL;
   GstElement* filter = NULL;
+  GstElement* toPng = NULL;
+  GstElement* sink = NULL;
   GstCaps* filterCaps = NULL;
   GstBus* bus = NULL;
   bool retFlag = true;
@@ -89,13 +90,23 @@ bool VideoFetcher::BeginStreamPlayback(std::string& streamUrl) {
   // Set the capabilities of the filter so that we get the framerate we desire.
   filterCaps = gst_caps_new_simple("video/x-raw", "framerate", GST_TYPE_FRACTION, 1, 1, NULL);
 
-  sink = gst_element_factory_make("autovideosink", "sink"); // TEMPORARY. Change to a file system thingy.
+  // Convert video frames into PNG images. 
+  toPng = gst_element_factory_make("pngenc", "toPng");
+  CHECK_FALSE_SETFLAG_JUMP(toPng, retFlag, cleanup);
+  // Use a maximum quality PNG so that it's clearer for analysis
+  g_object_set(toPng, "compression-level", 1, NULL);
+
+  // Print out images to files as I don't want to keep all the images in memory since it can get expensive.
+  sink = gst_element_factory_make("multifilesink", "sink"); 
   CHECK_FALSE_SETFLAG_JUMP(sink, retFlag, cleanup);
+  // We need to be notified every time a PNG is generated.
+  g_object_set(sink, "location", "frame%d.png", NULL);
 
   // Setup the pipeline
-  gst_bin_add_many(GST_BIN(pipeline), source, convert, filter, sink, NULL);
+  gst_bin_add_many(GST_BIN(pipeline), source, convert, filter, toPng, sink, NULL);
   CHECK_FALSE_SETFLAG_JUMP(gst_element_link(convert, filter), retFlag, cleanup);
-  CHECK_FALSE_SETFLAG_JUMP(gst_element_link_filtered(filter, sink, filterCaps), retFlag, cleanup);
+  CHECK_FALSE_SETFLAG_JUMP(gst_element_link_filtered(filter, toPng, filterCaps), retFlag, cleanup);
+  CHECK_FALSE_SETFLAG_JUMP(gst_element_link(toPng, sink), retFlag, cleanup);
 
   // This sets up the source to stream from the stream URL.
   g_object_set(source, "uri", streamUrl.c_str(), NULL);
