@@ -48,10 +48,11 @@ std::string VideoFetcher::GetStreamURL() {
  * Start playing the stream using GStreamer. 
  */
 bool VideoFetcher::BeginStreamPlayback(std::string& streamUrl) {
-  GstElement* pipeline;
-  GstElement* source;
-  GstElement* convert;
-  GstElement* sink;
+  GstElement* pipeline = NULL;
+  GstElement* source = NULL;
+  GstElement* convert = NULL;
+  GstElement* sink = NULL;
+  GstBus* bus = NULL;
   bool retFlag = true;
   
   // Initialize gst
@@ -113,15 +114,15 @@ bool VideoFetcher::BeginStreamPlayback(std::string& streamUrl) {
   }
 
   // Listen to any messages we might get
-  GstBus* bus = gst_element_get_bus(pipeline);
-  GstMessage* msg;
+  bus = gst_element_get_bus(pipeline);
+  GstMessage* msg = NULL;
 
   bool bComplete = false;
   while (!bComplete) {
     msg = gst_bus_timed_pop_filtered(bus, GST_CLOCK_TIME_NONE, GstMessageType(GST_MESSAGE_ERROR | GST_MESSAGE_EOS));
     if (!msg) continue;
 
-    GError *err;
+    GError *err = NULL;
     gchar *debug_info;
 
     switch (GST_MESSAGE_TYPE(msg)) {
@@ -133,13 +134,20 @@ bool VideoFetcher::BeginStreamPlayback(std::string& streamUrl) {
       g_free(debug_info);
       bComplete = true;
       break;
+    case GST_MESSAGE_EOS:
+      bComplete = true;
+      break;
     default:
       break;
     }
+    gst_message_unref(msg);
   }
 
 
 cleanup:
+  gst_element_set_state(pipeline, GST_STATE_NULL);
+  if (bus) gst_object_unref(bus);
+  if (pipeline) gst_object_unref(pipeline);
   return retFlag;
 }
 
