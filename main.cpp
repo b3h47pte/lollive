@@ -6,7 +6,7 @@ void test(void* t) {
 }
 
 int main() {
-  VideoFetcher* vid = new VideoFetcher("twitch.tv/scarra", test);
+  VideoFetcher* vid = new VideoFetcher("twitch", "twitch.tv/scarra", test);
   vid->BeginFetch();
   return 0;
 }

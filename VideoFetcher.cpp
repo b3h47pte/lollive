@@ -1,6 +1,8 @@
 #include "VideoFetcher.h"
 #include <stdio.h>
 #include <assert.h>
+#include <windows.h>
+#include <string>
 
 // TODO: Need to print out some sort of error
 #define CHECK_FALSE_SETFLAG_JUMP(x,flag,label) \
@@ -9,7 +11,7 @@ if (!x) {\
   goto label;\
 }
 
-VideoFetcher::VideoFetcher(std::string Url, std::function<void(void*)> Callback): mURL(Url), mCallback(Callback) {
+VideoFetcher::VideoFetcher(std::string inID, std::string Url, std::function<void(void*)> Callback): mID(inID), mURL(Url), mCallback(Callback) {
 
 }
 
@@ -25,6 +27,18 @@ VideoFetcher::~VideoFetcher() {
  *  3) Capture images and send them back.
  */
 void VideoFetcher::BeginFetch() {
+  // Need to create a directory for the images.
+  // If create directory fails with an already exist error, then we want to slap an id onto it.
+  // Increment the id every time it fails.
+  mImagePath = "Images/" + mID;
+  std::wstring stemp = std::wstring(mImagePath.begin(), mImagePath.end());
+  int suffixId = 0;
+  while (!CreateDirectoryW(stemp.c_str(), NULL)) {
+    ++suffixId;
+    mImagePath = "Images/" + mID + std::to_string(suffixId);
+    stemp = std::wstring(mImagePath.begin(), mImagePath.end());
+  }
+
   std::string streamUrl = GetStreamURL();
   if (!BeginStreamPlayback(streamUrl)) {
     return;
@@ -64,6 +78,7 @@ bool VideoFetcher::BeginStreamPlayback(std::string& streamUrl) {
   GstCaps* filterCaps = NULL;
   GstBus* bus = NULL;
   bool retFlag = true;
+  std::string outputLocation = "";
   
   // Initialize gst
   gst_init(NULL, NULL);
@@ -100,7 +115,8 @@ bool VideoFetcher::BeginStreamPlayback(std::string& streamUrl) {
   sink = gst_element_factory_make("multifilesink", "sink"); 
   CHECK_FALSE_SETFLAG_JUMP(sink, retFlag, cleanup);
   // We need to be notified every time a PNG is generated.
-  g_object_set(sink, "location", "frame%d.png", NULL);
+  outputLocation = mImagePath + "/frame%d.png";
+  g_object_set(sink, "location", outputLocation.c_str(), NULL);
 
   // Setup the pipeline
   gst_bin_add_many(GST_BIN(pipeline), source, convert, filter, toPng, sink, NULL);

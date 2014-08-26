@@ -14,7 +14,7 @@ typedef void* IMAGE_PTR_TYPE;
 
 class VideoFetcher {
 public:
-  VideoFetcher(std::string Url, std::function<void(IMAGE_PTR_TYPE)> Callback);
+  VideoFetcher(std::string Id, std::string Url, std::function<void(IMAGE_PTR_TYPE)> Callback);
   ~VideoFetcher();
 
   // Starts the process of getting the stream from the URL, getting the video stream and spitting out images.
@@ -22,6 +22,8 @@ public:
 
 private:
   // Input options so we know where to get the video from and where to spit the images out to.
+  std::string mImagePath;
+  std::string mID;
   std::string mURL;
   std::function<void(IMAGE_PTR_TYPE)> mCallback;
 
