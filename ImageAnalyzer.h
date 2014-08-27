@@ -47,7 +47,7 @@ protected:
   std::shared_ptr<GenericDataStore> mData;
 
   // Utility Function to get text.
-  std::string GetTextFromImage(cv::Mat& inImage, std::string& language, bool bDigitsOnly = false);
+  std::string GetTextFromImage(cv::Mat& inImage, std::string& language, std::string& whitelist = std::string(""));
 
   // Debug Function to show an image
   void ShowImage(cv::Mat& image);
@@ -55,6 +55,9 @@ protected:
   // Language Identifiers
   static std::string EnglishIdent;
   static std::string LeagueIdent;
+
+  // Generic Function to analyze a part of an image.
+  cv::Mat FilterImage_Section_Channel_Resize(cv::Mat& inImage, cv::Rect& section, int channel, float threshold, float resX, float resY);
 };
 
 #endif

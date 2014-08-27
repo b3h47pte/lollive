@@ -10,6 +10,7 @@ enum ELeagueTeams {
 struct LeagueTeamData {
   ELeagueTeams team;
   int kills;
+  int gold;
 };
 
 typedef std::shared_ptr<LeagueTeamData> PtrLeagueTeamData;
