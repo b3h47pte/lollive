@@ -25,6 +25,9 @@
     <Filter Include="VideoAnalyze\Image\LoL\Spectator\LCS">
       <UniqueIdentifier>{0721b9b8-4b1e-4bed-98ac-653506344498}</UniqueIdentifier>
     </Filter>
+    <Filter Include="VideoAnalyze\Data">
+      <UniqueIdentifier>{4f911421-3023-48ec-95bb-2ac61efe9a72}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VideoFetcher.h">
@@ -41,6 +44,9 @@
     </ClInclude>
     <ClInclude Include="LeagueSpectatorImageAnalyzer.h">
       <Filter>VideoAnalyze\Image\LoL\Spectator</Filter>
+    </ClInclude>
+    <ClInclude Include="Data.h">
+      <Filter>VideoAnalyze\Data</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

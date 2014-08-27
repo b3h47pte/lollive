@@ -4,6 +4,7 @@
 #include "common.h"
 #include "opencv2/core.hpp"
 #include "tesseract/baseapi.h"
+#include "Data.h"
 
 /*
  * Takes one frame of the video and analyzes it. 
@@ -30,6 +31,8 @@ public:
   // Whether or not analysis has finished
   bool IsAnalysisFinished() const { return bIsFinished; }
 
+
+
 protected:
   // Set to true when we are done analyzing the image
   bool bIsFinished;
@@ -39,6 +42,9 @@ protected:
 
   // Actual Image
   cv::Mat mImage;
+
+  // Holds all the information about this image. 
+  std::shared_ptr<GenericDataStore> mData;
 };
 
 #endif

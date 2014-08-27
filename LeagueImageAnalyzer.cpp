@@ -13,12 +13,15 @@ LeagueImageAnalyzer::~LeagueImageAnalyzer() {
  * If too many fail [threshold TBD], then fail.
  */
 bool LeagueImageAnalyzer::Analyze() {
-  bool ret = false;
+  bool ret = true;
   if (mImage.empty()) {
     return false;
   }
   
-  AnalyzeMatchTime();
+  // Current match time.
+  int time = AnalyzeMatchTime();
+  std::shared_ptr<GenericData<int>> timeProp(new GenericData<int>(time));
+  (*mData)["CurrentTime"] = timeProp;
 
   return ret;
 }
