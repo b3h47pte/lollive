@@ -42,19 +42,46 @@ std::string ImageAnalyzer::GetTextFromImage(cv::Mat& inImage, std::string& langu
 
 // Generic Function to analyze a part of an image. 
 // Will take an image and cut out a section. From that section, we will use ONE channel. Then we will resize the image.
-cv::Mat ImageAnalyzer::FilterImage_Section_Channel_Resize(cv::Mat& inImage, cv::Rect& section, int channel, float threshold, float resX, float resY) {
-  cv::Mat newImage = inImage(section);
+cv::Mat ImageAnalyzer::FilterImage_Section_Channel_BasicThreshold_Resize(cv::Mat inImage, cv::Rect& section, int channel, double threshold, float resX, float resY) {
+  cv::Mat newMat = FilterImage_Section(inImage, section);
+  newMat = FilterImage_Channel(newMat, channel);
+  newMat = FilterImage_BasicThreshold(newMat, threshold);
+  newMat = FilterImage_Resize(newMat, resX, resY);
+  return newMat;
+}
 
-  // Grab the RBG channel that we want (B = 0, R = 2)
-  cv::Mat filterImage(newImage.rows, newImage.cols, CV_8UC1);
+cv::Mat ImageAnalyzer::FilterImage_Section_Grayscale_BasicThreshold_Resize(cv::Mat inImage, cv::Rect& section, double threshold, float resX, float resY) {
+  cv::Mat newMat = FilterImage_Section(inImage, section);
+  newMat = FilterImage_Grayscale(newMat);
+  newMat = FilterImage_BasicThreshold(newMat, threshold);
+  newMat = FilterImage_Resize(newMat, resX, resY);
+  return newMat;
+}
+
+// Basic OpenCV operations on images.
+cv::Mat ImageAnalyzer::FilterImage_Section(cv::Mat inImage, cv::Rect& section) {
+  return inImage(section);
+}
+
+cv::Mat ImageAnalyzer::FilterImage_Channel(cv::Mat inImage, int channel) {
+  cv::Mat filterImage(inImage.rows, inImage.cols, CV_8UC1);
   int fromTo[] = { channel, 0 };
-  cv::mixChannels(&newImage, 1, &filterImage, 1, fromTo, 1);
-
-  // Apply threshold.
-  cv::threshold(filterImage, filterImage, threshold, 255.0, cv::THRESH_BINARY);
-
-  // Tesseract needs big text. TODO: This may need to change depending on the resolution?
-  cv::Size newSize;
-  cv::resize(filterImage, filterImage, newSize, 2.0, 2.0);
+  cv::mixChannels(&inImage, 1, &filterImage, 1, fromTo, 1);
   return filterImage;
+}
+
+cv::Mat ImageAnalyzer::FilterImage_BasicThreshold(cv::Mat inImage, double threshold) {
+  cv::threshold(inImage, inImage, threshold, 255.0, cv::THRESH_BINARY);
+  return inImage;
+}
+
+cv::Mat ImageAnalyzer::FilterImage_Resize(cv::Mat inImage, float resX, float resY) {
+  cv::Size newSize;
+  cv::resize(inImage, inImage, newSize, resX, resY);
+  return inImage;
+}
+
+cv::Mat ImageAnalyzer::FilterImage_Grayscale(cv::Mat inImage) {
+  cv::cvtColor(inImage, inImage, cv::COLOR_RGB2GRAY);
+  return inImage;
 }

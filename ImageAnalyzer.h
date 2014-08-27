@@ -56,8 +56,15 @@ protected:
   static std::string EnglishIdent;
   static std::string LeagueIdent;
 
-  // Generic Function to analyze a part of an image.
-  cv::Mat FilterImage_Section_Channel_Resize(cv::Mat& inImage, cv::Rect& section, int channel, float threshold, float resX, float resY);
+  // Generic Functions to analyze a part of an image.
+  cv::Mat FilterImage_Section_Grayscale_BasicThreshold_Resize(cv::Mat inImage, cv::Rect& section, double threshold, float resX, float resY);
+  cv::Mat FilterImage_Section_Channel_BasicThreshold_Resize(cv::Mat inImage, cv::Rect& section, int channel, double threshold, float resX, float resY);
+
+  cv::Mat FilterImage_Section(cv::Mat inImage, cv::Rect& section);
+  cv::Mat FilterImage_Channel(cv::Mat inImage, int channel);
+  cv::Mat FilterImage_BasicThreshold(cv::Mat inImage, double threshold);
+  cv::Mat FilterImage_Resize(cv::Mat inImage, float resX, float resY);
+  cv::Mat FilterImage_Grayscale(cv::Mat inImage);
 };
 
 #endif

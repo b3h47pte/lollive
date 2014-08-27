@@ -24,20 +24,8 @@ int LeagueSpectatorImageAnalyzer::AnalyzeMatchTime() {
     (int)(mImage.rows * (50.0f / 720.0f)), 
     (int)(mImage.cols * (40.0f / 1280.0f)), 
     (int)(mImage.rows * (15.0f / 720.0f)));
-  cv::Mat timeImage = mImage(section);
 
-  // Process the image to make the text clearer for the Tesseract OCR engine.
-  // Make sure it's black and white only
-  cv::cvtColor(timeImage, timeImage, cv::COLOR_RGB2GRAY);
-
-  // Make it black and white, no need for noise that we don't need.
-  // TODO: Make these options configurable.
-  cv::threshold(timeImage, timeImage, 105.0, 255.0, cv::THRESH_BINARY);
-
-  // Tesseract needs big text. TODO: This may need to change depending on the resolution?
-  cv::Size newSize;
-  cv::resize(timeImage, timeImage, newSize, 2.0, 2.0);
-  
+  cv::Mat timeImage = FilterImage_Section_Grayscale_BasicThreshold_Resize(mImage, section, 105.0, 2.0, 2.0);
   std::string result = GetTextFromImage(timeImage, EnglishIdent);
 
   // Now parse the result so that it is just a number of seconds.
@@ -77,7 +65,7 @@ int LeagueSpectatorImageAnalyzer::AnalyzeMatchTime() {
  */
 int LeagueSpectatorImageAnalyzer::AnalyzeTeamKills(ELeagueTeams team) {
   // TODO: Configurable
-  cv::Mat filterImage = FilterImage_Section_Channel_Resize(mImage,
+  cv::Mat filterImage = FilterImage_Section_Channel_BasicThreshold_Resize(mImage,
     GetTeamKillsSection(team),
     (team == ELT_BLUE) ? 0 : 2,
     115.0, 2.0, 2.0);
@@ -118,7 +106,7 @@ cv::Rect LeagueSpectatorImageAnalyzer::GetTeamKillsSection(ELeagueTeams team) {
  */
 int LeagueSpectatorImageAnalyzer::AnalyzeTeamGold(ELeagueTeams team) {
   // TODO: Configurable
-  cv::Mat filterImage = FilterImage_Section_Channel_Resize(mImage,
+  cv::Mat filterImage = FilterImage_Section_Channel_BasicThreshold_Resize(mImage,
     GetTeamGoldSection(team),
     (team == ELT_BLUE) ? 0 : 2,
     100.0, 2.0, 2.0);
