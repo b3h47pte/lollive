@@ -1,11 +1,9 @@
-#include <gst/gst.h>
-#include "VideoFetcher.h"
-
-void test(IMAGE_PATH_TYPE t, IMAGE_TIMESTAMP_TYPE ts) {
-}
+#include "LeagueSpectatorImageAnalyzer.h"
+#include "common.h"
 
 int main() {
-  VideoFetcher* vid = new VideoFetcher("twitch", "twitch.tv/scarra", test);
-  vid->BeginFetch();
+  std::string path = "Images/faker/frame16.png";
+  LeagueSpectatorImageAnalyzer* img = new LeagueSpectatorImageAnalyzer(path);
+  img->Analyze();
   return 0;
 }

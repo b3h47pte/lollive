@@ -10,10 +10,37 @@
     <Filter Include="Frontend">
       <UniqueIdentifier>{f5000bb8-34fa-4a41-b36d-afd2d279d27b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{79973709-500f-4deb-919f-86bf69e50590}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VideoAnalyze\Image">
+      <UniqueIdentifier>{15e810da-248a-43b2-af3f-d71ea3d3e4a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VideoAnalyze\Image\LoL">
+      <UniqueIdentifier>{71d26050-8339-4a11-bcb7-9ae2d3235cd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VideoAnalyze\Image\LoL\Spectator">
+      <UniqueIdentifier>{d74837fd-0741-482f-b964-7278e89c5976}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VideoAnalyze\Image\LoL\Spectator\LCS">
+      <UniqueIdentifier>{0721b9b8-4b1e-4bed-98ac-653506344498}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VideoFetcher.h">
       <Filter>VideoFetch</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageAnalyzer.h">
+      <Filter>VideoAnalyze\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="LeagueImageAnalyzer.h">
+      <Filter>VideoAnalyze\Image\LoL</Filter>
+    </ClInclude>
+    <ClInclude Include="LeagueSpectatorImageAnalyzer.h">
+      <Filter>VideoAnalyze\Image\LoL\Spectator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -22,6 +49,15 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Frontend</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageAnalyzer.cpp">
+      <Filter>VideoAnalyze\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="LeagueImageAnalyzer.cpp">
+      <Filter>VideoAnalyze\Image\LoL</Filter>
+    </ClCompile>
+    <ClCompile Include="LeagueSpectatorImageAnalyzer.cpp">
+      <Filter>VideoAnalyze\Image\LoL\Spectator</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

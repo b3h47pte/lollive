@@ -111,6 +111,7 @@ bool VideoFetcher::BeginStreamPlayback(std::string& streamUrl) {
   toPng = gst_element_factory_make("pngenc", "toPng");
   CHECK_FALSE_SETFLAG_JUMP(toPng, retFlag, cleanup);
   // Use a maximum quality PNG so that it's clearer for analysis
+  // Though from a basic eye test, I can't see the difference betwee 1 and 9.
   g_object_set(toPng, "compression-level", 1, NULL);
 
   // Print out images to files as I don't want to keep all the images in memory since it can get expensive.

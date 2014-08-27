@@ -6,14 +6,12 @@
 #include <functional>
 #include <stdint.h>
 #include <gst/gst.h>
+#include "common.h"
 
 /*
  * This class takes the URL of a livestream (a Twitch link or a Youtube link, etc.) and will
  * return a stream of images via a callback provided to it.
  */
-typedef std::string& IMAGE_PATH_TYPE;
-typedef uint64_t IMAGE_TIMESTAMP_TYPE;
-
 class VideoFetcher {
 public:
   VideoFetcher(std::string Id, std::string Url, std::function<void(IMAGE_PATH_TYPE, IMAGE_TIMESTAMP_TYPE)> Callback);
