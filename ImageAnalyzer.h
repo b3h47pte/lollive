@@ -45,6 +45,16 @@ protected:
 
   // Holds all the information about this image. 
   std::shared_ptr<GenericDataStore> mData;
+
+  // Utility Function to get text.
+  std::string GetTextFromImage(cv::Mat& inImage, std::string& language, bool bDigitsOnly = false);
+
+  // Debug Function to show an image
+  void ShowImage(cv::Mat& image);
+
+  // Language Identifiers
+  static std::string EnglishIdent;
+  static std::string LeagueIdent;
 };
 
 #endif

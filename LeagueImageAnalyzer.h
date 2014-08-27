@@ -37,6 +37,7 @@ protected:
 
   // Team Kills
   virtual int AnalyzeTeamKills(ELeagueTeams team) = 0;
+  virtual cv::Rect GetTeamKillsSection(ELeagueTeams team) = 0;
 private:
 };
 

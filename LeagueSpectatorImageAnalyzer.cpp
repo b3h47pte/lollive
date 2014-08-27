@@ -38,13 +38,7 @@ int LeagueSpectatorImageAnalyzer::AnalyzeMatchTime() {
   cv::Size newSize;
   cv::resize(timeImage, timeImage, newSize, 2.0, 2.0);
   
-  // Get the actual text.
-  tesseract::TessBaseAPI tessApi;
-  tessApi.Init(NULL, "eng");
-  tessApi.SetPageSegMode(tesseract::PSM_SINGLE_BLOCK);
-  tessApi.SetImage((uchar*)timeImage.data, timeImage.cols, timeImage.rows, 1, timeImage.cols);
-  std::string result = tessApi.GetUTF8Text();
-  result.erase(std::remove_if(result.begin(), result.end(), isspace), result.end());
+  std::string result = GetTextFromImage(timeImage, EnglishIdent);
 
   // Now parse the result so that it is just a number of seconds.
   int secondsSinceGameStart = -1;
@@ -82,5 +76,51 @@ int LeagueSpectatorImageAnalyzer::AnalyzeMatchTime() {
  * Offload those tasks to utility functions.
  */
 int LeagueSpectatorImageAnalyzer::AnalyzeTeamKills(ELeagueTeams team) {
+  cv::Rect section = GetTeamKillsSection(team);
+  cv::Mat killsImage = mImage(section);
+
+  // Grab the BLUE channel for the blue team and the RED channel for the purple team.
+  cv::Mat filterImage(killsImage.rows, killsImage.cols, CV_8UC1);
+  int fromTo[] = { 0, 0 }; // Default to blue team
+  if (team == ELT_PURPLE) {
+    fromTo[0] = 2; // 2 is the red channel. 
+  }
+  cv::mixChannels(&killsImage, 1, &filterImage, 1, fromTo, 1);
+
+  // Now make the image purely black and white.
+  // TODO: Configurable.
+  cv::threshold(filterImage, filterImage, 115.0, 255.0, cv::THRESH_BINARY);
+
+  // Tesseract needs big text. TODO: This may need to change depending on the resolution?
+  cv::Size newSize;
+  cv::resize(filterImage, filterImage, newSize, 2.0, 2.0);
+
+  std::string killsText = GetTextFromImage(filterImage, LeagueIdent, true);
+  // In the case where the killsText that Tesseract returns isn't actually a number, just ignore it. Can't read it.
+  try {
+    return std::stoi(killsText, NULL);
+  } catch (...) {
+    return -1;
+  }
   return -1;
+}
+
+/*
+ * Gets the appropriate box that contains the number of kills the team has. 
+ * TODO: Make sure this works on 1080p as well.
+ */
+cv::Rect LeagueSpectatorImageAnalyzer::GetTeamKillsSection(ELeagueTeams team) {
+  cv::Rect rect;
+  if (team == ELT_BLUE) {
+    rect = cv::Rect((int)(mImage.cols * (595.0f / 1280.0f)),
+      (int)(mImage.rows * (17.0f / 720.0f)),
+      (int)(mImage.cols * (32.0f / 1280.0f)),
+      (int)(mImage.rows * (25.0f / 720.0f)));
+  } else {
+    rect = cv::Rect((int)(mImage.cols * (656.0f / 1280.0f)),
+      (int)(mImage.rows * (17.0f / 720.0f)),
+      (int)(mImage.cols * (32.0f / 1280.0f)),
+      (int)(mImage.rows * (25.0f / 720.0f)));
+  }
+  return rect;
 }

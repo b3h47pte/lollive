@@ -19,6 +19,7 @@ protected:
 
   // Team Kills. Also part of the header bar at the top of the screen.
   virtual int AnalyzeTeamKills(ELeagueTeams team);
+  virtual cv::Rect GetTeamKillsSection(ELeagueTeams team);
 private:
 };
 
