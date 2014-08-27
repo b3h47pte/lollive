@@ -8,7 +8,8 @@
 /*
  * Base class for analyzing League of Legends screenshots. Eventually need to split it to analyze
  * spectator mode/LCS, as well as a regular player playing.
- * Not exactly sure how to go about doing this yet since I'm not familiar with how OpenCV works. HA.
+ * 
+ * TODO: Need to be able to adapt to the HUD size the player has chosen. Currently assume we use 100%.
  */
 class LeagueImageAnalyzer: public ImageAnalyzer {
 public:

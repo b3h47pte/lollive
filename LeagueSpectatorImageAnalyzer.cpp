@@ -18,7 +18,7 @@ LeagueSpectatorImageAnalyzer::~LeagueSpectatorImageAnalyzer() {
 int LeagueSpectatorImageAnalyzer::AnalyzeMatchTime() {
   // We only want a certain part of the image (the section that has the time on it).
   // So extract that into a separate image. 
-  // TODO: Make sure the rectangle calculation works even when on 1080p since my only data right now is in 720p.
+  // TODO: Make this adapt to non 16 : 9 resolutions.
   // TODO: Make sure this works when it hits hours.
   cv::Rect section = cv::Rect((int)(mImage.cols * (620.0f / 1280.0f)), 
     (int)(mImage.rows * (50.0f / 720.0f)), 
@@ -81,7 +81,7 @@ int LeagueSpectatorImageAnalyzer::AnalyzeTeamKills(ELeagueTeams team) {
 
 /*
  * Gets the appropriate box that contains the number of kills the team has. 
- * TODO: Make sure this works on 1080p as well.
+ * TODO: Make this adapt to non 16:9 resolutions.
  * TODO: Make this configurable.
  */
 cv::Rect LeagueSpectatorImageAnalyzer::GetTeamKillsSection(ELeagueTeams team) {
@@ -138,7 +138,7 @@ int LeagueSpectatorImageAnalyzer::AnalyzeTeamGold(ELeagueTeams team) {
 
 /*
 * Gets the appropriate box that contains the amount of gold the team has.
-* TODO: Make sure this works on 1080p as well. 
+* TODO: Make this adapt to non 16:9 resolutions.
 * TODO: Make this configurable.
 */
 cv::Rect LeagueSpectatorImageAnalyzer::GetTeamGoldSection(ELeagueTeams team) {
@@ -177,7 +177,7 @@ int LeagueSpectatorImageAnalyzer::AnalyzeTeamTowerKills(ELeagueTeams team) {
 
 /*
 * Gets the appropriate box that contains the amount of tower kills the team has.
-* TODO: Make sure this works on 1080p as well.
+* TODO: Make this adapt to non 16:9 resolutions.
 * TODO: Make this configurable.
 */
 cv::Rect LeagueSpectatorImageAnalyzer::GetTeamTowerKillSection(ELeagueTeams team) {
