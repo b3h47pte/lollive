@@ -155,6 +155,7 @@
     <ClInclude Include="LeagueImageAnalyzer.h" />
     <ClInclude Include="LeagueSpectatorImageAnalyzer.h" />
     <ClInclude Include="Data.h" />
+    <ClInclude Include="LeagueTeamData.h" />
     <ClInclude Include="VideoFetcher.h" />
   </ItemGroup>
   <ItemGroup>

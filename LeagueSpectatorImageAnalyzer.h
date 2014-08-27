@@ -17,6 +17,8 @@ protected:
   // Gets the match timer from the header bar up top.
   virtual int AnalyzeMatchTime();
 
+  // Team Kills. Also part of the header bar at the top of the screen.
+  virtual int AnalyzeTeamKills(ELeagueTeams team);
 private:
 };
 

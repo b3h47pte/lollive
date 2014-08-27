@@ -3,6 +3,7 @@
 #define _LOLIMAGEANALYZER_H
 
 #include "ImageAnalyzer.h"
+#include "LeagueTeamData.h"
 
 /*
  * Base class for analyzing League of Legends screenshots. Eventually need to split it to analyze
@@ -23,6 +24,19 @@ protected:
   // Get match time specified in seconds since match start.
   virtual int AnalyzeMatchTime() = 0;
 
+  // Team Analysis. There are two teams in all League of Legends games [if Riot ever adds a one team mode or 3+ team mode, fml],
+  // and the amount of information we have about each team is limited. 
+  // The process is as follows:
+  //   Analyze will call AnalyzeTeamData for both teams.
+  //   AnalyzeTeamData will then proceed to call specific functions (i.e. AnalyzeTeamGold) for the input team.
+  //    Sometimes, this information is not available in certain modes and thus, this gives the subclass a way to ignore that property
+  //    while keeping all relevant team data together.
+  //   Therefore, AnalyzeTeamData will call ALL possible team data functions regardless of whether or not that information is 
+  //   available in the current mode.
+  virtual PtrLeagueTeamData AnalyzeTeamData(ELeagueTeams team);
+
+  // Team Kills
+  virtual int AnalyzeTeamKills(ELeagueTeams team) = 0;
 private:
 };
 

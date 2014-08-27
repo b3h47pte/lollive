@@ -74,3 +74,13 @@ int LeagueSpectatorImageAnalyzer::AnalyzeMatchTime() {
   secondsSinceGameStart = std::stoi(strMinutes, NULL) * 60 + std::stoi(strSeconds, NULL);
   return secondsSinceGameStart;
 }
+
+/*
+ * Retrieve the team's kills from the header bar at the top.
+ * However, since we want to be able to read the team's kills separately, 
+ * we must apply color filters and grab the right image section based on the team property.
+ * Offload those tasks to utility functions.
+ */
+int LeagueSpectatorImageAnalyzer::AnalyzeTeamKills(ELeagueTeams team) {
+  return -1;
+}

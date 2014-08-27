@@ -28,6 +28,9 @@
     <Filter Include="VideoAnalyze\Data">
       <UniqueIdentifier>{4f911421-3023-48ec-95bb-2ac61efe9a72}</UniqueIdentifier>
     </Filter>
+    <Filter Include="VideoAnalyze\Data\LoL">
+      <UniqueIdentifier>{41e45bf3-8567-40df-bff1-1263bda93f3d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VideoFetcher.h">
@@ -47,6 +50,9 @@
     </ClInclude>
     <ClInclude Include="Data.h">
       <Filter>VideoAnalyze\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="LeagueTeamData.h">
+      <Filter>VideoAnalyze\Data\LoL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
