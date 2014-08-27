@@ -45,6 +45,7 @@ PtrLeagueTeamData LeagueImageAnalyzer::AnalyzeTeamData(ELeagueTeams team) {
   newTeam->team = team;
   newTeam->kills = AnalyzeTeamKills(team);
   newTeam->gold = AnalyzeTeamGold(team);
+  newTeam->towerKills = AnalyzeTeamTowerKills(team);
 
   return newTeam;
 }

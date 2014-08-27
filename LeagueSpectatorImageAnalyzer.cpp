@@ -156,3 +156,42 @@ cv::Rect LeagueSpectatorImageAnalyzer::GetTeamGoldSection(ELeagueTeams team) {
   }
   return rect;
 }
+
+/*
+ * Gets the number of tower kills each team has from the spectator header bar.
+ */
+int LeagueSpectatorImageAnalyzer::AnalyzeTeamTowerKills(ELeagueTeams team) {
+  // TODO: Configurable
+  cv::Mat filterImage = FilterImage_Section_Channel_BasicThreshold_Resize(mImage,
+    GetTeamTowerKillSection(team),
+    (team == ELT_BLUE) ? 0 : 2,
+    100.0, 2.0, 2.0);
+  std::string towerKills = GetTextFromImage(filterImage, LeagueIdent, std::string("0123456789"));
+  try {
+    return std::stoi(towerKills, NULL);
+  } catch (...) {
+    return -1;
+  }
+  return -1;
+}
+
+/*
+* Gets the appropriate box that contains the amount of tower kills the team has.
+* TODO: Make sure this works on 1080p as well.
+* TODO: Make this configurable.
+*/
+cv::Rect LeagueSpectatorImageAnalyzer::GetTeamTowerKillSection(ELeagueTeams team) {
+  cv::Rect rect;
+  if (team == ELT_BLUE) {
+    rect = cv::Rect((int)(mImage.cols * (455.0f / 1280.0f)),
+      (int)(mImage.rows * (19.0f / 720.0f)),
+      (int)(mImage.cols * (20.0f / 1280.0f)),
+      (int)(mImage.rows * (14.0f / 720.0f)));
+  } else {
+    rect = cv::Rect((int)(mImage.cols * (821.0f / 1280.0f)),
+      (int)(mImage.rows * (19.0f / 720.0f)),
+      (int)(mImage.cols * (20.0f / 1280.0f)),
+      (int)(mImage.rows * (14.0f / 720.0f)));
+  }
+  return rect;
+}

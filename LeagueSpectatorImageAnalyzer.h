@@ -24,6 +24,10 @@ protected:
   // Team Gold. Part of the header bar at the top of the screen.
   virtual int AnalyzeTeamGold(ELeagueTeams team);
   virtual cv::Rect GetTeamGoldSection(ELeagueTeams team);
+
+  // Team Tower Kills. Final part of the header bar at the top of the screen.
+  virtual int AnalyzeTeamTowerKills(ELeagueTeams team);
+  virtual cv::Rect GetTeamTowerKillSection(ELeagueTeams team);
 private:
 };
 

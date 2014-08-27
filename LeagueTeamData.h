@@ -11,6 +11,7 @@ struct LeagueTeamData {
   ELeagueTeams team;
   int kills;
   int gold;
+  int towerKills;
 };
 
 typedef std::shared_ptr<LeagueTeamData> PtrLeagueTeamData;

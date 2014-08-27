@@ -42,6 +42,10 @@ protected:
   // Team Gold
   virtual int AnalyzeTeamGold(ELeagueTeams team) = 0;
   virtual cv::Rect GetTeamGoldSection(ELeagueTeams team) = 0;
+
+  // Team Tower Kills
+  virtual int AnalyzeTeamTowerKills(ELeagueTeams team) = 0;
+  virtual cv::Rect GetTeamTowerKillSection(ELeagueTeams team) = 0;
 private:
 };
 
