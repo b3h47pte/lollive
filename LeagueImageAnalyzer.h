@@ -3,7 +3,9 @@
 #define _LOLIMAGEANALYZER_H
 
 #include "ImageAnalyzer.h"
+#include "LeaguePlayerData.h"
 #include "LeagueTeamData.h"
+#include "LeagueChampionDatabase.h"
 
 /*
  * Base class for analyzing League of Legends screenshots. Eventually need to split it to analyze
@@ -47,6 +49,14 @@ protected:
   // Team Tower Kills
   virtual int AnalyzeTeamTowerKills(ELeagueTeams team) = 0;
   virtual cv::Rect GetTeamTowerKillSection(ELeagueTeams team) = 0;
+
+  // Player Analysis. Pass in an index to the player. What this index could mean is different dependent on the mode.
+  // By default we will want information for players 0-4 (inclusive). Subclasses are free to ignore as many as they wish.
+  virtual PtrLeaguePlayerData AnalyzePlayerData(uint idx);
+
+  // Player Champion.
+  virtual std::string AnalyzePlayerChampion(uint idx) = 0;
+  std::shared_ptr<const LeagueChampionDatabase> ChampionDatabase;
 private:
 };
 

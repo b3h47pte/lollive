@@ -4,7 +4,6 @@
 #include <algorithm>
 
 LeagueSpectatorImageAnalyzer::LeagueSpectatorImageAnalyzer(IMAGE_PATH_TYPE ImagePath): LeagueImageAnalyzer(ImagePath) {
-
 }
 
 LeagueSpectatorImageAnalyzer::~LeagueSpectatorImageAnalyzer() {
@@ -176,9 +175,9 @@ int LeagueSpectatorImageAnalyzer::AnalyzeTeamTowerKills(ELeagueTeams team) {
 }
 
 /*
-* Gets the appropriate box that contains the amount of tower kills the team has.
-* TODO: Make this adapt to non 16:9 resolutions.
-* TODO: Make this configurable.
+ * Gets the appropriate box that contains the amount of tower kills the team has.
+ * TODO: Make this adapt to non 16:9 resolutions.
+ * TODO: Make this configurable.
 */
 cv::Rect LeagueSpectatorImageAnalyzer::GetTeamTowerKillSection(ELeagueTeams team) {
   cv::Rect rect;
@@ -194,4 +193,11 @@ cv::Rect LeagueSpectatorImageAnalyzer::GetTeamTowerKillSection(ELeagueTeams team
       (int)(mImage.rows * (14.0f / 720.0f)));
   }
   return rect;
+}
+
+/*
+ * Determine which champion the player is playing. 
+ */
+std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx) {
+  return "";
 }

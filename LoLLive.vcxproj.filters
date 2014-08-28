@@ -31,6 +31,15 @@
     <Filter Include="VideoAnalyze\Data\LoL">
       <UniqueIdentifier>{41e45bf3-8567-40df-bff1-1263bda93f3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="VideoAnalyze\Data\LoL\Champions">
+      <UniqueIdentifier>{4eccd2cc-521f-4e58-b0fc-de34fdca4e9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External">
+      <UniqueIdentifier>{5fdc9c7e-fd72-4d2e-b84d-d9c3b13bf771}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External\RapidXML">
+      <UniqueIdentifier>{3dccb12f-59ba-4726-b0c0-c2638924fe01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VideoFetcher.h">
@@ -54,6 +63,27 @@
     <ClInclude Include="LeagueTeamData.h">
       <Filter>VideoAnalyze\Data\LoL</Filter>
     </ClInclude>
+    <ClInclude Include="LeaguePlayerData.h">
+      <Filter>VideoAnalyze\Data\LoL</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidxml\rapidxml.hpp">
+      <Filter>External\RapidXML</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidxml\rapidxml_iterators.hpp">
+      <Filter>External\RapidXML</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidxml\rapidxml_print.hpp">
+      <Filter>External\RapidXML</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidxml\rapidxml_utils.hpp">
+      <Filter>External\RapidXML</Filter>
+    </ClInclude>
+    <ClInclude Include="LeagueChampionDatabase.h">
+      <Filter>VideoAnalyze\Data\LoL\Champions</Filter>
+    </ClInclude>
+    <ClInclude Include="LeagueChampionData.h">
+      <Filter>VideoAnalyze\Data\LoL\Champions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VideoFetcher.cpp">
@@ -70,6 +100,9 @@
     </ClCompile>
     <ClCompile Include="LeagueSpectatorImageAnalyzer.cpp">
       <Filter>VideoAnalyze\Image\LoL\Spectator</Filter>
+    </ClCompile>
+    <ClCompile Include="LeagueChampionDatabase.cpp">
+      <Filter>VideoAnalyze\Data\LoL\Champions</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

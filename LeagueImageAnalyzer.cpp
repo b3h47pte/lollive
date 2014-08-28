@@ -1,7 +1,7 @@
 #include "LeagueImageAnalyzer.h"
 
 LeagueImageAnalyzer::LeagueImageAnalyzer(IMAGE_PATH_TYPE ImagePath): ImageAnalyzer(ImagePath) {
-
+  ChampionDatabase = LeagueChampionDatabase::Get();
 }
 
 LeagueImageAnalyzer::~LeagueImageAnalyzer() {
@@ -46,6 +46,19 @@ PtrLeagueTeamData LeagueImageAnalyzer::AnalyzeTeamData(ELeagueTeams team) {
   newTeam->kills = AnalyzeTeamKills(team);
   newTeam->gold = AnalyzeTeamGold(team);
   newTeam->towerKills = AnalyzeTeamTowerKills(team);
-
+  for (uint i = 0; i < 5; ++i) {
+    newTeam->players[i] = AnalyzePlayerData(i);
+  }
   return newTeam;
+}
+
+/*
+ * Gets all the information we can gather about this player. Obviously the index is kind of vague
+ * so it is up to subclasses to determine what this index should mean. But we can guarantee that 
+ * we will call AnalyzePlayerData with indexes 0 to 4.
+ */
+PtrLeaguePlayerData LeagueImageAnalyzer::AnalyzePlayerData(uint idx) {
+  PtrLeaguePlayerData newPlayer(new LeaguePlayerData);
+
+  return newPlayer;
 }

@@ -152,13 +152,21 @@
   <ItemGroup>
     <ClInclude Include="common.h" />
     <ClInclude Include="ImageAnalyzer.h" />
+    <ClInclude Include="LeagueChampionData.h" />
+    <ClInclude Include="LeagueChampionDatabase.h" />
     <ClInclude Include="LeagueImageAnalyzer.h" />
+    <ClInclude Include="LeaguePlayerData.h" />
     <ClInclude Include="LeagueSpectatorImageAnalyzer.h" />
     <ClInclude Include="Data.h" />
     <ClInclude Include="LeagueTeamData.h" />
+    <ClInclude Include="rapidxml\rapidxml.hpp" />
+    <ClInclude Include="rapidxml\rapidxml_iterators.hpp" />
+    <ClInclude Include="rapidxml\rapidxml_print.hpp" />
+    <ClInclude Include="rapidxml\rapidxml_utils.hpp" />
     <ClInclude Include="VideoFetcher.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="LeagueChampionDatabase.cpp" />
     <ClCompile Include="LeagueImageAnalyzer.cpp" />
     <ClCompile Include="LeagueSpectatorImageAnalyzer.cpp" />
     <ClCompile Include="main.cpp" />

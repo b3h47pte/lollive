@@ -21,8 +21,6 @@ void ImageAnalyzer::ShowImage(cv::Mat& image) {
   cv::imshow("Window", image);
   cv::waitKey(0);
   cv::destroyWindow("Window");
-  std::string path = "test.png";
-  cv::imwrite(path, image);
 }
 
 std::string ImageAnalyzer::GetTextFromImage(cv::Mat& inImage, std::string& language, std::string& whitelist) {

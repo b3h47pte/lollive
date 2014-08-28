@@ -1,0 +1,17 @@
+<database>
+	<common>
+		<imgpostfix>_Square_0.png</imgpostfix>
+	</common>
+  
+  <champions>
+    <champion>
+      <name>Fizz</name>
+      <shortname>Fizz</shortname>
+    </champion>
+    
+    <champion>
+      <name>Warwick</name>
+      <shortname>Warwick</shortname>
+    </champion>
+  </champions>
+</database>

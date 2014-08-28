@@ -2,6 +2,7 @@
 #ifndef _COMMON_H
 #define _COMMON_H
 #include <iostream>
+#include <string>
 #include <stdint.h>
 #include <memory>
 #include <map>
