@@ -3,6 +3,7 @@
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/imgproc.hpp"
 #include <stdlib.h>
+#include <assert.h>
 
 // Language Identifiers
 std::string ImageAnalyzer::EnglishIdent = "eng";
@@ -19,8 +20,14 @@ ImageAnalyzer::~ImageAnalyzer() {
 void ImageAnalyzer::ShowImage(cv::Mat& image) {
   cv::namedWindow("Window", cv::WINDOW_AUTOSIZE);
   cv::imshow("Window", image);
+  cv::imwrite("test.png", image);
   cv::waitKey(0);
   cv::destroyWindow("Window");
+}
+
+void ImageAnalyzer::ShowImageNoPause(cv::Mat& image, const char* name) {
+  cv::namedWindow(name, cv::WINDOW_AUTOSIZE);
+  cv::imshow(name, image);
 }
 
 std::string ImageAnalyzer::GetTextFromImage(cv::Mat& inImage, std::string& language, std::string& whitelist) {
@@ -36,6 +43,49 @@ std::string ImageAnalyzer::GetTextFromImage(cv::Mat& inImage, std::string& langu
   std::string result = tessApi.GetUTF8Text();
   result.erase(std::remove_if(result.begin(), result.end(), isspace), result.end());
   return result;
+}
+
+// Create a histogram for the given image.
+// TODO: Cleanup this and the other create HS histogram functions.
+cv::MatND ImageAnalyzer::CreateHSHistogram(cv::Mat inImage, int hue_bins, int sat_bins) {
+  cv::Mat hsvImage;
+  cv::cvtColor(inImage, hsvImage, cv::COLOR_BGR2HSV);
+
+  // Histogram properties
+  // Source: http://docs.opencv.org/doc/tutorials/imgproc/histograms/histogram_comparison/histogram_comparison.html
+  int histSize[] = { hue_bins, sat_bins };
+
+  float h_ranges[] = { 0, 180 };
+  float s_ranges[] = { 0, 256 };
+
+  const float* ranges[] = { h_ranges, s_ranges };
+
+  int channels[] = { 0, 1 };
+
+  cv::MatND retHist;
+  cv::calcHist(&hsvImage, 1, channels, cv::Mat(), retHist, 2, histSize, ranges, true, false);
+  cv::normalize(retHist, retHist, 0, 1, cv::NORM_MINMAX, -1, cv::Mat());
+  return retHist;
+}
+
+cv::MatND ImageAnalyzer::CreateVHistogram(cv::Mat inImage, int value_bins) {
+  cv::Mat hsvImage;
+  cv::cvtColor(inImage, hsvImage, cv::COLOR_BGR2HSV);
+
+  // Histogram properties
+  // Source: http://docs.opencv.org/doc/tutorials/imgproc/histograms/histogram_comparison/histogram_comparison.html
+  int histSize[] = { value_bins };
+
+  float v_ranges[] = { 0, 256 };
+
+  const float* ranges[] = { v_ranges };
+
+  int channels[] = { 2 };
+
+  cv::MatND retHist;
+  cv::calcHist(&hsvImage, 1, channels, cv::Mat(), retHist, 1, histSize, ranges, true, false);
+  cv::normalize(retHist, retHist, 0, 1, cv::NORM_MINMAX, -1, cv::Mat());
+  return retHist;
 }
 
 // Generic Function to analyze a part of an image. 
@@ -69,17 +119,49 @@ cv::Mat ImageAnalyzer::FilterImage_Channel(cv::Mat inImage, int channel) {
 }
 
 cv::Mat ImageAnalyzer::FilterImage_BasicThreshold(cv::Mat inImage, double threshold) {
-  cv::threshold(inImage, inImage, threshold, 255.0, cv::THRESH_BINARY);
-  return inImage;
+  cv::Mat newImage;
+  cv::threshold(inImage, newImage, threshold, 255.0, cv::THRESH_BINARY);
+  return newImage;
 }
 
 cv::Mat ImageAnalyzer::FilterImage_Resize(cv::Mat inImage, float resX, float resY) {
   cv::Size newSize;
-  cv::resize(inImage, inImage, newSize, resX, resY);
-  return inImage;
+  cv::Mat newImage;
+  cv::resize(inImage, newImage, newSize, resX, resY);
+  return newImage;
 }
 
 cv::Mat ImageAnalyzer::FilterImage_Grayscale(cv::Mat inImage) {
-  cv::cvtColor(inImage, inImage, cv::COLOR_RGB2GRAY);
-  return inImage;
+  cv::Mat newImage;
+  cv::cvtColor(inImage, newImage, cv::COLOR_RGB2GRAY);
+  return newImage;
+}
+
+// Split an Image into many parts. 
+// It does its best to keep the same number of pixels in each section but once you reach the edge
+// it will resize as appropriate. No matter what, there won't be duplicated pixels.
+void ImageAnalyzer::SplitImage(cv::Mat& inImage, int x_dim, int y_dim, cv::Mat** out) {
+  cv::Mat* res = *out;
+  assert(res != NULL);
+  int x_pos = 0;
+  int y_pos = 0;
+  for (int y = 0; y < y_dim; ++y) {
+    x_pos = 0;
+    int y_width = inImage.rows / y_dim + 1;
+    if (y == y_dim - 1 && inImage.rows % y_dim != 0) {
+      y_width = (y_width * y_dim - inImage.rows);
+    }
+
+    for (int x = 0; x < x_dim; ++x) {
+      int x_width = inImage.cols / x_dim + 1;
+      if (x == x_dim - 1 && inImage.cols % x_dim != 0) {
+        x_width -= (x_width * x_dim - inImage.cols);
+      }
+
+      res[y * y_dim + x] = FilterImage_Section(inImage, cv::Rect(x_pos, y_pos, x_width, y_width));
+      x_pos += x_width;
+    }
+    y_pos += y_width;
+  }
+  *out = res;
 }

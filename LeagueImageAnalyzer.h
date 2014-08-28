@@ -52,10 +52,10 @@ protected:
 
   // Player Analysis. Pass in an index to the player. What this index could mean is different dependent on the mode.
   // By default we will want information for players 0-4 (inclusive). Subclasses are free to ignore as many as they wish.
-  virtual PtrLeaguePlayerData AnalyzePlayerData(uint idx);
+  virtual PtrLeaguePlayerData AnalyzePlayerData(uint idx, ELeagueTeams team);
 
   // Player Champion.
-  virtual std::string AnalyzePlayerChampion(uint idx) = 0;
+  virtual std::string AnalyzePlayerChampion(uint idx, ELeagueTeams team, bool* isDead, bool* isLowOnHealth, int* championLevel) = 0;
   std::shared_ptr<const LeagueChampionDatabase> ChampionDatabase;
 private:
 };

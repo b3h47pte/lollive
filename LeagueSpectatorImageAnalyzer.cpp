@@ -25,7 +25,7 @@ int LeagueSpectatorImageAnalyzer::AnalyzeMatchTime() {
     (int)(mImage.rows * (15.0f / 720.0f)));
 
   cv::Mat timeImage = FilterImage_Section_Grayscale_BasicThreshold_Resize(mImage, section, 105.0, 2.0, 2.0);
-  std::string result = GetTextFromImage(timeImage, EnglishIdent);
+  std::string result = GetTextFromImage(timeImage, EnglishIdent, std::string("012345679:"));
 
   // Now parse the result so that it is just a number of seconds.
   int secondsSinceGameStart = -1;
@@ -196,8 +196,106 @@ cv::Rect LeagueSpectatorImageAnalyzer::GetTeamTowerKillSection(ELeagueTeams team
 }
 
 /*
- * Determine which champion the player is playing. 
+ * Determine which champion the player is playing. There's some other auxiliary information that we can pick up here as well.
+ * Most notably, the champion icon can tell us if the champion is dead, is low on health, and its level.
+ * TODO: Clean up the splitting of the image into 10x10 sub images. That functionality should be generalized.
  */
-std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx) {
-  return "";
+std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagueTeams team, bool* isDead, bool* isLowOnHealth, int* championLevel) {
+  cv::Mat filterImage = FilterImage_Section(mImage, GetPlayerChampionSection(idx, team));
+
+  // Split the image into x_dim * y_dim parts (generally want to have ~25 solid pieces to compare).
+  // TODO: Make this configurable
+  int x_dim = 5;
+  int y_dim = 5;
+  int totalEle = x_dim * y_dim;
+  cv::Mat* filterSubImages = new cv::MatND[x_dim * y_dim];
+  cv::MatND* filterSubHSHists = new cv::MatND[x_dim * y_dim]; // Hue and Saturation. Used to determine who the champion actually is.
+  cv::MatND* filterSubVHists = new cv::MatND[x_dim * y_dim]; // Value (from HSV). Used to determine if the champion be dead.
+  SplitImage(filterImage, x_dim, y_dim, &filterSubImages);
+  int cc = 0;
+  std::for_each(filterSubImages, filterSubImages + totalEle, [&](cv::Mat inImg) {
+    filterSubHSHists[cc] = CreateHSHistogram(inImg, 10, 12);
+    filterSubVHists[cc] = CreateVHistogram(inImg, 10);
+    ++cc;
+  });
+  cc = 0;
+
+  // Go through the image database and determine which champion we look like most.
+  const std::map<std::string, PtrLeagueChampionData>* db = ChampionDatabase->GetDatabase();
+
+  // Find the image that is most similar
+  double closestMatch = 0.0;
+  std::string championMatch = "";
+  double championDeadScore = 0.0;
+
+  cv::Mat baseImage;
+  cv::Mat* baseSubImages = new cv::MatND[x_dim * y_dim];
+  cv::MatND* baseSubHSHists = new cv::MatND[x_dim * y_dim];
+  cv::MatND* baseSubVHists = new cv::MatND[x_dim * y_dim];
+
+  for (auto& pair : *db) {
+    // Make this image as close to the input image as possible
+    baseImage = FilterImage_Resize(pair.second->image, (float)filterImage.cols / pair.second->image.cols, (float)filterImage.rows / pair.second->image.rows);
+    SplitImage(baseImage, x_dim, y_dim, &baseSubImages);
+    std::for_each(baseSubImages, baseSubImages + totalEle, [&](cv::Mat inImg) {
+      baseSubHSHists[cc] = CreateHSHistogram(inImg, 10, 12);
+      baseSubVHists[cc] = CreateVHistogram(inImg, 10);
+      ++cc;
+    });
+    cc = 0;
+
+    // Now compare the histograms to see if the champion matches & and if the champion is dead.
+    double totalScore = 0.0; // A higher score indicates an increased likeliness that the champion is correct.
+    double deadScore = 0.0;  // A higher score indicates an increased likeliness that the champion is alive.
+    for (int i = 0; i < totalEle; ++i) {
+      totalScore += cv::compareHist(filterSubHSHists[i], baseSubHSHists[i], cv::HISTCMP_CORREL);
+      deadScore += cv::compareHist(filterSubVHists[i], baseSubVHists[i], cv::HISTCMP_CORREL);
+    }
+    totalScore /= totalEle;
+    deadScore /= totalEle;
+
+    if (totalScore > closestMatch) {
+      closestMatch = totalScore;
+      championMatch = pair.second->shortName;
+      championDeadScore = deadScore;
+    }
+  }
+
+  if (isDead) {
+    // TODO: Configurable
+    *isDead = (championDeadScore < 0.5);
+  }
+
+  std::cout << "Champion Match (" << closestMatch <<  "," << *isDead << "): " << championMatch << std::endl;
+
+  ShowImage(filterImage);
+  
+  if (filterSubImages) delete[] filterSubImages;
+  if (filterSubHSHists) delete[] filterSubHSHists;
+  if (filterSubVHists) delete[] filterSubVHists;
+  if (baseSubImages) delete[] baseSubImages;
+  if (baseSubHSHists) delete[] baseSubHSHists;
+  if (baseSubVHists) delete[] baseSubVHists;
+  
+  return championMatch;
+}
+
+/*
+ * Get the image of the champion on the side bar.
+ */
+cv::Rect LeagueSpectatorImageAnalyzer::GetPlayerChampionSection(uint idx, ELeagueTeams team) {
+  cv::Rect rect;
+  float x; // x -- determined by the team
+  float y; // y -- determined by the player index 
+  y = 160.0f + idx * 106.0f;
+  if (team == ELT_BLUE) {
+    x = 38.0f;
+  } else {
+    x = 1830.0f;
+  }
+  rect = cv::Rect((int)(mImage.cols * (x / 1920.0f)),
+    (int)(mImage.rows * (y / 1080.0f)),
+    (int)(mImage.cols * (52.0f / 1920.0f)),
+    (int)(mImage.rows * (52.0f / 1080.0f)));
+  return rect;
 }

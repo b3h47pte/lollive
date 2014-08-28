@@ -40,7 +40,8 @@ protected:
   // player's index.
 
   // Player Champion. 
-  virtual std::string AnalyzePlayerChampion(uint idx);
+  virtual std::string AnalyzePlayerChampion(uint idx, ELeagueTeams team, bool* isDead, bool* isLowOnHealth, int* championLevel);
+  virtual cv::Rect GetPlayerChampionSection(uint idx, ELeagueTeams team);
 private:
 };
 

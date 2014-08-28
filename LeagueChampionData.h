@@ -8,7 +8,7 @@
 struct LeagueChampionData {
   std::string longName;
   std::string shortName;
-  cv::Mat image;
+  cv::Mat image; 
 };
 
 typedef std::shared_ptr<LeagueChampionData> PtrLeagueChampionData;

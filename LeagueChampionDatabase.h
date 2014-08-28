@@ -13,6 +13,13 @@ class LeagueChampionDatabase {
 public:
   static std::shared_ptr<const LeagueChampionDatabase> Get();
 
+  // Retrieves a constant pointer to database
+  const std::map<std::string, PtrLeagueChampionData>* GetDatabase() const { return &mData; }
+
+  // TODO: Make this configurable.
+  const int GetImageSizeX() const { return 120; }
+  const int GetImageSizeY() const { return 120; }
+
   ~LeagueChampionDatabase();
 private:
   // Load all the data about the champion into memory. This includes name/images.

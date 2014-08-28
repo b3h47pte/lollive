@@ -9,6 +9,9 @@ struct LeaguePlayerData {
   int deaths;
   int assists;
   int cs;
+  bool isDead;
+  bool isLowHealth;
+  int level;
 };
 typedef std::shared_ptr<LeaguePlayerData> PtrLeaguePlayerData;
 

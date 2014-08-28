@@ -31,7 +31,9 @@ public:
   // Whether or not analysis has finished
   bool IsAnalysisFinished() const { return bIsFinished; }
 
-
+  // Histogram Functions
+  static cv::MatND CreateHSHistogram(cv::Mat inImage, int hue_bins, int sat_bins);
+  static cv::MatND CreateVHistogram(cv::Mat inImage, int value_bins);
 
 protected:
   // Set to true when we are done analyzing the image
@@ -51,6 +53,10 @@ protected:
 
   // Debug Function to show an image
   void ShowImage(cv::Mat& image);
+  void ShowImageNoPause(cv::Mat& image, const char* name);
+
+  // Split image into many multiple images. These images are stored in a 2-dimensional array which we receive a pointer to
+  void SplitImage(cv::Mat& inImage, int x_dim, int y_dim, cv::Mat** out);
 
   // Language Identifiers
   static std::string EnglishIdent;
