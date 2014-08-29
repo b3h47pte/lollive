@@ -35,13 +35,17 @@ protected:
   // either side of the spectator screen (depending on the team). 
   // 
   // However, this order isn't necessarily the same as the order found in the spectator box 
-  // (the one that lists the champion kills, assists, deaths, and CS). Therefore, we say the 
+  // (the one that lists the champion kills, assists, deaths, and CS), though it generally is. Therefore, we say the 
   // list of champions on either side of the screen is authoritative in determining the
-  // player's index.
+  // player's index. 
 
   // Player Champion. 
   virtual std::string AnalyzePlayerChampion(uint idx, ELeagueTeams team, bool* isDead, bool* isLowOnHealth, int* championLevel);
   virtual cv::Rect GetPlayerChampionSection(uint idx, ELeagueTeams team);
+
+  // Player Name
+  virtual std::string AnalyzePlayerName(uint idx, ELeagueTeams team);
+  virtual cv::Rect GetPlayerNameSection(uint idx, ELeagueTeams team);
 private:
 };
 

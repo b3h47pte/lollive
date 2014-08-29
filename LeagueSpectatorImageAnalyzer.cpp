@@ -335,11 +335,10 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
   // Get the champion level. Since there's a possibility of the image being red, go to HSV and just use the 'value.' :)
   cv::Mat hsvFilter;
   cv::cvtColor(filterImage, hsvFilter, cv::COLOR_BGR2HSV);
-  cv::Mat levelImage = FilterImage_Section_Channel_BasicThreshold_Resize(hsvFilter, cv::Rect((int)(filterImage.cols * (36.5f / 52.0f)),
+  cv::Mat levelImage = FilterImage_Section_Channel_BasicThreshold_Resize(hsvFilter, cv::Rect((int)(filterImage.cols * (36.7f / 52.0f)),
     (int)(filterImage.rows * (37.0f / 52.0f)),
-    (int)(filterImage.cols * (14.0f / 52.0f)),
-    (int)(filterImage.rows * (12.0f / 52.0f))), 2, 65.0f, 6.0f, 6.0f);
-  
+    (int)(filterImage.cols * (15.0f / 52.0f)),
+    (int)(filterImage.rows * (13.0f / 52.0f))), 2, 65.0f, 6.0f, 6.0f);
   // Dilate the image to make the text a bit clearer.
   std::string levelStr = "";
   cv::Mat element = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(4, 4));
@@ -349,6 +348,7 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
     levelStr = GetTextFromImage(levelImage, LeagueIdent, std::string("012345679"));
     try {
       *championLevel = std::stoi(levelStr, NULL);
+      if (*championLevel > 18) *championLevel = -1;
     } catch (...) {
       *championLevel = -1;
     }
@@ -372,6 +372,30 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
  * Get the image of the champion on the side bar.
  */
 cv::Rect LeagueSpectatorImageAnalyzer::GetPlayerChampionSection(uint idx, ELeagueTeams team) {
+  cv::Rect rect;
+  float x; // x -- determined by the team
+  float y; // y -- determined by the player index 
+  y = 160.0f + idx * 106.0f;
+  if (team == ELT_BLUE) {
+    x = 38.0f;
+  } else {
+    x = 1830.0f;
+  }
+  rect = cv::Rect((int)(mImage.cols * (x / 1920.0f)),
+    (int)(mImage.rows * (y / 1080.0f)),
+    (int)(mImage.cols * (52.0f / 1920.0f)),
+    (int)(mImage.rows * (52.0f / 1080.0f)));
+  return rect;
+}
+
+std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerName(uint idx, ELeagueTeams team) {
+  return "";
+}
+
+/*
+ * Get the name of the champion from the sidebar.
+ */
+cv::Rect LeagueSpectatorImageAnalyzer::GetPlayerNameSection(uint idx, ELeagueTeams team) {
   cv::Rect rect;
   float x; // x -- determined by the team
   float y; // y -- determined by the player index 

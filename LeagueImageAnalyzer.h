@@ -56,7 +56,13 @@ protected:
 
   // Player Champion. Whether the champion is dead. Low on health? And its level.
   virtual std::string AnalyzePlayerChampion(uint idx, ELeagueTeams team, bool* isDead, bool* isLowOnHealth, int* championLevel) = 0;
+  virtual cv::Rect GetPlayerChampionSection(uint idx, ELeagueTeams team) = 0;
   std::shared_ptr<const LeagueChampionDatabase> ChampionDatabase;
+
+  // Player Name. 
+  virtual std::string AnalyzePlayerName(uint idx, ELeagueTeams team) = 0;
+  virtual cv::Rect GetPlayerNameSection(uint idx, ELeagueTeams team) = 0;
+
 private:
 };
 
