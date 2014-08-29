@@ -75,5 +75,6 @@ PtrLeaguePlayerData LeagueImageAnalyzer::AnalyzePlayerData(uint idx, ELeagueTeam
   PtrLeaguePlayerData newPlayer(new LeaguePlayerData);
   newPlayer->champion = AnalyzePlayerChampion(idx, team, &newPlayer->isDead, &newPlayer->isLowHealth, &newPlayer->level);
   newPlayer->name = AnalyzePlayerName(idx, team);
+  AnalyzePlayerScore(idx, team, &newPlayer->kills, &newPlayer->deaths, &newPlayer->assists, &newPlayer->cs);
   return newPlayer;
 }

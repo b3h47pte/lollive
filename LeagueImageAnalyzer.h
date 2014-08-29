@@ -66,6 +66,11 @@ protected:
   virtual std::string AnalyzePlayerName(uint idx, ELeagueTeams team) = 0;
   virtual cv::Rect GetPlayerNameSection(uint idx, ELeagueTeams team) = 0;
 
+  // Player Score
+  virtual std::string AnalyzePlayerScore(uint idx, ELeagueTeams team, int* kills, int* deaths, int* assists, int* cs) = 0;
+  virtual cv::Rect GetPlayerKDASection(uint idx, ELeagueTeams team) = 0;
+  virtual cv::Rect GetPlayerCSSection(uint idx, ELeagueTeams team) = 0;
+
 private:
 };
 

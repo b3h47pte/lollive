@@ -437,3 +437,88 @@ cv::Rect LeagueSpectatorImageAnalyzer::GetPlayerNameSection(uint idx, ELeagueTea
     (int)(mImage.rows * (16.0f / 1080.0f)));
   return rect;
 }
+
+std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerScore(uint idx, ELeagueTeams team, int* kills, int* deaths, int* assists, int* cs) {
+  // Initialize all variables
+  if (kills) {
+    *kills = -1;
+  }
+
+  if (deaths) {
+    *deaths = -1;
+  }
+
+  if (assists) {
+    *assists = -1;
+  }
+
+  if (cs) {
+    *cs = -1;
+  }
+
+  cv::Mat filterImage = FilterImage_Section_Grayscale_BasicThreshold_Resize(mImage,
+    GetPlayerKDASection(idx, team), 90.0, 5.0, 5.0);
+  std::string score = GetTextFromImage(filterImage, LeagueIdent, std::string("0123456789/"));
+  std::cout << score << std::endl;
+  ShowImage(filterImage);
+  try {
+    size_t pos;
+    int k, d, a;
+    k = std::stoi(score, &pos);
+    if (kills) *kills = k;
+    score = score.substr(pos+1);
+
+    d = std::stoi(score, &pos);
+    if (deaths) *deaths = d;
+    score = score.substr(pos+1);
+
+    a = std::stoi(score, &pos);
+    if (assists) *assists = a;
+  } catch (...) {
+  }
+
+  filterImage = FilterImage_Section_Grayscale_BasicThreshold_Resize(mImage,
+    GetPlayerCSSection(idx, team), 90.0, 5.0, 5.0);
+  score = GetTextFromImage(filterImage, LeagueIdent, std::string("0123456789"));
+  try {
+    if (cs) {
+      *cs = std::stoi(score, NULL);
+    }
+  } catch (...) {}
+
+  return "";
+}
+
+cv::Rect LeagueSpectatorImageAnalyzer::GetPlayerKDASection(uint idx, ELeagueTeams team) {
+  cv::Rect rect;
+  float x; // x -- determined by the team
+  float y; // y -- determined by the player index 
+  y = 929.0f + idx * 31.0f;
+  if (team == ELT_BLUE) {
+    x = 794.0f;
+  } else {
+    x = 1053.0f;
+  }
+  rect = cv::Rect((int)(mImage.cols * (x / 1920.0f)),
+    (int)(mImage.rows * (y / 1080.0f)),
+    (int)(mImage.cols * (75.0f / 1920.0f)),
+    (int)(mImage.rows * (18.0f / 1080.0f)));
+  return rect;
+}
+
+cv::Rect LeagueSpectatorImageAnalyzer::GetPlayerCSSection(uint idx, ELeagueTeams team) {
+  cv::Rect rect;
+  float x; // x -- determined by the team
+  float y; // y -- determined by the player index 
+  y = 929.0f + idx * 31.0f;
+  if (team == ELT_BLUE) {
+    x = 895.0f;
+  } else {
+    x = 997.0f;
+  }
+  rect = cv::Rect((int)(mImage.cols * (x / 1920.0f)),
+    (int)(mImage.rows * (y / 1080.0f)),
+    (int)(mImage.cols * (30.0f / 1920.0f)),
+    (int)(mImage.rows * (18.0f / 1080.0f)));
+  return rect;
+}
