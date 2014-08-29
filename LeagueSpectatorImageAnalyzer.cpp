@@ -25,7 +25,7 @@ int LeagueSpectatorImageAnalyzer::AnalyzeMatchTime() {
     (int)(mImage.rows * (15.0f / 720.0f)));
 
   cv::Mat timeImage = FilterImage_Section_Grayscale_BasicThreshold_Resize(mImage, section, 105.0, 2.0, 2.0);
-  std::string result = GetTextFromImage(timeImage, EnglishIdent, std::string("012345679:"));
+  std::string result = GetTextFromImage(timeImage, LeagueIdent, std::string("012345679:"));
 
   // Now parse the result so that it is just a number of seconds.
   int secondsSinceGameStart = -1;
@@ -198,24 +198,43 @@ cv::Rect LeagueSpectatorImageAnalyzer::GetTeamTowerKillSection(ELeagueTeams team
 /*
  * Determine which champion the player is playing. There's some other auxiliary information that we can pick up here as well.
  * Most notably, the champion icon can tell us if the champion is dead, is low on health, and its level.
- * TODO: Clean up the splitting of the image into 10x10 sub images. That functionality should be generalized.
+ * 
+ * Champion Identification:
+ *  For our purposes comparing color histograms is sufficient for properly identifying a champion, since we have all the possible images and the only
+ *  modification to it is the small box of black that holds the level information and some scale transformations. Therefore, if we split the input image into
+ *  25 chunks and compare them to their corresponding chunks in the database image, then the database image that matches should be the champion that we are 
+ *  looking at.
+ *  
+ *  However, there are some kinks to this process. There is an occurrence where, when the champion is low on health, its image flashes red. Sometimes, 
+ *  we may be fed an image like this. As a result, in addition to analyzing the normal RGB image, we must also analyze the GB image (red channel set to 0). 
+ *  In the cases where the champion isn't low on health, analyzing the RGB and GB images should give the same result. However, when the champion is flashing red,
+ *  the results should differ and in that case, the GB image's analysis is more likely to be correct.
+ *  
+ * Level Identification: This process is rather simple. It takes the level section, identifies the text, and returns the text. Quite simple!
  */
 std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagueTeams team, bool* isDead, bool* isLowOnHealth, int* championLevel) {
   cv::Mat filterImage = FilterImage_Section(mImage, GetPlayerChampionSection(idx, team));
-
   // Split the image into x_dim * y_dim parts (generally want to have ~25 solid pieces to compare).
   // TODO: Make this configurable
   int x_dim = 5;
   int y_dim = 5;
   int totalEle = x_dim * y_dim;
   cv::Mat* filterSubImages = new cv::MatND[x_dim * y_dim];
+  cv::Mat* filterSubImagesNoRed = new cv::MatND[x_dim * y_dim];
+
   cv::MatND* filterSubHSHists = new cv::MatND[x_dim * y_dim]; // Hue and Saturation. Used to determine who the champion actually is.
+  cv::MatND* filterSubHSHistNoRed = new cv::MatND[x_dim * y_dim]; // Hue and Saturation. Used to determine who the champion is when the champion is low on health.
   cv::MatND* filterSubVHists = new cv::MatND[x_dim * y_dim]; // Value (from HSV). Used to determine if the champion be dead.
   SplitImage(filterImage, x_dim, y_dim, &filterSubImages);
   int cc = 0;
   std::for_each(filterSubImages, filterSubImages + totalEle, [&](cv::Mat inImg) {
     filterSubHSHists[cc] = CreateHSHistogram(inImg, 10, 12);
     filterSubVHists[cc] = CreateVHistogram(inImg, 10);
+
+    // Filter out red channel
+    filterSubImagesNoRed[cc] = FilterImage_2Channel(filterSubImages[cc], 0, 1);
+    filterSubHSHistNoRed[cc] = CreateHSHistogram(filterSubImagesNoRed[cc], 10, 12);
+
     ++cc;
   });
   cc = 0;
@@ -228,9 +247,16 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
   std::string championMatch = "";
   double championDeadScore = 0.0;
 
+  // Also find the image that is most similar in terms of its red score
+  // In this case we can ignore the dead score because you can't be low on health and dead!
+  double bestNoRedScore = 0.0;
+  std::string championNoRedMatch = "";
+
   cv::Mat baseImage;
   cv::Mat* baseSubImages = new cv::MatND[x_dim * y_dim];
+  cv::Mat* baseSubImagesNoRed = new cv::MatND[x_dim * y_dim];
   cv::MatND* baseSubHSHists = new cv::MatND[x_dim * y_dim];
+  cv::MatND* baseSubHSHistsNoRed = new cv::MatND[x_dim * y_dim];
   cv::MatND* baseSubVHists = new cv::MatND[x_dim * y_dim];
 
   for (auto& pair : *db) {
@@ -240,6 +266,10 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
     std::for_each(baseSubImages, baseSubImages + totalEle, [&](cv::Mat inImg) {
       baseSubHSHists[cc] = CreateHSHistogram(inImg, 10, 12);
       baseSubVHists[cc] = CreateVHistogram(inImg, 10);
+
+      // Filter out red channel
+      baseSubImagesNoRed[cc] = FilterImage_2Channel(baseSubImages[cc], 0, 1);
+      baseSubHSHistsNoRed[cc] = CreateHSHistogram(baseSubImagesNoRed[cc], 10, 12);
       ++cc;
     });
     cc = 0;
@@ -247,17 +277,25 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
     // Now compare the histograms to see if the champion matches & and if the champion is dead.
     double totalScore = 0.0; // A higher score indicates an increased likeliness that the champion is correct.
     double deadScore = 0.0;  // A higher score indicates an increased likeliness that the champion is alive.
+    double noRedScore = 0.0; 
     for (int i = 0; i < totalEle; ++i) {
       totalScore += cv::compareHist(filterSubHSHists[i], baseSubHSHists[i], cv::HISTCMP_CORREL);
       deadScore += cv::compareHist(filterSubVHists[i], baseSubVHists[i], cv::HISTCMP_CORREL);
+      noRedScore += cv::compareHist(filterSubHSHistNoRed[i], baseSubHSHistsNoRed[i], cv::HISTCMP_CORREL);
     }
     totalScore /= totalEle;
     deadScore /= totalEle;
+    noRedScore /= totalEle;
 
     if (totalScore > closestMatch) {
       closestMatch = totalScore;
       championMatch = pair.second->shortName;
       championDeadScore = deadScore;
+    }
+
+    if (noRedScore > bestNoRedScore) {
+      bestNoRedScore = noRedScore;
+      championNoRedMatch = pair.second->shortName;
     }
   }
 
@@ -266,16 +304,64 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
     *isDead = (championDeadScore < 0.5);
   }
 
-  std::cout << "Champion Match (" << closestMatch <<  "," << *isDead << "): " << championMatch << std::endl;
+  // At this point, there are two possibilities:
+  //  a) The two outputs match (for the RGB image and the GB image). In this case, it should be clear that the character
+  //     isn't low on health, and that whatever the RGB image's result is should be taken.
+  //  b) The two outputs don't match! In this case we should take whichever gives a higher score. If the no red image
+  //     has the high score, then we know the champion is low on health
+       
+  // Set this to a default value first
+  if (isLowOnHealth) {
+    *isLowOnHealth = false; 
+  }
 
-  ShowImage(filterImage);
+  if (championMatch != championNoRedMatch) {
+    championMatch = (closestMatch > bestNoRedScore) ? championMatch : championNoRedMatch;
+    
+    // No red score is higher, which means taking red out of the image helped our analysis => LOW ON HEALTH. RED FLASHES. LIGHTS. EVERYWHERE. RUN.
+    if (closestMatch < bestNoRedScore) {
+      if (isLowOnHealth) {
+        *isLowOnHealth = true;
+      }
+
+      // But we can't be dead if we're low on health
+      if (isDead) {
+        *isDead = false;
+      }
+    }
+    
+  }
   
+  // Get the champion level. Since there's a possibility of the image being red, use an image that has no red (let's just use the blue channel, ezpz).
+  cv::Mat levelImage = FilterImage_Section_Channel_BasicThreshold_Resize(filterImage, cv::Rect((int)(filterImage.cols * (36.5f / 52.0f)),
+    (int)(filterImage.rows * (37.0f / 52.0f)),
+    (int)(filterImage.cols * (14.0f / 52.0f)),
+    (int)(filterImage.rows * (12.0f / 52.0f))), 0, 65.0f, 2.0f, 2.0f);
+  
+  // Dilate the image to make the text a bit clearer.
+  std::string levelStr = "";
+  cv::Mat element = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(2, 1));
+  cv::dilate(levelImage, levelImage, element);
+
+  if (*championLevel) {
+    levelStr = GetTextFromImage(levelImage, LeagueIdent, std::string("012345679"));
+    try {
+      *championLevel = std::stoi(levelStr, NULL);
+    } catch (...) {
+      *championLevel = -1;
+    }
+  }
+
   if (filterSubImages) delete[] filterSubImages;
+  if (filterSubImagesNoRed) delete[] filterSubImagesNoRed;
   if (filterSubHSHists) delete[] filterSubHSHists;
+  if (filterSubHSHistNoRed) delete[] filterSubHSHistNoRed;
   if (filterSubVHists) delete[] filterSubVHists;
   if (baseSubImages) delete[] baseSubImages;
   if (baseSubHSHists) delete[] baseSubHSHists;
   if (baseSubVHists) delete[] baseSubVHists;
+  if (baseSubImagesNoRed) delete[] baseSubImagesNoRed;
+  if (baseSubHSHistsNoRed) delete[] baseSubHSHistsNoRed;
   
   return championMatch;
 }

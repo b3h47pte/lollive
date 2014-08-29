@@ -28,9 +28,9 @@ bool LeagueImageAnalyzer::Analyze() {
   std::shared_ptr<GenericData<PtrLeagueTeamData>> blueTeamProp(new GenericData<PtrLeagueTeamData>(blueTeam));
   (*mData)["BlueTeam"] = blueTeamProp;
 
-  //PtrLeagueTeamData purpleTeam = AnalyzeTeamData(ELT_PURPLE);
-  //std::shared_ptr<GenericData<PtrLeagueTeamData>> purpleTeamProp(new GenericData<PtrLeagueTeamData>(purpleTeam));
-  //(*mData)["PurpleTeam"] = purpleTeamProp;
+  PtrLeagueTeamData purpleTeam = AnalyzeTeamData(ELT_PURPLE);
+  std::shared_ptr<GenericData<PtrLeagueTeamData>> purpleTeamProp(new GenericData<PtrLeagueTeamData>(purpleTeam));
+  (*mData)["PurpleTeam"] = purpleTeamProp;
 
   return ret;
 }
@@ -46,7 +46,7 @@ PtrLeagueTeamData LeagueImageAnalyzer::AnalyzeTeamData(ELeagueTeams team) {
   newTeam->kills = AnalyzeTeamKills(team);
   newTeam->gold = AnalyzeTeamGold(team);
   newTeam->towerKills = AnalyzeTeamTowerKills(team);
-  for (uint i = 1; i < 2; ++i) {
+  for (uint i = 0; i < 5; ++i) {
     newTeam->players[i] = AnalyzePlayerData(i, team);
   }
   return newTeam;

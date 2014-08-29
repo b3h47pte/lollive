@@ -38,7 +38,7 @@ std::string ImageAnalyzer::GetTextFromImage(cv::Mat& inImage, std::string& langu
   if (!whitelist.empty()) {
     tessApi.SetVariable("tessedit_char_whitelist", whitelist.c_str());
   }
-  tessApi.SetPageSegMode(tesseract::PSM_SINGLE_BLOCK);
+  tessApi.SetPageSegMode(tesseract::PSM_SINGLE_WORD);
   tessApi.SetImage((uchar*)inImage.data, inImage.cols, inImage.rows, 1, inImage.cols);
   std::string result = tessApi.GetUTF8Text();
   result.erase(std::remove_if(result.begin(), result.end(), isspace), result.end());
@@ -115,6 +115,13 @@ cv::Mat ImageAnalyzer::FilterImage_Channel(cv::Mat inImage, int channel) {
   cv::Mat filterImage(inImage.rows, inImage.cols, CV_8UC1);
   int fromTo[] = { channel, 0 };
   cv::mixChannels(&inImage, 1, &filterImage, 1, fromTo, 1);
+  return filterImage;
+}
+
+cv::Mat ImageAnalyzer::FilterImage_2Channel(cv::Mat inImage, int channel1, int channel2) {
+  cv::Mat filterImage =  cv::Mat::zeros(inImage.rows, inImage.cols, CV_8UC3);
+  int fromTo[] = { channel1, channel1, channel2, channel2 };
+  cv::mixChannels(&inImage, 1, &filterImage, 1, fromTo, 2);
   return filterImage;
 }
 
