@@ -1,9 +1,19 @@
 #include "LeagueLCSImageAnalyzer.h"
+#include "VideoFetcher.h"
 #include "common.h"
 
+void test(IMAGE_PATH_TYPE t, IMAGE_TIMESTAMP_TYPE t1) {
+
+}
+
 int main() {
-  std::string path = "Images/test/Screen01.png";
-  LeagueSpectatorImageAnalyzer* img = new LeagueSpectatorImageAnalyzer(path);
+  std::string path = "Images/twitch/frame1.png";
+
+  //VideoFetcher* vf = new VideoFetcher("clgVSdig", "twitch.tv/riotgames", test);
+  //vf->BeginFetch();
+
+  
+  LeagueLCSImageAnalyzer* img = new LeagueLCSImageAnalyzer(path);
   img->Analyze();
 
   int exit; std::cin >> exit;

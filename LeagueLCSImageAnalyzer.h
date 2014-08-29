@@ -15,6 +15,10 @@ protected:
   // Wtf Riot.
   virtual cv::Rect GetPlayerChampionSection(uint idx, ELeagueTeams team);
   virtual cv::Rect GetPlayerNameSection(uint idx, ELeagueTeams team);
+
+  // THE SPECTATOR BOX IS DIFFERENT TOO. WHY.
+  virtual cv::Rect GetPlayerKDASection(uint idx, ELeagueTeams team);
+  virtual cv::Rect GetPlayerCSSection(uint idx, ELeagueTeams team);
 private:
 };
 

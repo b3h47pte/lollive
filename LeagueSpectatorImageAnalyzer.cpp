@@ -457,10 +457,11 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerScore(uint idx, ELeagueTe
   }
 
   cv::Mat filterImage = FilterImage_Section_Grayscale_BasicThreshold_Resize(mImage,
-    GetPlayerKDASection(idx, team), 90.0, 5.0, 5.0);
-  std::string score = GetTextFromImage(filterImage, LeagueIdent, std::string("0123456789/"));
-  std::cout << score << std::endl;
-  ShowImage(filterImage);
+    GetPlayerKDASection(idx, team), 90.0, 10.0, 10.0);
+
+  std::string score = GetTextFromImage(filterImage, LeagueIdent, std::string("/0123456789"), tesseract::PSM_SINGLE_BLOCK);
+  score = FixScore(score);
+  
   try {
     size_t pos;
     int k, d, a;
@@ -478,7 +479,7 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerScore(uint idx, ELeagueTe
   }
 
   filterImage = FilterImage_Section_Grayscale_BasicThreshold_Resize(mImage,
-    GetPlayerCSSection(idx, team), 90.0, 5.0, 5.0);
+    GetPlayerCSSection(idx, team), 90.0, 8.0, 8.0);
   score = GetTextFromImage(filterImage, LeagueIdent, std::string("0123456789"));
   try {
     if (cs) {
@@ -521,4 +522,115 @@ cv::Rect LeagueSpectatorImageAnalyzer::GetPlayerCSSection(uint idx, ELeagueTeams
     (int)(mImage.cols * (30.0f / 1920.0f)),
     (int)(mImage.rows * (18.0f / 1080.0f)));
   return rect;
+}
+
+// Basic Assumptions for Correcting the Score 
+//  1) The numbers that the OCR returns are either supposed to be a backslash or are actually part of the score
+//  2) The number of kills/deaths/assists will never reach 3 digits
+//  3) A single digit number (0-9) will never be made up of two digits (i.e 08 instead of just 8).
+// Since I have to allow the reading in of the backslash, there is a chance that the OCR gets it wrong so I need to make sure
+// that the two backslashes are registered.
+
+/*
+ * Fixes the score. An invalid score resulting from our recursion will net us an empty string.
+ * TODO: Return all possible results?
+ */
+std::string LeagueSpectatorImageAnalyzer::FixScore(std::string inScore) {
+  size_t bs1 = inScore.find('/');
+  size_t bs2 = inScore.find('/', bs1 + 1); 
+  size_t start = 0;
+
+  if (bs1 != std::string::npos && bs2 != std::string::npos) {
+    if (IsValidScore(inScore)) {
+      return inScore;
+    }
+    return "";
+  }
+
+  // Try adding one in various positions in the string
+  for (size_t j = start; j < inScore.size(); ++j) {
+    if (j == bs1 || j == bs2) continue;
+
+    std::string tmp = inScore;
+
+    // Try replacing first
+    tmp.replace(tmp.begin() + j, tmp.begin() + j + 1, "/");
+    std::string res = FixScore(tmp);
+    if (res != "" && IsValidScore(res)) {
+      return res;
+    }
+
+    // Then try inserting
+    tmp = inScore;
+    tmp.insert(tmp.begin() + j, '/');
+    res = FixScore(tmp);
+    if (res != "" && IsValidScore(res)) {
+      return res;
+    }
+  }
+  return "";
+}
+
+bool LeagueSpectatorImageAnalyzer::IsValidScore(std::string& inScore) {
+  size_t bs1 = inScore.find('/');
+  size_t bs2 = inScore.find('/', bs1 + 1);
+  // A valid score can't have the backslash as its first or last character
+  if (bs1 == 0 || bs2 == inScore.size() - 1) {
+    return false;
+  }
+
+  // A valid score can't have a triple digit number. 
+  // It also can't have a number that starts with a 0 [unless it is zero].
+  if (bs1 != std::string::npos) {
+    std::string num = inScore.substr(0, bs1);
+    if (num.size() > 2) {
+      return false;
+    }
+
+    try {
+      int n1 = std::stoi(num, NULL);
+      if (n1 < 10 && num.size() == 2) {
+        return false;
+      }
+    } catch (...) {
+      // not a number, not a valid string
+      return false;
+    }
+
+    if (bs2 != std::string::npos) {
+      std::string num2 = inScore.substr(bs1 + 1, bs2 - bs1 - 1);
+      if (num2.size() > 2) {
+        return false;
+      }
+
+      try {
+        int n2 = std::stoi(num2, NULL);
+        if (n2 < 10 && num2.size() == 2) {
+          return false;
+        }
+      } catch (...) {
+        // not a number, not a valid string
+        return false;
+      }
+
+      std::string num3 = inScore.substr(bs2 + 1);
+      if (num3.size() > 2) {
+        return false;
+      }
+
+      try {
+        int n3 = std::stoi(num3, NULL);
+        if (n3 < 10 && num3.size() == 2) {
+          return false;
+        }
+      } catch (...) {
+        // not a number, not a valid string
+        return false;
+      }
+
+      // At this point the score should be valid.
+      return true;
+    }
+  }
+  return false;
 }

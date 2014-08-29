@@ -53,6 +53,8 @@ protected:
   virtual std::string AnalyzePlayerScore(uint idx, ELeagueTeams team, int* kills, int* deaths, int* assists, int* cs);
   virtual cv::Rect GetPlayerKDASection(uint idx, ELeagueTeams team);
   virtual cv::Rect GetPlayerCSSection(uint idx, ELeagueTeams team);
+  virtual std::string FixScore(std::string inScore);
+  virtual bool IsValidScore(std::string &inScore);
 private:
 };
 
