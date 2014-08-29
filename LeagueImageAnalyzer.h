@@ -54,7 +54,7 @@ protected:
   // By default we will want information for players 0-4 (inclusive). Subclasses are free to ignore as many as they wish.
   virtual PtrLeaguePlayerData AnalyzePlayerData(uint idx, ELeagueTeams team);
 
-  // Player Champion.
+  // Player Champion. Whether the champion is dead. Low on health? And its level.
   virtual std::string AnalyzePlayerChampion(uint idx, ELeagueTeams team, bool* isDead, bool* isLowOnHealth, int* championLevel) = 0;
   std::shared_ptr<const LeagueChampionDatabase> ChampionDatabase;
 private:

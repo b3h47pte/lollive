@@ -353,9 +353,7 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
       *championLevel = -1;
     }
   }
-  std::cout << "Champ " << championMatch << " " << levelStr << std::endl;
-  ShowImage(levelImage);
-
+  
   if (filterSubImages) delete[] filterSubImages;
   if (filterSubImagesNoRed) delete[] filterSubImagesNoRed;
   if (filterSubHSHists) delete[] filterSubHSHists;
