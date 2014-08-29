@@ -109,7 +109,6 @@ int LeagueSpectatorImageAnalyzer::AnalyzeTeamGold(ELeagueTeams team) {
     GetTeamGoldSection(team),
     (team == ELT_BLUE) ? 0 : 2,
     90.0, 2.0, 2.0);
-  ShowImage(filterImage);
   std::string goldText = GetTextFromImage(filterImage, LeagueIdent, std::string("0123456789.k"));
   // Need to parse the number to return the actual amount of gold.
   // For example 51.7k should return 51700.
@@ -404,7 +403,19 @@ cv::Rect LeagueSpectatorImageAnalyzer::GetPlayerChampionSection(uint idx, ELeagu
 }
 
 std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerName(uint idx, ELeagueTeams team) {
-  return "";
+  if (!bIs1080p) return "";
+  cv::Mat filterImage = FilterImage_Section_Grayscale_BasicThreshold_Resize(mImage,
+    GetPlayerNameSection(idx, team), 90.0, 5.0, 5.0);
+  std::vector<std::string> keys;
+  std::vector<std::string> vals;
+  const char* toDisable[4] = { "load_system_dawg", "load_punc_dawg", "load_number_dawg", "load_bigram_dawg" };
+  for (int i = 0; i < 4; ++i) {
+    keys.push_back(std::string(toDisable[i]));
+    vals.push_back(std::string("false"));
+  }
+
+  std::string playerText = GetTextFromImage(filterImage, EnglishIdent, std::string("abcdefghijklmnopqrstuvzwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"), tesseract::PSM_SINGLE_BLOCK, &keys, &vals);
+  return playerText;
 }
 
 /*
@@ -414,15 +425,15 @@ cv::Rect LeagueSpectatorImageAnalyzer::GetPlayerNameSection(uint idx, ELeagueTea
   cv::Rect rect;
   float x; // x -- determined by the team
   float y; // y -- determined by the player index 
-  y = 160.0f + idx * 106.0f;
+  y = 141.0f + idx * 106.0f;
   if (team == ELT_BLUE) {
-    x = 38.0f;
+    x = 6.0f;
   } else {
-    x = 1830.0f;
+    x = 1750.0f;
   }
   rect = cv::Rect((int)(mImage.cols * (x / 1920.0f)),
     (int)(mImage.rows * (y / 1080.0f)),
-    (int)(mImage.cols * (52.0f / 1920.0f)),
-    (int)(mImage.rows * (52.0f / 1080.0f)));
+    (int)(mImage.cols * (170.0f / 1920.0f)),
+    (int)(mImage.rows * (16.0f / 1080.0f)));
   return rect;
 }

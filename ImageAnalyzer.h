@@ -49,7 +49,7 @@ protected:
   std::shared_ptr<GenericDataStore> mData;
 
   // Utility Function to get text.
-  std::string GetTextFromImage(cv::Mat& inImage, std::string& language, std::string& whitelist = std::string(""));
+  std::string GetTextFromImage(cv::Mat& inImage, std::string& language, std::string& whitelist = std::string(""), tesseract::PageSegMode mode = tesseract::PSM_SINGLE_WORD, std::vector<std::string>* keys = NULL, std::vector<std::string>* values = NULL);
 
   // Debug Function to show an image
   void ShowImage(cv::Mat& image);

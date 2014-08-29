@@ -4,6 +4,7 @@
 #include "opencv2/imgproc.hpp"
 #include <stdlib.h>
 #include <assert.h>
+#include <locale>
 
 // Language Identifiers
 std::string ImageAnalyzer::EnglishIdent = "eng";
@@ -30,18 +31,31 @@ void ImageAnalyzer::ShowImageNoPause(cv::Mat& image, const char* name) {
   cv::imshow(name, image);
 }
 
-std::string ImageAnalyzer::GetTextFromImage(cv::Mat& inImage, std::string& language, std::string& whitelist) {
+std::string ImageAnalyzer::GetTextFromImage(cv::Mat& inImage, std::string& language, std::string& whitelist, tesseract::PageSegMode mode, std::vector<std::string>* keys, std::vector<std::string>* values) {
   // Get the actual text.
   tesseract::TessBaseAPI tessApi;
   char const* baseDir = getenv("TESSDATA_DIR");
-  tessApi.Init(baseDir, language.c_str());
+
+  // Copy keys and values
+  GenericVector<STRING> gKeys;
+  GenericVector<STRING> gValues;
+  if (keys && values) {
+    for (auto& s : *keys) {
+      gKeys.push_back(STRING(s.c_str()));
+    }
+    for (auto& s : *values) {
+      gValues.push_back(STRING(s.c_str()));
+    }
+  }
+
+  tessApi.Init(baseDir, language.c_str(), tesseract::OEM_DEFAULT, NULL, 0, &gKeys, &gValues, false);
   if (!whitelist.empty()) {
     tessApi.SetVariable("tessedit_char_whitelist", whitelist.c_str());
   }
-  tessApi.SetPageSegMode(tesseract::PSM_SINGLE_WORD);
+  tessApi.SetPageSegMode(mode);
   tessApi.SetImage((uchar*)inImage.data, inImage.cols, inImage.rows, 1, inImage.cols);
   std::string result = tessApi.GetUTF8Text();
-  result.erase(std::remove_if(result.begin(), result.end(), isspace), result.end());
+  result.erase(std::remove_if(result.begin(), result.end(), iswspace), result.end());
   return result;
 }
 

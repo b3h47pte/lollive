@@ -14,6 +14,7 @@ protected:
   // The location of the side bars for champions is slightly different than regular spectator mode.
   // Wtf Riot.
   virtual cv::Rect GetPlayerChampionSection(uint idx, ELeagueTeams team);
+  virtual cv::Rect GetPlayerNameSection(uint idx, ELeagueTeams team);
 private:
 };
 
