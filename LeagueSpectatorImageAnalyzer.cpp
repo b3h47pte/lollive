@@ -165,7 +165,7 @@ int LeagueSpectatorImageAnalyzer::AnalyzeTeamTowerKills(ELeagueTeams team) {
     GetTeamTowerKillSection(team),
     (team == ELT_BLUE) ? 0 : 2,
     100.0, 2.0, 2.0);
-  std::string towerKills = GetTextFromImage(filterImage, LeagueIdent, std::string("0123456789"));
+  std::string towerKills = GetTextFromImage(filterImage, LeagueIdent, std::string("0123456789"), tesseract::PSM_SINGLE_BLOCK);
   try {
     return std::stoi(towerKills, NULL);
   } catch (...) {
@@ -185,12 +185,12 @@ cv::Rect LeagueSpectatorImageAnalyzer::GetTeamTowerKillSection(ELeagueTeams team
     rect = cv::Rect((int)(mImage.cols * (455.0f / 1280.0f)),
       (int)(mImage.rows * (19.0f / 720.0f)),
       (int)(mImage.cols * (20.0f / 1280.0f)),
-      (int)(mImage.rows * (14.0f / 720.0f)));
+      (int)(mImage.rows * (16.0f / 720.0f)));
   } else {
-    rect = cv::Rect((int)(mImage.cols * (821.0f / 1280.0f)),
+    rect = cv::Rect((int)(mImage.cols * (820.0f / 1280.0f)),
       (int)(mImage.rows * (19.0f / 720.0f)),
       (int)(mImage.cols * (20.0f / 1280.0f)),
-      (int)(mImage.rows * (14.0f / 720.0f)));
+      (int)(mImage.rows * (16.0f / 720.0f)));
   }
   return rect;
 }
