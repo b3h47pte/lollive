@@ -84,6 +84,9 @@
     <ClInclude Include="LeagueChampionData.h">
       <Filter>VideoAnalyze\Data\LoL\Champions</Filter>
     </ClInclude>
+    <ClInclude Include="LeagueLCSImageAnalyzer.h">
+      <Filter>VideoAnalyze\Image\LoL\Spectator\LCS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VideoFetcher.cpp">
@@ -103,6 +106,9 @@
     </ClCompile>
     <ClCompile Include="LeagueChampionDatabase.cpp">
       <Filter>VideoAnalyze\Data\LoL\Champions</Filter>
+    </ClCompile>
+    <ClCompile Include="LeagueLCSImageAnalyzer.cpp">
+      <Filter>VideoAnalyze\Image\LoL\Spectator\LCS</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -152,15 +152,17 @@ void ImageAnalyzer::SplitImage(cv::Mat& inImage, int x_dim, int y_dim, cv::Mat**
   assert(res != NULL);
   int x_pos = 0;
   int y_pos = 0;
+  bool y_perf = inImage.rows % y_dim == 0;
+  bool x_perf = inImage.cols % x_dim == 0;
   for (int y = 0; y < y_dim; ++y) {
     x_pos = 0;
-    int y_width = inImage.rows / y_dim + 1;
+    int y_width = inImage.rows / y_dim + (y_perf ? 0 : 1);
     if (y == y_dim - 1 && inImage.rows % y_dim != 0) {
-      y_width = (y_width * y_dim - inImage.rows);
+      y_width -= (y_width * y_dim - inImage.rows);
     }
 
     for (int x = 0; x < x_dim; ++x) {
-      int x_width = inImage.cols / x_dim + 1;
+      int x_width = inImage.cols / x_dim + (x_perf ? 0 : 1);
       if (x == x_dim - 1 && inImage.cols % x_dim != 0) {
         x_width -= (x_width * x_dim - inImage.cols);
       }

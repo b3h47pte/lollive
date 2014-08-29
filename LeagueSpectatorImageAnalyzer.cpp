@@ -216,8 +216,12 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
   cv::Mat filterImage = FilterImage_Section(mImage, GetPlayerChampionSection(idx, team));
   // Split the image into x_dim * y_dim parts (generally want to have ~25 solid pieces to compare).
   // TODO: Make this configurable
-  int x_dim = 3;
-  int y_dim = 3;
+  int x_dim = 6;
+  int y_dim = 6;
+
+  int h_buckets = 30;
+  int s_buckets = 32;
+
   int totalEle = x_dim * y_dim;
   cv::Mat* filterSubImages = new cv::MatND[x_dim * y_dim];
   cv::Mat* filterSubImagesNoRed = new cv::MatND[x_dim * y_dim];
@@ -228,12 +232,12 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
   SplitImage(filterImage, x_dim, y_dim, &filterSubImages);
   int cc = 0;
   std::for_each(filterSubImages, filterSubImages + totalEle, [&](cv::Mat inImg) {
-    filterSubHSHists[cc] = CreateHSHistogram(inImg, 10, 12);
+    filterSubHSHists[cc] = CreateHSHistogram(inImg, h_buckets, s_buckets);
     filterSubVHists[cc] = CreateVHistogram(inImg, 10);
 
     // Filter out red channel
     filterSubImagesNoRed[cc] = FilterImage_2Channel(filterSubImages[cc], 0, 1);
-    filterSubHSHistNoRed[cc] = CreateHSHistogram(filterSubImagesNoRed[cc], 10, 12);
+    filterSubHSHistNoRed[cc] = CreateHSHistogram(filterSubImagesNoRed[cc], h_buckets, s_buckets);
 
     ++cc;
   });
@@ -262,14 +266,15 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
   for (auto& pair : *db) {
     // Make this image as close to the input image as possible
     baseImage = FilterImage_Resize(pair.second->image, (float)filterImage.cols / pair.second->image.cols, (float)filterImage.rows / pair.second->image.rows);
+    cv::GaussianBlur(baseImage, baseImage, cv::Size(3, 3), 0.0); // Blur the image since the input is probably blurry too.
     SplitImage(baseImage, x_dim, y_dim, &baseSubImages);
     std::for_each(baseSubImages, baseSubImages + totalEle, [&](cv::Mat inImg) {
-      baseSubHSHists[cc] = CreateHSHistogram(inImg, 10, 12);
+      baseSubHSHists[cc] = CreateHSHistogram(inImg, h_buckets, s_buckets);
       baseSubVHists[cc] = CreateVHistogram(inImg, 10);
 
       // Filter out red channel
       baseSubImagesNoRed[cc] = FilterImage_2Channel(baseSubImages[cc], 0, 1);
-      baseSubHSHistsNoRed[cc] = CreateHSHistogram(baseSubImagesNoRed[cc], 10, 12);
+      baseSubHSHistsNoRed[cc] = CreateHSHistogram(baseSubImagesNoRed[cc], h_buckets, s_buckets);
       ++cc;
     });
     cc = 0;
@@ -278,14 +283,19 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
     double totalScore = 0.0; // A higher score indicates an increased likeliness that the champion is correct.
     double deadScore = 0.0;  // A higher score indicates an increased likeliness that the champion is alive.
     double noRedScore = 0.0; 
+    int count = 0;
     for (int i = 0; i < totalEle; ++i) {
+      // Skip the bottom right corner
+      if (i / y_dim >= y_dim - 2 && i % x_dim >= x_dim - 2) continue;
+
       totalScore += cv::compareHist(filterSubHSHists[i], baseSubHSHists[i], cv::HISTCMP_CORREL);
       deadScore += cv::compareHist(filterSubVHists[i], baseSubVHists[i], cv::HISTCMP_CORREL);
       noRedScore += cv::compareHist(filterSubHSHistNoRed[i], baseSubHSHistsNoRed[i], cv::HISTCMP_CORREL);
+      ++count;
     }
-    totalScore /= totalEle;
-    deadScore /= totalEle;
-    noRedScore /= totalEle;
+    totalScore /= count;
+    deadScore /= count;
+    noRedScore /= count;
 
     if (totalScore > closestMatch) {
       closestMatch = totalScore;

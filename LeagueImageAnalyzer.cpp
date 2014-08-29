@@ -1,7 +1,13 @@
 #include "LeagueImageAnalyzer.h"
+#include "opencv2/highgui.hpp"
+#include "opencv2/imgproc.hpp"
+#include "opencv2/superres.hpp"
 
 LeagueImageAnalyzer::LeagueImageAnalyzer(IMAGE_PATH_TYPE ImagePath): ImageAnalyzer(ImagePath) {
   ChampionDatabase = LeagueChampionDatabase::Get();
+
+  // We have a requirement that the image should be 1080p [text just isn't readable otherwise]. 
+  cv::resize(mImage, mImage, cv::Size(1920, 1080), 0.0, 0.0, cv::INTER_LANCZOS4);
 }
 
 LeagueImageAnalyzer::~LeagueImageAnalyzer() {

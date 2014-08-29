@@ -155,6 +155,7 @@
     <ClInclude Include="LeagueChampionData.h" />
     <ClInclude Include="LeagueChampionDatabase.h" />
     <ClInclude Include="LeagueImageAnalyzer.h" />
+    <ClInclude Include="LeagueLCSImageAnalyzer.h" />
     <ClInclude Include="LeaguePlayerData.h" />
     <ClInclude Include="LeagueSpectatorImageAnalyzer.h" />
     <ClInclude Include="Data.h" />
@@ -168,6 +169,7 @@
   <ItemGroup>
     <ClCompile Include="LeagueChampionDatabase.cpp" />
     <ClCompile Include="LeagueImageAnalyzer.cpp" />
+    <ClCompile Include="LeagueLCSImageAnalyzer.cpp" />
     <ClCompile Include="LeagueSpectatorImageAnalyzer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ImageAnalyzer.cpp" />

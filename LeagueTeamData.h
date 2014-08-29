@@ -21,7 +21,7 @@ struct LeagueTeamData {
     std::cout << "======== TEAM " << team << " ========" << std::endl;
     std::cout << "Team Kills: " << kills << std::endl;
     std::cout << "Team Gold: " << gold << std::endl;
-    std::cout << "Team Tower Kills: " << kills << std::endl;
+    std::cout << "Team Tower Kills: " << towerKills << std::endl;
     for (int i = 0; i < 5; ++i) players[i]->Print();
   }
 };
