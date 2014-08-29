@@ -32,6 +32,7 @@ bool LeagueImageAnalyzer::Analyze() {
   std::shared_ptr<GenericData<PtrLeagueTeamData>> purpleTeamProp(new GenericData<PtrLeagueTeamData>(purpleTeam));
   (*mData)["PurpleTeam"] = purpleTeamProp;
 
+  bIsFinished = true;
   return ret;
 }
 
