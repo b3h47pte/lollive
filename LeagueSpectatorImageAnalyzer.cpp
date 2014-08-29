@@ -216,8 +216,8 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
   cv::Mat filterImage = FilterImage_Section(mImage, GetPlayerChampionSection(idx, team));
   // Split the image into x_dim * y_dim parts (generally want to have ~25 solid pieces to compare).
   // TODO: Make this configurable
-  int x_dim = 5;
-  int y_dim = 5;
+  int x_dim = 3;
+  int y_dim = 3;
   int totalEle = x_dim * y_dim;
   cv::Mat* filterSubImages = new cv::MatND[x_dim * y_dim];
   cv::Mat* filterSubImagesNoRed = new cv::MatND[x_dim * y_dim];
@@ -332,17 +332,19 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
     
   }
   
-  // Get the champion level. Since there's a possibility of the image being red, use an image that has no red (let's just use the blue channel, ezpz).
-  cv::Mat levelImage = FilterImage_Section_Channel_BasicThreshold_Resize(filterImage, cv::Rect((int)(filterImage.cols * (36.5f / 52.0f)),
+  // Get the champion level. Since there's a possibility of the image being red, go to HSV and just use the 'value.' :)
+  cv::Mat hsvFilter;
+  cv::cvtColor(filterImage, hsvFilter, cv::COLOR_BGR2HSV);
+  cv::Mat levelImage = FilterImage_Section_Channel_BasicThreshold_Resize(hsvFilter, cv::Rect((int)(filterImage.cols * (36.5f / 52.0f)),
     (int)(filterImage.rows * (37.0f / 52.0f)),
     (int)(filterImage.cols * (14.0f / 52.0f)),
-    (int)(filterImage.rows * (12.0f / 52.0f))), 0, 65.0f, 2.0f, 2.0f);
+    (int)(filterImage.rows * (12.0f / 52.0f))), 2, 65.0f, 6.0f, 6.0f);
   
   // Dilate the image to make the text a bit clearer.
   std::string levelStr = "";
-  cv::Mat element = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(2, 1));
+  cv::Mat element = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(4, 4));
   cv::dilate(levelImage, levelImage, element);
-
+  
   if (*championLevel) {
     levelStr = GetTextFromImage(levelImage, LeagueIdent, std::string("012345679"));
     try {
@@ -351,6 +353,8 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
       *championLevel = -1;
     }
   }
+  std::cout << "Champ " << championMatch << " " << levelStr << std::endl;
+  ShowImage(levelImage);
 
   if (filterSubImages) delete[] filterSubImages;
   if (filterSubImagesNoRed) delete[] filterSubImagesNoRed;
