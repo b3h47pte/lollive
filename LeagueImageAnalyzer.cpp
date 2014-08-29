@@ -6,7 +6,9 @@
 LeagueImageAnalyzer::LeagueImageAnalyzer(IMAGE_PATH_TYPE ImagePath): ImageAnalyzer(ImagePath) {
   ChampionDatabase = LeagueChampionDatabase::Get();
 
-  // We have a requirement that the image should be 1080p [text just isn't readable otherwise]. 
+  bIs1080p = (mImage.cols == 1920 && mImage.rows == 1080);
+
+  // Everything is much better in 1080p
   cv::resize(mImage, mImage, cv::Size(1920, 1080), 0.0, 0.0, cv::INTER_LANCZOS4);
 }
 

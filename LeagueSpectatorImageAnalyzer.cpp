@@ -108,7 +108,8 @@ int LeagueSpectatorImageAnalyzer::AnalyzeTeamGold(ELeagueTeams team) {
   cv::Mat filterImage = FilterImage_Section_Channel_BasicThreshold_Resize(mImage,
     GetTeamGoldSection(team),
     (team == ELT_BLUE) ? 0 : 2,
-    100.0, 2.0, 2.0);
+    90.0, 2.0, 2.0);
+  ShowImage(filterImage);
   std::string goldText = GetTextFromImage(filterImage, LeagueIdent, std::string("0123456789.k"));
   // Need to parse the number to return the actual amount of gold.
   // For example 51.7k should return 51700.
@@ -146,12 +147,12 @@ cv::Rect LeagueSpectatorImageAnalyzer::GetTeamGoldSection(ELeagueTeams team) {
     rect = cv::Rect((int)(mImage.cols * (509.0f / 1280.0f)),
       (int)(mImage.rows * (19.0f / 720.0f)),
       (int)(mImage.cols * (45.0f / 1280.0f)),
-      (int)(mImage.rows * (14.0f / 720.0f)));
+      (int)(mImage.rows * (16.0f / 720.0f)));
   } else {
     rect = cv::Rect((int)(mImage.cols * (744.0f / 1280.0f)),
       (int)(mImage.rows * (19.0f / 720.0f)),
       (int)(mImage.cols * (45.0f / 1280.0f)),
-      (int)(mImage.rows * (14.0f / 720.0f)));
+      (int)(mImage.rows * (16.0f / 720.0f)));
   }
   return rect;
 }
@@ -236,7 +237,7 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
     filterSubVHists[cc] = CreateVHistogram(inImg, 10);
 
     // Filter out red channel
-    filterSubImagesNoRed[cc] = FilterImage_2Channel(filterSubImages[cc], 0, 1);
+    filterSubImagesNoRed[cc] = FilterImage_2Channel(filterSubImages[cc], 0, 1, 0.0);
     filterSubHSHistNoRed[cc] = CreateHSHistogram(filterSubImagesNoRed[cc], h_buckets, s_buckets);
 
     ++cc;
@@ -273,7 +274,7 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
       baseSubVHists[cc] = CreateVHistogram(inImg, 10);
 
       // Filter out red channel
-      baseSubImagesNoRed[cc] = FilterImage_2Channel(baseSubImages[cc], 0, 1);
+      baseSubImagesNoRed[cc] = FilterImage_2Channel(baseSubImages[cc], 0, 1, 0.0);
       baseSubHSHistsNoRed[cc] = CreateHSHistogram(baseSubImagesNoRed[cc], h_buckets, s_buckets);
       ++cc;
     });
@@ -343,25 +344,29 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
   }
   
   // Get the champion level. Since there's a possibility of the image being red, go to HSV and just use the 'value.' :)
-  cv::Mat hsvFilter;
-  cv::cvtColor(filterImage, hsvFilter, cv::COLOR_BGR2HSV);
-  cv::Mat levelImage = FilterImage_Section_Channel_BasicThreshold_Resize(hsvFilter, cv::Rect((int)(filterImage.cols * (36.7f / 52.0f)),
-    (int)(filterImage.rows * (37.0f / 52.0f)),
-    (int)(filterImage.cols * (15.0f / 52.0f)),
-    (int)(filterImage.rows * (13.0f / 52.0f))), 2, 65.0f, 6.0f, 6.0f);
-  // Dilate the image to make the text a bit clearer.
-  std::string levelStr = "";
-  cv::Mat element = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(4, 4));
-  cv::dilate(levelImage, levelImage, element);
-  
-  if (*championLevel) {
-    levelStr = GetTextFromImage(levelImage, LeagueIdent, std::string("012345679"));
-    try {
-      *championLevel = std::stoi(levelStr, NULL);
-      if (*championLevel > 18) *championLevel = -1;
-    } catch (...) {
-      *championLevel = -1;
+  if (bIs1080p) {
+    cv::Mat hsvFilter;
+    cv::cvtColor(filterImage, hsvFilter, cv::COLOR_BGR2HSV);
+    cv::Mat levelImage = FilterImage_Section_Channel_BasicThreshold_Resize(hsvFilter, cv::Rect((int)(filterImage.cols * (36.7f / 52.0f)),
+      (int)(filterImage.rows * (37.0f / 52.0f)),
+      (int)(filterImage.cols * (15.0f / 52.0f)),
+      (int)(filterImage.rows * (13.0f / 52.0f))), 2, 65.0f, 6.0f, 6.0f);
+    // Dilate the image to make the text a bit clearer.
+    std::string levelStr = "";
+    cv::Mat element = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
+    cv::dilate(levelImage, levelImage, element);
+
+    if (championLevel) {
+      levelStr = GetTextFromImage(levelImage, LeagueIdent, std::string("012345679"));
+      try {
+        *championLevel = std::stoi(levelStr, NULL);
+        if (*championLevel > 18) *championLevel = -1;
+      } catch (...) {
+        *championLevel = -1;
+      }
     }
+  } else if (championLevel) {
+    *championLevel = -1;
   }
   
   if (filterSubImages) delete[] filterSubImages;

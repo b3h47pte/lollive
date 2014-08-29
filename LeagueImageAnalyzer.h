@@ -24,6 +24,9 @@ public:
   virtual bool Analyze();
 
 protected:
+  // See if the image is 1080p prior to scaling
+  bool bIs1080p;
+
   // Get match time specified in seconds since match start.
   virtual int AnalyzeMatchTime() = 0;
 

@@ -68,7 +68,7 @@ protected:
 
   cv::Mat FilterImage_Section(cv::Mat inImage, cv::Rect& section);
   cv::Mat FilterImage_Channel(cv::Mat inImage, int channel); 
-  cv::Mat FilterImage_2Channel(cv::Mat inImage, int channel1, int channel2);
+  cv::Mat FilterImage_2Channel(cv::Mat inImage, int channel1, int channel2, double fillValue);
   cv::Mat FilterImage_BasicThreshold(cv::Mat inImage, double threshold);
   cv::Mat FilterImage_Resize(cv::Mat inImage, float resX, float resY);
   cv::Mat FilterImage_Grayscale(cv::Mat inImage);

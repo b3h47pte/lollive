@@ -2,8 +2,8 @@
 #include "common.h"
 
 int main() {
-  std::string path = "Images/twitch/frame0.png";
-  LeagueLCSImageAnalyzer* img = new LeagueLCSImageAnalyzer(path);
+  std::string path = "Images/test/Screen01.png";
+  LeagueSpectatorImageAnalyzer* img = new LeagueSpectatorImageAnalyzer(path);
   img->Analyze();
 
   int exit; std::cin >> exit;

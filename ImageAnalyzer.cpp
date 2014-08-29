@@ -118,8 +118,8 @@ cv::Mat ImageAnalyzer::FilterImage_Channel(cv::Mat inImage, int channel) {
   return filterImage;
 }
 
-cv::Mat ImageAnalyzer::FilterImage_2Channel(cv::Mat inImage, int channel1, int channel2) {
-  cv::Mat filterImage =  cv::Mat::zeros(inImage.rows, inImage.cols, CV_8UC3);
+cv::Mat ImageAnalyzer::FilterImage_2Channel(cv::Mat inImage, int channel1, int channel2, double fillValue) {
+  cv::Mat filterImage (inImage.rows, inImage.cols, CV_8UC3, fillValue);
   int fromTo[] = { channel1, channel1, channel2, channel2 };
   cv::mixChannels(&inImage, 1, &filterImage, 1, fromTo, 2);
   return filterImage;
