@@ -40,6 +40,18 @@
     <Filter Include="External\RapidXML">
       <UniqueIdentifier>{3dccb12f-59ba-4726-b0c0-c2638924fe01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="External\civetweb">
+      <UniqueIdentifier>{0323ba8e-3db0-4fa4-8894-297dda995f27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Frontend\Web">
+      <UniqueIdentifier>{e828462a-6cfa-417e-8f38-7a2c657c8f56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Frontend\Web\Handlers">
+      <UniqueIdentifier>{e437057e-7f6a-4e52-a85d-f932d7eeeb1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Frontend\Dispatch">
+      <UniqueIdentifier>{9ce4392a-0df3-4634-9fb9-5b56029bbcd1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VideoFetcher.h">
@@ -87,6 +99,21 @@
     <ClInclude Include="LeagueLCSImageAnalyzer.h">
       <Filter>VideoAnalyze\Image\LoL\Spectator\LCS</Filter>
     </ClInclude>
+    <ClInclude Include="civetweb\CivetServer.h">
+      <Filter>External\civetweb</Filter>
+    </ClInclude>
+    <ClInclude Include="civetweb\civetweb.h">
+      <Filter>External\civetweb</Filter>
+    </ClInclude>
+    <ClInclude Include="WebFrontend.h">
+      <Filter>Frontend\Web</Filter>
+    </ClInclude>
+    <ClInclude Include="WebLeagueHandler.h">
+      <Filter>Frontend\Web\Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="Dispatch.h">
+      <Filter>Frontend\Dispatch</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VideoFetcher.cpp">
@@ -110,5 +137,25 @@
     <ClCompile Include="LeagueLCSImageAnalyzer.cpp">
       <Filter>VideoAnalyze\Image\LoL\Spectator\LCS</Filter>
     </ClCompile>
+    <ClCompile Include="civetweb\CivetServer.cpp">
+      <Filter>External\civetweb</Filter>
+    </ClCompile>
+    <ClCompile Include="civetweb\civetweb.c">
+      <Filter>External\civetweb</Filter>
+    </ClCompile>
+    <ClCompile Include="WebFrontend.cpp">
+      <Filter>Frontend\Web</Filter>
+    </ClCompile>
+    <ClCompile Include="WebLeagueHandler.cpp">
+      <Filter>Frontend\Web\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Dispatch.cpp">
+      <Filter>Frontend\Dispatch</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="civetweb\md5.inl">
+      <Filter>External\civetweb</Filter>
+    </None>
   </ItemGroup>
 </Project>

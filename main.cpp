@@ -1,4 +1,5 @@
 #include "LeagueLCSImageAnalyzer.h"
+#include "WebFrontend.h"
 #include "VideoFetcher.h"
 #include "common.h"
 
@@ -12,9 +13,10 @@ int main() {
   //VideoFetcher* vf = new VideoFetcher("clgVSdig", "twitch.tv/riotgames", test);
   //vf->BeginFetch();
 
+  WebFrontend* wf = new WebFrontend();
   
-  LeagueLCSImageAnalyzer* img = new LeagueLCSImageAnalyzer(path);
-  img->Analyze();
+  //LeagueLCSImageAnalyzer* img = new LeagueLCSImageAnalyzer(path);
+  //img->Analyze();
 
   int exit; std::cin >> exit;
   return 0;

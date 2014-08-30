@@ -91,6 +91,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(OPENCV_DIR)\include;$(TESSERACT_DIR)\include;$(TESSERACT_DIR)\tesseract-ocr\api;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -150,7 +151,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="civetweb\CivetServer.h" />
+    <ClInclude Include="civetweb\civetweb.h" />
     <ClInclude Include="common.h" />
+    <ClInclude Include="Dispatch.h" />
     <ClInclude Include="ImageAnalyzer.h" />
     <ClInclude Include="LeagueChampionData.h" />
     <ClInclude Include="LeagueChampionDatabase.h" />
@@ -165,8 +169,13 @@
     <ClInclude Include="rapidxml\rapidxml_print.hpp" />
     <ClInclude Include="rapidxml\rapidxml_utils.hpp" />
     <ClInclude Include="VideoFetcher.h" />
+    <ClInclude Include="WebFrontend.h" />
+    <ClInclude Include="WebLeagueHandler.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="civetweb\CivetServer.cpp" />
+    <ClCompile Include="civetweb\civetweb.c" />
+    <ClCompile Include="Dispatch.cpp" />
     <ClCompile Include="LeagueChampionDatabase.cpp" />
     <ClCompile Include="LeagueImageAnalyzer.cpp" />
     <ClCompile Include="LeagueLCSImageAnalyzer.cpp" />
@@ -174,6 +183,11 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ImageAnalyzer.cpp" />
     <ClCompile Include="VideoFetcher.cpp" />
+    <ClCompile Include="WebFrontend.cpp" />
+    <ClCompile Include="WebLeagueHandler.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="civetweb\md5.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
