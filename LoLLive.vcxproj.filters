@@ -52,6 +52,12 @@
     <Filter Include="Frontend\Dispatch">
       <UniqueIdentifier>{9ce4392a-0df3-4634-9fb9-5b56029bbcd1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="VideoAnalyze\Video">
+      <UniqueIdentifier>{dcfb1677-3a4b-45bd-913f-f8bd2a6764c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VideoAnalyze\Video\LoL">
+      <UniqueIdentifier>{ea951057-ba8c-4c1d-915a-b5e39fb67278}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VideoFetcher.h">
@@ -114,6 +120,9 @@
     <ClInclude Include="Dispatch.h">
       <Filter>Frontend\Dispatch</Filter>
     </ClInclude>
+    <ClInclude Include="VideoAnalyzer.h">
+      <Filter>VideoAnalyze\Video</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VideoFetcher.cpp">
@@ -151,6 +160,9 @@
     </ClCompile>
     <ClCompile Include="Dispatch.cpp">
       <Filter>Frontend\Dispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoAnalyzer.cpp">
+      <Filter>VideoAnalyze\Video</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

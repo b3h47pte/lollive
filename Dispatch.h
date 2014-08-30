@@ -9,7 +9,10 @@
  * Dispatch Object.
  */
 struct DispatchObject {
-
+  // Holds everything we need to analyze the data of a stream
+  // This includes the video fetcher and the video analyzer.
+  std::shared_ptr<class VideoFetcher> mFetch;
+  std::shared_ptr<class VideoAnalyzer> mAnalyze;
 };
 
 /*
@@ -39,6 +42,12 @@ private:
   // Mapping from the URL to the dispatch object;
   // Game and mode are ignored because a URL can only point to one game/mode anyways.
   std::map < std::string, std::shared_ptr<DispatchObject>> mMapping;
+
+  // Helper function to create the right analyzer
+  std::shared_ptr<class VideoAnalyzer> CreateAnalyzer(std::string& game, std::string& mode);
+
+  // Helper function to create the video fetcher. This also starts the process of pulling the video.
+  std::shared_ptr<class VideoFetcher> CreateVideoFetcher(std::string& url, std::function<void(IMAGE_PATH_TYPE, IMAGE_TIMESTAMP_TYPE)> cb);
 
 };
 
