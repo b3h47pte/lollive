@@ -3,7 +3,14 @@
 #define _LEAGUEPLAYERDATA_H
 #include "common.h"
 
+typedef std::shared_ptr<struct LeaguePlayerData> PtrLeaguePlayerData;
 struct LeaguePlayerData {
+  LeaguePlayerData() : name(""), champion(""),
+    kills(0), deaths(0), assists(0), cs(0), isDead(false), level(0), isLowHealth(false), lastLowHealthUpdate(0) {
+
+  }
+
+
   std::string name;
   std::string champion;
   int kills;
@@ -11,8 +18,10 @@ struct LeaguePlayerData {
   int assists;
   int cs;
   bool isDead;
-  bool isLowHealth;
   int level;
+
+  bool isLowHealth;
+  int lastLowHealthUpdate;
 
   void Print() {
     std::cout << "- Player: " << name << " as " << champion << std::endl;
@@ -22,7 +31,8 @@ struct LeaguePlayerData {
     std::cout << "-- Is Low Health?: " << isLowHealth << std::endl;
     std::cout << "-- Player Level: " << level << std::endl;
   }
+
+  void Update(PtrLeaguePlayerData inPlayer, int timeStamp);
 };
-typedef std::shared_ptr<LeaguePlayerData> PtrLeaguePlayerData;
 
 #endif

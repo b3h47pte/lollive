@@ -26,7 +26,7 @@ public:
   virtual ~VideoAnalyzer();
 
   // Callback function to notify us about a new frame
-  virtual void NotifyNewFrame(IMAGE_PATH_TYPE path, IMAGE_TIMESTAMP_TYPE time);
+  void NotifyNewFrame(IMAGE_PATH_TYPE path, IMAGE_TIMESTAMP_TYPE time);
 
   // Returns all the data in JSON format.
   virtual std::string GetCurrentDataJSON() = 0;
@@ -34,14 +34,13 @@ public:
 protected:
   virtual std::shared_ptr<class ImageAnalyzer> CreateImageAnalyzer() = 0;
 
-private:
+  // Overridden by subclasses so that they can do what is necessary to 
+  // modify the data. Returns whether or not this frame was used. 
+  virtual bool StoreData(std::shared_ptr<class ImageAnalyzer> img) = 0;
+
   std::mutex mDataMutex;
   // Holds the current information about this video
   std::shared_ptr<GenericDataStore> mData;
-
-  std::mutex mDataHistoryMutex;
-  // Holds ALL the information about this video (from when it first began)
-  std::vector<std::shared_ptr<GenericDataStore>> mDataHistory;
 };
 
 #endif

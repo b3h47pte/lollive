@@ -123,6 +123,9 @@
     <ClInclude Include="VideoAnalyzer.h">
       <Filter>VideoAnalyze\Video</Filter>
     </ClInclude>
+    <ClInclude Include="LeagueVideoAnalyzer.h">
+      <Filter>VideoAnalyze\Video\LoL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VideoFetcher.cpp">
@@ -163,6 +166,15 @@
     </ClCompile>
     <ClCompile Include="VideoAnalyzer.cpp">
       <Filter>VideoAnalyze\Video</Filter>
+    </ClCompile>
+    <ClCompile Include="LeagueVideoAnalyzer.cpp">
+      <Filter>VideoAnalyze\Video\LoL</Filter>
+    </ClCompile>
+    <ClCompile Include="LeagueTeamData.cpp">
+      <Filter>VideoAnalyze\Data\LoL</Filter>
+    </ClCompile>
+    <ClCompile Include="LeaguePlayerData.cpp">
+      <Filter>VideoAnalyze\Data\LoL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

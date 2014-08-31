@@ -35,6 +35,9 @@ public:
   static cv::MatND CreateHSHistogram(cv::Mat inImage, int hue_bins, int sat_bins);
   static cv::MatND CreateVHistogram(cv::Mat inImage, int value_bins);
 
+  // Get Data
+  std::shared_ptr<GenericDataStore> GetData() { return mData; }
+
 protected:
   // Set to true when we are done analyzing the image
   bool bIsFinished;

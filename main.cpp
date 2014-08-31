@@ -10,7 +10,7 @@ void test(IMAGE_PATH_TYPE t, IMAGE_TIMESTAMP_TYPE t1) {
 int main() {
   std::string path = "Images/twitch/frame1.png";
 
-  //VideoFetcher* vf = new VideoFetcher("clgVSdig", "twitch.tv/riotgames", test);
+  //VideoFetcher* vf = new VideoFetcher("tsmVSlmq", "twitch.tv/riotgames", test);
   //vf->BeginFetch();
 
   WebFrontend* wf = new WebFrontend();

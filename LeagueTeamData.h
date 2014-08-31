@@ -10,6 +10,7 @@ enum ELeagueTeams {
   ELT_PURPLE
 };
 
+typedef std::shared_ptr<struct LeagueTeamData> PtrLeagueTeamData;
 struct LeagueTeamData {
   ELeagueTeams team;
   int kills;
@@ -24,7 +25,9 @@ struct LeagueTeamData {
     std::cout << "Team Tower Kills: " << towerKills << std::endl;
     for (int i = 0; i < 5; ++i) players[i]->Print();
   }
+
+  // This struct is smart enough to take in new team data and update itself in a logical manner.
+  void Update(PtrLeagueTeamData newData, int timeStamp);
 };
-typedef std::shared_ptr<LeagueTeamData> PtrLeagueTeamData;
 
 #endif
