@@ -5,6 +5,7 @@
 #include "common.h"
 #include "Data.h"
 #include <mutex>
+#include <condition_variable>
 #include <vector>
 /*
  * Analyzes the video. Receives in frames from the video fetcher,
@@ -26,7 +27,7 @@ public:
   virtual ~VideoAnalyzer();
 
   // Callback function to notify us about a new frame
-  void NotifyNewFrame(IMAGE_PATH_TYPE path, IMAGE_TIMESTAMP_TYPE time);
+  void NotifyNewFrame(IMAGE_PATH_TYPE path, IMAGE_FRAME_COUNT_TYPE time);
 
   // Returns all the data in JSON format.
   virtual std::string GetCurrentDataJSON() = 0;
@@ -38,7 +39,11 @@ protected:
   // modify the data. Returns whether or not this frame was used. 
   virtual bool StoreData(std::shared_ptr<class ImageAnalyzer> img) = 0;
 
-  std::mutex mDataMutex;
+  // Frame count. We aren't allowed to call StoreData until this frame count matches the input image's frame count.
+  int mFrameCount;
+
+  std::unique_lock<std::mutex> mDataMutex;
+  std::condition_variable mDataCV;
   // Holds the current information about this video
   std::shared_ptr<GenericDataStore> mData;
 };

@@ -8,6 +8,6 @@
 #include <map>
 
 typedef std::string& IMAGE_PATH_TYPE;
-typedef uint64_t IMAGE_TIMESTAMP_TYPE;
+typedef uint64_t IMAGE_FRAME_COUNT_TYPE;
 
 #endif

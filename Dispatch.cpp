@@ -69,7 +69,7 @@ std::shared_ptr<class VideoAnalyzer> Dispatch::CreateAnalyzer(std::string& game,
   return NULL;
 }
 
-std::shared_ptr<class VideoFetcher> Dispatch::CreateVideoFetcher(std::string& url, std::string& game, std::string& mode, std::function<void(IMAGE_PATH_TYPE, IMAGE_TIMESTAMP_TYPE)> cb) {
+std::shared_ptr<class VideoFetcher> Dispatch::CreateVideoFetcher(std::string& url, std::string& game, std::string& mode, std::function<void(IMAGE_PATH_TYPE, IMAGE_FRAME_COUNT_TYPE)> cb) {
   // Get the current date since it'll be part of the ID.
   std::time_t curTime = std::time(NULL);
   struct std::tm* utcTime = std::gmtime(&curTime);

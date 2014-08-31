@@ -13,7 +13,7 @@ if (!x) {\
   goto label;\
 }
 
-VideoFetcher::VideoFetcher(std::string inID, std::string Url, std::function<void(IMAGE_PATH_TYPE, IMAGE_TIMESTAMP_TYPE)> Callback) : mID(inID), mURL(Url), mCallback(Callback) {
+VideoFetcher::VideoFetcher(std::string inID, std::string Url, std::function<void(IMAGE_PATH_TYPE, IMAGE_FRAME_COUNT_TYPE)> Callback) : mID(inID), mURL(Url), mCallback(Callback), mFrameCount(0) {
 
 }
 
@@ -176,9 +176,7 @@ bool VideoFetcher::BeginStreamPlayback(std::string& streamUrl) {
       const gchar* name = gst_structure_get_name(data);
       if (strcmp(name, "GstMultiFileSink") == 0) {
         std::string path = gst_structure_get_string(data, "filename");
-        uint64_t timestamp;
-        gst_structure_get_uint64(data, "timestamp", &timestamp);
-        mCallback(path, timestamp);
+        mCallback(path, mFrameCount++);
       }
       break;
     }

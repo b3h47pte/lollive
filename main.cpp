@@ -3,7 +3,7 @@
 #include "VideoFetcher.h"
 #include "common.h"
 
-void test(IMAGE_PATH_TYPE t, IMAGE_TIMESTAMP_TYPE t1) {
+void test(IMAGE_PATH_TYPE t, IMAGE_FRAME_COUNT_TYPE t1) {
 
 }
 
