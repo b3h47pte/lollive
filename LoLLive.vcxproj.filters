@@ -58,6 +58,9 @@
     <Filter Include="VideoAnalyze\Video\LoL">
       <UniqueIdentifier>{ea951057-ba8c-4c1d-915a-b5e39fb67278}</UniqueIdentifier>
     </Filter>
+    <Filter Include="External\cjson">
+      <UniqueIdentifier>{80afa1f7-8181-4e04-8c00-32df28e3385a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VideoFetcher.h">
@@ -126,6 +129,9 @@
     <ClInclude Include="LeagueVideoAnalyzer.h">
       <Filter>VideoAnalyze\Video\LoL</Filter>
     </ClInclude>
+    <ClInclude Include="cjson\cJSON.h">
+      <Filter>External\cjson</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VideoFetcher.cpp">
@@ -175,6 +181,9 @@
     </ClCompile>
     <ClCompile Include="LeaguePlayerData.cpp">
       <Filter>VideoAnalyze\Data\LoL</Filter>
+    </ClCompile>
+    <ClCompile Include="cjson\cJSON.c">
+      <Filter>External\cjson</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

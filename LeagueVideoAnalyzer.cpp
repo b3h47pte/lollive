@@ -1,6 +1,7 @@
 #include "LeagueVideoAnalyzer.h"
 #include "ImageAnalyzer.h"
 #include "LeagueTeamData.h"
+#include "cJSON.h"
 
 LeagueVideoAnalyzer::LeagueVideoAnalyzer() {
 
@@ -13,6 +14,8 @@ LeagueVideoAnalyzer::~LeagueVideoAnalyzer() {
 /*
  * From the image, see what properties make sense to update.
  * Update properties into the data store that already exists.
+ * 
+ * no need to lock/unlock because the callee does that for us.
  */
 bool LeagueVideoAnalyzer::StoreData(std::shared_ptr<ImageAnalyzer> img) {
   std::shared_ptr<GenericDataStore> newData = img->GetData();
@@ -46,4 +49,21 @@ bool LeagueVideoAnalyzer::StoreData(std::shared_ptr<ImageAnalyzer> img) {
   }
 
   return false;
+}
+
+/*
+ * Gets the data in JSON form.
+ */
+std::string LeagueVideoAnalyzer::GetCurrentDataJSON() {
+  mDataMutex.lock();
+  if (!mData) {
+    mDataMutex.unlock();
+    return "";
+  }
+
+  cJSON* newJson = cJSON_CreateObject();
+
+  cJSON_Delete(newJson);
+
+  mDataMutex.unlock();
 }
