@@ -1,5 +1,5 @@
 #include "LeaguePlayerData.h"
-
+#include "cjson/cJSON.h"
 /*
  * Update only if the new data makes sense.
  * For example, kills can't go down.
@@ -36,4 +36,19 @@ void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp) {
     isLowHealth = inPlayer->isLowHealth;
     lastLowHealthUpdate = timeStamp;
   }
+}
+
+// JSONify
+cJSON* LeaguePlayerData::CreateJSON() {
+  cJSON* newJson = cJSON_CreateObject();
+  cJSON_AddNumberToObject(newJson, "kills", kills);
+  cJSON_AddNumberToObject(newJson, "deaths", deaths);
+  cJSON_AddNumberToObject(newJson, "assists", assists);
+  cJSON_AddNumberToObject(newJson, "cs", cs);
+  cJSON_AddNumberToObject(newJson, "level", level);
+  cJSON_AddBoolToObject(newJson, "isDead", isDead);
+  cJSON_AddBoolToObject(newJson, "isLowHealth", isLowHealth);
+  cJSON_AddStringToObject(newJson, "name", name.c_str());
+  cJSON_AddStringToObject(newJson, "champion", champion.c_str());
+  return newJson;
 }

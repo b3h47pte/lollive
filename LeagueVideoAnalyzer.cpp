@@ -1,7 +1,7 @@
 #include "LeagueVideoAnalyzer.h"
 #include "ImageAnalyzer.h"
 #include "LeagueTeamData.h"
-#include "cJSON.h"
+#include "cjson/cJSON.h"
 
 LeagueVideoAnalyzer::LeagueVideoAnalyzer() {
 
@@ -62,8 +62,14 @@ std::string LeagueVideoAnalyzer::GetCurrentDataJSON() {
   }
 
   cJSON* newJson = cJSON_CreateObject();
-
+  cJSON_AddNumberToObject(newJson, "timestamp", RetrieveData<int>(mData, std::string("timestamp")));
+  cJSON_AddItemToObject(newJson, "blueteam", RetrieveData<PtrLeagueTeamData>(mData, std::string("BlueTeam"))->CreateJSON());
+  cJSON_AddItemToObject(newJson, "purpleteam", RetrieveData<PtrLeagueTeamData>(mData, std::string("PurpleTeam"))->CreateJSON());
   cJSON_Delete(newJson);
-
   mDataMutex.unlock();
+
+  char* retChar = cJSON_PrintUnformatted(newJson);
+  std::string newRet(retChar);
+  delete[] retChar;
+  return newRet;
 }

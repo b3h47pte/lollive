@@ -33,6 +33,9 @@ struct LeaguePlayerData {
   }
 
   void Update(PtrLeaguePlayerData inPlayer, int timeStamp);
+
+  // JSONify
+  struct cJSON* CreateJSON();
 };
 
 #endif

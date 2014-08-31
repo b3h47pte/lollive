@@ -19,4 +19,9 @@ public:
 
 typedef std::map<std::string, std::shared_ptr<Data> > GenericDataStore;
 
+template<typename T>
+inline T RetrieveData(std::shared_ptr<GenericDataStore> inStore, std::string& key) {
+  return std::static_pointer_cast<GenericData<T>>((*inStore)[key])->value;
+}
+
 #endif

@@ -28,6 +28,9 @@ struct LeagueTeamData {
 
   // This struct is smart enough to take in new team data and update itself in a logical manner.
   void Update(PtrLeagueTeamData newData, int timeStamp);
+
+  // JSONify
+  struct cJSON* CreateJSON();
 };
 
 #endif
