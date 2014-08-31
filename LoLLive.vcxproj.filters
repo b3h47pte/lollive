@@ -61,6 +61,12 @@
     <Filter Include="External\cjson">
       <UniqueIdentifier>{80afa1f7-8181-4e04-8c00-32df28e3385a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="VideoAnalyze\Video\LoL\Spectator">
+      <UniqueIdentifier>{ee3044d1-4d78-4836-aebd-7fbbcc335c1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VideoAnalyze\Video\LoL\Spectator\LCS">
+      <UniqueIdentifier>{6ae5fff7-4d75-49e0-8d51-7a6c95c3a3a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VideoFetcher.h">
@@ -132,6 +138,12 @@
     <ClInclude Include="cjson\cJSON.h">
       <Filter>External\cjson</Filter>
     </ClInclude>
+    <ClInclude Include="LeagueSpectatorVideoAnalyzer.h">
+      <Filter>VideoAnalyze\Video\LoL\Spectator</Filter>
+    </ClInclude>
+    <ClInclude Include="LeagueLCSVideoAnalyzer.h">
+      <Filter>VideoAnalyze\Video\LoL\Spectator\LCS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VideoFetcher.cpp">
@@ -184,6 +196,12 @@
     </ClCompile>
     <ClCompile Include="cjson\cJSON.c">
       <Filter>External\cjson</Filter>
+    </ClCompile>
+    <ClCompile Include="LeagueSpectatorVideoAnalyzer.cpp">
+      <Filter>VideoAnalyze\Video\LoL\Spectator</Filter>
+    </ClCompile>
+    <ClCompile Include="LeagueLCSVideoAnalyzer.cpp">
+      <Filter>VideoAnalyze\Video\LoL\Spectator\LCS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

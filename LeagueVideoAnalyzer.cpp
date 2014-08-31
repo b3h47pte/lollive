@@ -33,7 +33,10 @@ bool LeagueVideoAnalyzer::StoreData(std::shared_ptr<ImageAnalyzer> img) {
   int* oldTimeStamp = &std::static_pointer_cast<GenericData<int>>((*mData)["CurrentTime"])->value;
 
   if (*curTimeStamp > *oldTimeStamp) {
-    *oldTimeStamp = *curTimeStamp;
+    // Make sure the timestamp isn't a ridiculous jump otherwise we have problems.
+    if (*curTimeStamp - 120 < *oldTimeStamp) {
+      *oldTimeStamp = *curTimeStamp;
+    }
 
     // Only in the case where the time stamp is correct, go into details.
     // The only thing we can assume to know are the champion kills and tower kills
@@ -62,14 +65,24 @@ std::string LeagueVideoAnalyzer::GetCurrentDataJSON() {
   }
 
   cJSON* newJson = cJSON_CreateObject();
-  cJSON_AddNumberToObject(newJson, "timestamp", RetrieveData<int>(mData, std::string("timestamp")));
-  cJSON_AddItemToObject(newJson, "blueteam", RetrieveData<PtrLeagueTeamData>(mData, std::string("BlueTeam"))->CreateJSON());
-  cJSON_AddItemToObject(newJson, "purpleteam", RetrieveData<PtrLeagueTeamData>(mData, std::string("PurpleTeam"))->CreateJSON());
-  cJSON_Delete(newJson);
+  if (DataExists(mData, std::string("CurrentTime"))) {
+    cJSON_AddNumberToObject(newJson, "timestamp", RetrieveData<int>(mData, std::string("CurrentTime")));
+  }
+
+  if (DataExists(mData, std::string("BlueTeam"))) {
+    cJSON_AddItemToObject(newJson, "blueteam", RetrieveData<PtrLeagueTeamData>(mData, std::string("BlueTeam"))->CreateJSON());
+  }
+
+  if (DataExists(mData, std::string("PurpleTeam"))) {
+    cJSON_AddItemToObject(newJson, "purpleteam", RetrieveData<PtrLeagueTeamData>(mData, std::string("PurpleTeam"))->CreateJSON());
+  }
+
   mDataMutex.unlock();
 
   char* retChar = cJSON_PrintUnformatted(newJson);
+  cJSON_Delete(newJson);
   std::string newRet(retChar);
-  delete[] retChar;
+  if (retChar)
+    delete[] retChar;
   return newRet;
 }

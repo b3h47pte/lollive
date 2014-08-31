@@ -32,7 +32,7 @@ public:
   virtual std::string GetCurrentDataJSON() = 0;
 
 protected:
-  virtual std::shared_ptr<class ImageAnalyzer> CreateImageAnalyzer() = 0;
+  virtual std::shared_ptr<class ImageAnalyzer> CreateImageAnalyzer(std::string& path) = 0;
 
   // Overridden by subclasses so that they can do what is necessary to 
   // modify the data. Returns whether or not this frame was used. 

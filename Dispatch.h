@@ -47,7 +47,10 @@ private:
   std::shared_ptr<class VideoAnalyzer> CreateAnalyzer(std::string& game, std::string& mode);
 
   // Helper function to create the video fetcher. This also starts the process of pulling the video.
-  std::shared_ptr<class VideoFetcher> CreateVideoFetcher(std::string& url, std::function<void(IMAGE_PATH_TYPE, IMAGE_TIMESTAMP_TYPE)> cb);
+  std::shared_ptr<class VideoFetcher> CreateVideoFetcher(std::string& url, std::string& game, std::string& mode, std::function<void(IMAGE_PATH_TYPE, IMAGE_TIMESTAMP_TYPE)> cb);
+
+  // Helper function to spin up a thread to begin the video analysis
+  void Thread_StartNewDispatch(std::shared_ptr<DispatchObject> newObj, std::string& game, std::string& mode, std::string& url);
 
 };
 

@@ -14,9 +14,18 @@ VideoAnalyzer::~VideoAnalyzer() {
  * Leave what happens to the data up to the subclasses.
  */
 void VideoAnalyzer::NotifyNewFrame(IMAGE_PATH_TYPE path, IMAGE_TIMESTAMP_TYPE time) {
-  std::shared_ptr<class ImageAnalyzer> imgAnalyzer = CreateImageAnalyzer();
-  imgAnalyzer->Analyze();
+  std::shared_ptr<class ImageAnalyzer> imgAnalyzer = CreateImageAnalyzer(path);
+
+  try {
+    imgAnalyzer->Analyze();
+  } catch (...) {
+    std::cout << "Unhandled exception in Image Analyzer." << std::endl;
+  }
   mDataMutex.lock();
-  StoreData(imgAnalyzer);
+  try {
+    StoreData(imgAnalyzer);
+  } catch (...) {
+    std::cout << "Unhandled exception in Store Data." << std::endl;
+  }
   mDataMutex.unlock();
 }

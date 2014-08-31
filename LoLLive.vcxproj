@@ -161,9 +161,11 @@
     <ClInclude Include="LeagueChampionDatabase.h" />
     <ClInclude Include="LeagueImageAnalyzer.h" />
     <ClInclude Include="LeagueLCSImageAnalyzer.h" />
+    <ClInclude Include="LeagueLCSVideoAnalyzer.h" />
     <ClInclude Include="LeaguePlayerData.h" />
     <ClInclude Include="LeagueSpectatorImageAnalyzer.h" />
     <ClInclude Include="Data.h" />
+    <ClInclude Include="LeagueSpectatorVideoAnalyzer.h" />
     <ClInclude Include="LeagueTeamData.h" />
     <ClInclude Include="LeagueVideoAnalyzer.h" />
     <ClInclude Include="rapidxml\rapidxml.hpp" />
@@ -183,8 +185,10 @@
     <ClCompile Include="LeagueChampionDatabase.cpp" />
     <ClCompile Include="LeagueImageAnalyzer.cpp" />
     <ClCompile Include="LeagueLCSImageAnalyzer.cpp" />
+    <ClCompile Include="LeagueLCSVideoAnalyzer.cpp" />
     <ClCompile Include="LeaguePlayerData.cpp" />
     <ClCompile Include="LeagueSpectatorImageAnalyzer.cpp" />
+    <ClCompile Include="LeagueSpectatorVideoAnalyzer.cpp" />
     <ClCompile Include="LeagueTeamData.cpp" />
     <ClCompile Include="LeagueVideoAnalyzer.cpp" />
     <ClCompile Include="main.cpp" />

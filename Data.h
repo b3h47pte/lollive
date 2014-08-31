@@ -19,6 +19,10 @@ public:
 
 typedef std::map<std::string, std::shared_ptr<Data> > GenericDataStore;
 
+inline bool DataExists(std::shared_ptr<GenericDataStore> inStore, std::string& key) {
+  return (inStore->find(key) != inStore->end());
+}
+
 template<typename T>
 inline T RetrieveData(std::shared_ptr<GenericDataStore> inStore, std::string& key) {
   return std::static_pointer_cast<GenericData<T>>((*inStore)[key])->value;

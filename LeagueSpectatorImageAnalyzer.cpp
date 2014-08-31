@@ -26,6 +26,9 @@ int LeagueSpectatorImageAnalyzer::AnalyzeMatchTime() {
 
   cv::Mat timeImage = FilterImage_Section_Grayscale_BasicThreshold_Resize(mImage, section, 105.0, 2.0, 2.0);
   std::string result = GetTextFromImage(timeImage, LeagueIdent, std::string("012345679:"));
+  if (result.size() < 3) {
+    return -1;
+  }
 
   // Now parse the result so that it is just a number of seconds.
   int secondsSinceGameStart = -1;
