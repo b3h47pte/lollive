@@ -57,7 +57,7 @@ bool LeagueVideoAnalyzer::StoreData(std::shared_ptr<ImageAnalyzer> img) {
 /*
  * Gets the data in JSON form.
  */
-std::string LeagueVideoAnalyzer::GetCurrentDataJSON() {
+std::string LeagueVideoAnalyzer::ParseJSON() {
   mDataMutex.lock();
   if (!mData) {
     mDataMutex.unlock();

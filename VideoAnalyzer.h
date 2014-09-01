@@ -30,7 +30,8 @@ public:
   void NotifyNewFrame(IMAGE_PATH_TYPE path, IMAGE_FRAME_COUNT_TYPE time);
 
   // Returns all the data in JSON format.
-  virtual std::string GetCurrentDataJSON() = 0;
+  virtual std::string GetCurrentDataJSON() { return mDataJSON; }
+  virtual std::string ParseJSON() = 0;
 
 protected:
   virtual std::shared_ptr<class ImageAnalyzer> CreateImageAnalyzer(std::string& path) = 0;
@@ -42,10 +43,14 @@ protected:
   // Frame count. We aren't allowed to call StoreData until this frame count matches the input image's frame count.
   int mFrameCount;
 
-  std::unique_lock<std::mutex> mDataMutex;
+  std::mutex mDataMutex;
+  std::unique_lock<std::mutex> mDataLock;
   std::condition_variable mDataCV;
   // Holds the current information about this video
   std::shared_ptr<GenericDataStore> mData;
+
+  // Cached data in JSON format. Updated whenever mData is updated.
+  std::string mDataJSON;
 };
 
 #endif

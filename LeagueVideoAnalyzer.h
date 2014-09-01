@@ -17,7 +17,7 @@ protected:
   virtual bool StoreData(std::shared_ptr<class ImageAnalyzer> img);
 
   // Get JSON
-  virtual std::string GetCurrentDataJSON();
+  virtual std::string ParseJSON();
 private:
 };
 
