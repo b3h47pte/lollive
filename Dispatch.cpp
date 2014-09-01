@@ -54,6 +54,10 @@ void Dispatch::Thread_StartNewDispatch(std::shared_ptr<DispatchObject> newObj, s
   newObj->mAnalyze = CreateAnalyzer(game, mode);
   newObj->mFetch = CreateVideoFetcher(url, game, mode, std::bind(&VideoAnalyzer::NotifyNewFrame, newObj->mAnalyze,
     std::placeholders::_1, std::placeholders::_2)); // This starts the process of analyzing the video so it must be made last.
+
+  mMappingMutex.lock();
+  mMapping.erase(url);
+  mMappingMutex.unlock();
 }
 
 std::shared_ptr<class VideoAnalyzer> Dispatch::CreateAnalyzer(std::string& game, std::string& mode) {
