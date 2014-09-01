@@ -21,7 +21,7 @@ void VideoAnalyzer::NotifyNewFrame(IMAGE_PATH_TYPE path, IMAGE_FRAME_COUNT_TYPE 
     std::cerr << "ANALYZE UNCAUGHT EXCEPTION" << std::endl;
     return;
   }
- 
+
   mDataCV.wait(mDataLock, [&]() {return mFrameCount == frame; });
   try {
     if (imgAnalyzer->IsAnalysisFinished()) {
@@ -31,5 +31,6 @@ void VideoAnalyzer::NotifyNewFrame(IMAGE_PATH_TYPE path, IMAGE_FRAME_COUNT_TYPE 
     std::cerr << "ANALYZE UNCAUGHT EXCEPTION 2" << std::endl;
   }
   mDataJSON = ParseJSON(); // update the JSON because there's no better place to do it than here.
+  ++mFrameCount;
   mDataCV.notify_all();  
 }

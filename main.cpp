@@ -13,10 +13,10 @@ int main() {
   //VideoFetcher* vf = new VideoFetcher("tsmVSlmq", "twitch.tv/riotgames", test);
   //vf->BeginFetch();
 
-  //WebFrontend* wf = new WebFrontend();
+  WebFrontend* wf = new WebFrontend();
   
-  LeagueLCSImageAnalyzer* img = new LeagueLCSImageAnalyzer(path);
-  img->Analyze();
+  //LeagueLCSImageAnalyzer* img = new LeagueLCSImageAnalyzer(path);
+  //img->Analyze();
 
   int exit; std::cin >> exit;
   return 0;
