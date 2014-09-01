@@ -2,6 +2,7 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
 #include "opencv2/superres.hpp"
+#include <ctime>
 
 LeagueImageAnalyzer::LeagueImageAnalyzer(IMAGE_PATH_TYPE ImagePath): ImageAnalyzer(ImagePath) {
   ChampionDatabase = LeagueChampionDatabase::Get();
@@ -27,6 +28,7 @@ bool LeagueImageAnalyzer::Analyze() {
   }
   
   //std::cout << "LoL Frame Data: " << std::endl;
+  std::clock_t begin = std::clock();
 
   // Current match time.
   int time = AnalyzeMatchTime();
@@ -44,6 +46,10 @@ bool LeagueImageAnalyzer::Analyze() {
   std::shared_ptr<GenericData<PtrLeagueTeamData>> purpleTeamProp(new GenericData<PtrLeagueTeamData>(purpleTeam));
   (*mData)["PurpleTeam"] = purpleTeamProp;
   //purpleTeam->Print();
+
+  std::clock_t end = std::clock();
+  double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+  std::cout << "Elapsed Seconds: " << elapsed_secs << std::endl;
 
   bIsFinished = true;
   return ret;

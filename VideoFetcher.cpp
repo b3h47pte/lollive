@@ -105,7 +105,7 @@ bool VideoFetcher::BeginStreamPlayback(std::string& streamUrl) {
   CHECK_FALSE_SETFLAG_JUMP(filter, retFlag, cleanup);
 
   // Set the capabilities of the filter so that we get the framerate we desire.
-  filterCaps = gst_caps_new_simple("video/x-raw", "framerate", GST_TYPE_FRACTION, 1, 10, NULL);
+  filterCaps = gst_caps_new_simple("video/x-raw", "framerate", GST_TYPE_FRACTION, 1, 15, NULL);
 
   // Convert video frames into PNG images. 
   toPng = gst_element_factory_make("pngenc", "toPng");

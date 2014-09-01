@@ -4,7 +4,11 @@
 
 WebFrontend::WebFrontend() {
   // Create and start the server
-  mServer = std::shared_ptr<CivetServer>(new CivetServer(NULL, NULL));
+  const char *options[] = {
+    "listening_ports", "127.0.0.1:8080",
+    NULL
+  };
+  mServer = std::shared_ptr<CivetServer>(new CivetServer(options, NULL));
 
   // Game Handlers
   WebLeagueHandler* mLeagueHandler = new WebLeagueHandler();

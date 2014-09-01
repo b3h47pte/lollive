@@ -19,7 +19,8 @@ void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp) {
     assists = inPlayer->assists;
   }
 
-  if (inPlayer->cs > cs) {
+  // Need some sanity check here. Hopefully 100cs is reasonable..?
+  if (inPlayer->cs > cs && inPlayer->cs - cs < 100) {
     cs = inPlayer->cs;
   }
 
