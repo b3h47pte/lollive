@@ -55,7 +55,11 @@ int LeagueSpectatorImageAnalyzer::AnalyzeMatchTime() {
     return -1;
   }
   
-  secondsSinceGameStart = std::stoi(strMinutes, NULL) * 60 + std::stoi(strSeconds, NULL);
+  try {
+    secondsSinceGameStart = std::stoi(strMinutes, NULL) * 60 + std::stoi(strSeconds, NULL);
+  } catch (...) {
+    return -1;
+  }
   return secondsSinceGameStart;
 }
 
