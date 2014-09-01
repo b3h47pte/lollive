@@ -67,6 +67,9 @@
     <Filter Include="VideoAnalyze\Video\LoL\Spectator\LCS">
       <UniqueIdentifier>{6ae5fff7-4d75-49e0-8d51-7a6c95c3a3a7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="VideoFetch\Test">
+      <UniqueIdentifier>{b1c823b0-8747-4a60-a36f-e57bd8a8073e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VideoFetcher.h">
@@ -144,6 +147,9 @@
     <ClInclude Include="LeagueLCSVideoAnalyzer.h">
       <Filter>VideoAnalyze\Video\LoL\Spectator\LCS</Filter>
     </ClInclude>
+    <ClInclude Include="TestVideoFetch.h">
+      <Filter>VideoFetch\Test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VideoFetcher.cpp">
@@ -202,6 +208,9 @@
     </ClCompile>
     <ClCompile Include="LeagueLCSVideoAnalyzer.cpp">
       <Filter>VideoAnalyze\Video\LoL\Spectator\LCS</Filter>
+    </ClCompile>
+    <ClCompile Include="TestVideoFetch.cpp">
+      <Filter>VideoFetch\Test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

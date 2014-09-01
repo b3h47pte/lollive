@@ -20,7 +20,7 @@ bool WebLeagueHandler::handleGet(CivetServer *server, struct mg_connection *conn
   if (!CivetServer::getParam(conn, "stream", inStream)) {
     return false;
   }
-  
+
   // Make sure we specified a valid mode
   if (inMode == "lcs") {
 
@@ -37,7 +37,15 @@ bool WebLeagueHandler::handleGet(CivetServer *server, struct mg_connection *conn
   std::shared_ptr<Dispatch> ds = Dispatch::Get();
   
   mg_printf(conn, "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n");
-  mg_printf(conn, ds->GetJSONResponse(std::string("league"), inMode, inStream).c_str());
+
+#ifdef _DEBUG
+  bool bIsDebug = false;
+  std::string tmpStore;
+  bIsDebug = CivetServer::getParam(conn, "debug", tmpStore);
+  mg_printf(conn, ds->GetJSONResponse(std::string("league"), inMode, inStream, bIsDebug).c_str());
+#else
+  mg_printf(conn, ds->GetJSONResponse(std::string("league"), inMode, inStream, false).c_str());
+#endif
   
 
   return true;

@@ -15,25 +15,26 @@
 class VideoFetcher {
 public:
   VideoFetcher(std::string Id, std::string Url, std::function<void(IMAGE_PATH_TYPE, IMAGE_FRAME_COUNT_TYPE)> Callback);
-  ~VideoFetcher();
+  virtual ~VideoFetcher();
 
   // Starts the process of getting the stream from the URL, getting the video stream and spitting out images.
   void BeginFetch();
 
-private:
+protected:
   // Input options so we know where to get the video from and where to spit the images out to.
   std::string mImagePath;
   std::string mID;
   std::string mURL;
   std::function<void(IMAGE_PATH_TYPE, IMAGE_FRAME_COUNT_TYPE)> mCallback;
 
+private:
   // Frame count
   IMAGE_FRAME_COUNT_TYPE mFrameCount;
 
   // Retrieve Stream URL
-  std::string GetStreamURL();
+  virtual std::string GetStreamURL();
   // Actually play the stream
-  bool BeginStreamPlayback(std::string& streamUrl);
+  virtual bool BeginStreamPlayback(std::string& streamUrl);
   // Connects the source stream to the pipeline
   static void SourcePadAddedHandler(GstElement* src, GstPad* pad, GstElement** sink);
 };
