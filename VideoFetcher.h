@@ -18,7 +18,7 @@ public:
   virtual ~VideoFetcher();
 
   // Starts the process of getting the stream from the URL, getting the video stream and spitting out images.
-  void BeginFetch();
+  virtual void BeginFetch();
 
 protected:
   // Input options so we know where to get the video from and where to spit the images out to.
@@ -27,7 +27,6 @@ protected:
   std::string mURL;
   std::function<void(IMAGE_PATH_TYPE, IMAGE_FRAME_COUNT_TYPE)> mCallback;
 
-private:
   // Frame count
   IMAGE_FRAME_COUNT_TYPE mFrameCount;
 

@@ -11,7 +11,7 @@ class TestVideoFetch : public VideoFetcher {
 public:
   TestVideoFetch(std::string Id, std::string Url, std::function<void(IMAGE_PATH_TYPE, IMAGE_FRAME_COUNT_TYPE)> Callback);
   virtual ~TestVideoFetch();
-
+  virtual void BeginFetch();
 private:
   // Retrieve Stream URL
   virtual std::string GetStreamURL();

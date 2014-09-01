@@ -9,6 +9,14 @@ TestVideoFetch::~TestVideoFetch() {
 
 }
 
+void TestVideoFetch::BeginFetch() {
+  std::string streamUrl = GetStreamURL();
+  if (!BeginStreamPlayback(streamUrl)) {
+    return;
+  }
+}
+
+
 std::string TestVideoFetch::GetStreamURL() {
   return mURL;
 }
