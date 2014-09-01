@@ -58,9 +58,7 @@ bool LeagueVideoAnalyzer::StoreData(std::shared_ptr<ImageAnalyzer> img) {
  * Gets the data in JSON form.
  */
 std::string LeagueVideoAnalyzer::ParseJSON() {
-  mDataMutex.lock();
   if (!mData) {
-    mDataMutex.unlock();
     return "";
   }
 
@@ -76,8 +74,6 @@ std::string LeagueVideoAnalyzer::ParseJSON() {
   if (DataExists(mData, std::string("PurpleTeam"))) {
     cJSON_AddItemToObject(newJson, "purpleteam", RetrieveData<PtrLeagueTeamData>(mData, std::string("PurpleTeam"))->CreateJSON());
   }
-
-  mDataMutex.unlock();
 
   char* retChar = cJSON_PrintUnformatted(newJson);
   cJSON_Delete(newJson);

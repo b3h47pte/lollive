@@ -15,10 +15,18 @@ VideoAnalyzer::~VideoAnalyzer() {
  */
 void VideoAnalyzer::NotifyNewFrame(IMAGE_PATH_TYPE path, IMAGE_FRAME_COUNT_TYPE frame) {
   std::shared_ptr<class ImageAnalyzer> imgAnalyzer = CreateImageAnalyzer(path);
-  imgAnalyzer->Analyze();
+  try {
+    imgAnalyzer->Analyze();
+  } catch (...) {
+    std::cerr << "ANALYZE UNCAUGHT EXCEPTION" << std::endl;
+  }
  
   mDataCV.wait(mDataLock, [&]() {return mFrameCount == frame; });
-  StoreData(imgAnalyzer);
+  try {
+    StoreData(imgAnalyzer);
+  } catch (...) {
+    std::cerr << "ANALYZE UNCAUGHT EXCEPTION 2" << std::endl;
+  }
   ++mFrameCount;
   mDataJSON = ParseJSON(); // update the JSON because there's no better place to do it than here.
   mDataCV.notify_all();  
