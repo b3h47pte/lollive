@@ -47,9 +47,9 @@ bool LeagueImageAnalyzer::Analyze() {
   (*mData)["PurpleTeam"] = purpleTeamProp;
   //purpleTeam->Print();
 
-  std::clock_t end = std::clock();
-  double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-  std::cout << "Elapsed Seconds: " << elapsed_secs << std::endl;
+  //std::clock_t end = std::clock();
+  //double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+  //std::cout << "Elapsed Seconds: " << elapsed_secs << std::endl;
 
   bIsFinished = true;
   return ret;
@@ -79,6 +79,8 @@ PtrLeagueTeamData LeagueImageAnalyzer::AnalyzeTeamData(ELeagueTeams team) {
  */
 PtrLeaguePlayerData LeagueImageAnalyzer::AnalyzePlayerData(uint idx, ELeagueTeams team) {
   PtrLeaguePlayerData newPlayer(new LeaguePlayerData);
+  newPlayer->team = team;
+  newPlayer->playerIdx = idx;
   newPlayer->champion = AnalyzePlayerChampion(idx, team, &newPlayer->isDead, &newPlayer->isLowHealth, &newPlayer->level);
   newPlayer->name = AnalyzePlayerName(idx, team);
   AnalyzePlayerScore(idx, team, &newPlayer->kills, &newPlayer->deaths, &newPlayer->assists, &newPlayer->cs);

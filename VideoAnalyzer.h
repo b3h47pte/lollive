@@ -49,6 +49,10 @@ protected:
   // Holds the current information about this video
   std::shared_ptr<GenericDataStore> mData;
 
+  // Holds history of the raw information that we get from the image analyzer.
+  // This allows us to correct for any weird one frame changes.
+  std::vector<std::shared_ptr<GenericDataStore>> mDataHistory;
+
   // Cached data in JSON format. Updated whenever mData is updated.
   std::string mDataJSON;
 };

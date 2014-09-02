@@ -32,6 +32,8 @@ bool LeagueVideoAnalyzer::StoreData(std::shared_ptr<ImageAnalyzer> img) {
   int* curTimeStamp = &std::static_pointer_cast<GenericData<int>>((*newData)["CurrentTime"])->value;
   int* oldTimeStamp = &std::static_pointer_cast<GenericData<int>>((*mData)["CurrentTime"])->value;
 
+  // If we don't get a valid timestamp, there's really nothing we can do to try and store this data.
+  // We could just be getting a ton of junk.
   if (*curTimeStamp > *oldTimeStamp) {
     // Make sure the timestamp isn't a ridiculous jump otherwise we have problems.
     if (*curTimeStamp - 120 < *oldTimeStamp) {
@@ -42,11 +44,15 @@ bool LeagueVideoAnalyzer::StoreData(std::shared_ptr<ImageAnalyzer> img) {
     // The only thing we can assume to know are the champion kills and tower kills
     PtrLeagueTeamData blueNew = std::static_pointer_cast<GenericData<PtrLeagueTeamData>>((*newData)["BlueTeam"])->value;
     PtrLeagueTeamData blueOld = std::static_pointer_cast<GenericData<PtrLeagueTeamData>>((*mData)["BlueTeam"])->value;
-    blueOld->Update(blueNew, *oldTimeStamp);
+    blueOld->Update(blueNew, *oldTimeStamp, mDataHistory);
 
     PtrLeagueTeamData purpleNew = std::static_pointer_cast<GenericData<PtrLeagueTeamData>>((*newData)["PurpleTeam"])->value;
     PtrLeagueTeamData purpleOld = std::static_pointer_cast<GenericData<PtrLeagueTeamData>>((*mData)["PurpleTeam"])->value;
-    purpleOld->Update(purpleNew, *oldTimeStamp);
+    purpleOld->Update(purpleNew, *oldTimeStamp, mDataHistory);
+
+    // Save this piece of data in our history. This allows us to fix our data retroactively.
+    std::shared_ptr<GenericDataStore> copyData(new GenericDataStore(*newData));
+    mDataHistory.push_back(copyData);
 
     return true;
   }

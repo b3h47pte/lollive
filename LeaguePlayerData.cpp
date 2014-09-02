@@ -1,22 +1,41 @@
 #include "LeaguePlayerData.h"
+#include "LeagueTeamData.h"
 #include "cjson/cJSON.h"
+
+PtrLeaguePlayerData GetPlayerData(std::shared_ptr<GenericDataStore> data, ELeagueTeams team, int idx) {
+  PtrLeagueTeamData td = (team == ELT_BLUE) ? RetrieveData<PtrLeagueTeamData>(data, std::string("BlueTeam")) : RetrieveData<PtrLeagueTeamData>(data, std::string("PurpleTeam"));
+  return td->players[idx];
+}
+
 /*
  * Update only if the new data makes sense.
  * For example, kills can't go down.
  */
-void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp) {
+void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::vector<std::shared_ptr<GenericDataStore>>& dataHistory) {
   // FOR NOW: Assume name and champion never changes
   // TODO: This will probably have to change at some point. Probably from user input.
-  if (inPlayer->kills > kills) {
+  if (inPlayer->kills > kills && inPlayer->kills - kills <= 7) {
     kills = inPlayer->kills;
+  } else {
+    kills = SmoothValue<int>(inPlayer->kills, kills, [&](std::shared_ptr<GenericDataStore> data) {
+      return GetPlayerData(data, team, playerIdx)->kills;
+    }, dataHistory);
   }
 
-  if (inPlayer->deaths > deaths) {
+  if (inPlayer->deaths > deaths && inPlayer->deaths - deaths <= 2) {
     deaths = inPlayer->deaths;
+  } else {
+    deaths = SmoothValue<int>(inPlayer->deaths, deaths, [&](std::shared_ptr<GenericDataStore> data) {
+      return GetPlayerData(data, team, playerIdx)->deaths;
+    }, dataHistory);
   }
 
-  if (inPlayer->assists > assists) {
+  if (inPlayer->assists > assists && inPlayer->assists - assists <= 7) {
     assists = inPlayer->assists;
+  } else {
+    assists = SmoothValue<int>(inPlayer->assists, assists, [&](std::shared_ptr<GenericDataStore> data) {
+      return GetPlayerData(data, team, playerIdx)->assists;
+    }, dataHistory);
   }
 
   // Need some sanity check here. Hopefully 100cs is reasonable..?

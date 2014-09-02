@@ -4,11 +4,7 @@
 
 #include "common.h"
 #include "LeaguePlayerData.h"
-
-enum ELeagueTeams {
-  ELT_BLUE,
-  ELT_PURPLE
-};
+#include "Data.h"
 
 typedef std::shared_ptr<struct LeagueTeamData> PtrLeagueTeamData;
 struct LeagueTeamData {
@@ -27,7 +23,7 @@ struct LeagueTeamData {
   }
 
   // This struct is smart enough to take in new team data and update itself in a logical manner.
-  void Update(PtrLeagueTeamData newData, int timeStamp);
+  void Update(PtrLeagueTeamData newData, int timeStamp, std::vector<std::shared_ptr<GenericDataStore>>& dataHistory);
 
   // JSONify
   struct cJSON* CreateJSON();

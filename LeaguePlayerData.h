@@ -2,11 +2,19 @@
 #ifndef _LEAGUEPLAYERDATA_H
 #define _LEAGUEPLAYERDATA_H
 #include "common.h"
+#include "Data.h"
+
+enum ELeagueTeams {
+  ELT_BLUE,
+  ELT_PURPLE
+};
+
 
 typedef std::shared_ptr<struct LeaguePlayerData> PtrLeaguePlayerData;
 struct LeaguePlayerData {
   LeaguePlayerData() : name(""), champion(""),
-    kills(0), deaths(0), assists(0), cs(0), isDead(false), level(0), isLowHealth(false), lastLowHealthUpdate(0) {
+    kills(0), deaths(0), assists(0), cs(0), isDead(false), level(0), isLowHealth(false), lastLowHealthUpdate(0),
+    team(ELT_BLUE), playerIdx(0) {
 
   }
 
@@ -23,6 +31,9 @@ struct LeaguePlayerData {
   bool isLowHealth;
   int lastLowHealthUpdate;
 
+  ELeagueTeams team;
+  int playerIdx;
+
   void Print() {
     std::cout << "- Player: " << name << " as " << champion << std::endl;
     std::cout << "-- Player Score: " << kills << "/" << deaths << "/" << assists << std::endl;
@@ -32,7 +43,7 @@ struct LeaguePlayerData {
     std::cout << "-- Player Level: " << level << std::endl;
   }
 
-  void Update(PtrLeaguePlayerData inPlayer, int timeStamp);
+  void Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::vector<std::shared_ptr<GenericDataStore>>& dataHistory);
 
   // JSONify
   struct cJSON* CreateJSON();

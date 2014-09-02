@@ -4,7 +4,7 @@
  * Update only if the new data makes sense.
  * For example, kills can't go down.
  */
-void LeagueTeamData::Update(PtrLeagueTeamData newData, int timeStamp) {
+void LeagueTeamData::Update(PtrLeagueTeamData newData, int timeStamp, std::vector<std::shared_ptr<GenericDataStore>>& dataHistory) {
   if (newData->kills > kills) {
     kills = newData->kills;
   }
@@ -19,7 +19,7 @@ void LeagueTeamData::Update(PtrLeagueTeamData newData, int timeStamp) {
 
   // Now make sure the players get updated too
   for (int i = 0; i < 5; ++i) {
-    players[i]->Update(newData->players[i], timeStamp);
+    players[i]->Update(newData->players[i], timeStamp, dataHistory);
   }
 }
 
