@@ -14,7 +14,7 @@ PtrLeaguePlayerData GetPlayerData(std::shared_ptr<GenericDataStore> data, ELeagu
 void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::vector<std::shared_ptr<GenericDataStore>>& dataHistory) {
   // FOR NOW: Assume name and champion never changes
   // TODO: This will probably have to change at some point. Probably from user input.
-  if (inPlayer->kills > kills && inPlayer->kills - kills <= 7) {
+  if (inPlayer->kills > kills && inPlayer->kills - kills <= 3) {
     kills = inPlayer->kills;
   } else {
     kills = SmoothValue<int>(inPlayer->kills, kills, [&](std::shared_ptr<GenericDataStore> data) {
@@ -30,7 +30,7 @@ void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::
     }, dataHistory);
   }
 
-  if (inPlayer->assists > assists && inPlayer->assists - assists <= 7) {
+  if (inPlayer->assists > assists && inPlayer->assists - assists <= 3) {
     assists = inPlayer->assists;
   } else {
     assists = SmoothValue<int>(inPlayer->assists, assists, [&](std::shared_ptr<GenericDataStore> data) {
