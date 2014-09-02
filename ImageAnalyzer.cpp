@@ -47,6 +47,8 @@ std::string ImageAnalyzer::GetTextFromImage(cv::Mat& inImage, std::string& langu
       gValues.push_back(STRING(s.c_str()));
     }
   }
+  gKeys.push_back(STRING("user_words_suffix"));
+  gValues.push_back(STRING("user-words"));
 
   tessApi.Init(baseDir, language.c_str(), tesseract::OEM_DEFAULT, NULL, 0, &gKeys, &gValues, false);
   if (!whitelist.empty()) {

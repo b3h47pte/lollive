@@ -17,7 +17,7 @@ void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::
   if (inPlayer->kills > kills && inPlayer->kills - kills <= 3) {
     kills = inPlayer->kills;
   } else {
-    kills = SmoothValue<int>(inPlayer->kills, kills, [&](std::shared_ptr<GenericDataStore> data) {
+    kills = SmoothValueFreq<int>(inPlayer->kills, kills, [&](std::shared_ptr<GenericDataStore> data) {
       return GetPlayerData(data, team, playerIdx)->kills;
     }, dataHistory);
   }
@@ -25,7 +25,7 @@ void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::
   if (inPlayer->deaths > deaths && inPlayer->deaths - deaths <= 2) {
     deaths = inPlayer->deaths;
   } else {
-    deaths = SmoothValue<int>(inPlayer->deaths, deaths, [&](std::shared_ptr<GenericDataStore> data) {
+    deaths = SmoothValueFreq<int>(inPlayer->deaths, deaths, [&](std::shared_ptr<GenericDataStore> data) {
       return GetPlayerData(data, team, playerIdx)->deaths;
     }, dataHistory);
   }
@@ -33,7 +33,7 @@ void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::
   if (inPlayer->assists > assists && inPlayer->assists - assists <= 3) {
     assists = inPlayer->assists;
   } else {
-    assists = SmoothValue<int>(inPlayer->assists, assists, [&](std::shared_ptr<GenericDataStore> data) {
+    assists = SmoothValueFreq<int>(inPlayer->assists, assists, [&](std::shared_ptr<GenericDataStore> data) {
       return GetPlayerData(data, team, playerIdx)->assists;
     }, dataHistory);
   }
@@ -41,6 +41,11 @@ void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::
   // Need some sanity check here. Hopefully 100cs is reasonable..?
   if (inPlayer->cs > cs && inPlayer->cs - cs < 100) {
     cs = inPlayer->cs;
+  } else {
+    // Smooth just in case. Usually this won't result in anything special since CS usually changes constantly.
+    cs = SmoothValueFreq<int>(inPlayer->cs, cs, [&](std::shared_ptr<GenericDataStore> data) {
+      return GetPlayerData(data, team, playerIdx)->cs;
+    }, dataHistory);
   }
 
   if (inPlayer->level > level) {

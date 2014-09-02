@@ -9,13 +9,14 @@
 typedef std::shared_ptr<struct LeagueTeamData> PtrLeagueTeamData;
 struct LeagueTeamData {
   ELeagueTeams team;
+  std::string teamName;
   int kills;
   int gold;
   int towerKills;
   PtrLeaguePlayerData players[5];
 
   void Print() {
-    std::cout << "======== TEAM " << team << " ========" << std::endl;
+    std::cout << "======== TEAM " << team << " " << teamName << " ========" << std::endl;
     std::cout << "Team Kills: " << kills << std::endl;
     std::cout << "Team Gold: " << gold << std::endl;
     std::cout << "Team Tower Kills: " << towerKills << std::endl;

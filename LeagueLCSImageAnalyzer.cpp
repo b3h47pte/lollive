@@ -1,10 +1,42 @@
 #include "LeagueLCSImageAnalyzer.h"
+#include "LeagueTeamData.h"
 
 LeagueLCSImageAnalyzer::LeagueLCSImageAnalyzer(IMAGE_PATH_TYPE ImagePath) : LeagueSpectatorImageAnalyzer(ImagePath) {
 }
 
 LeagueLCSImageAnalyzer::~LeagueLCSImageAnalyzer() {
 
+}
+
+PtrLeagueTeamData LeagueLCSImageAnalyzer::AnalyzeTeamData(ELeagueTeams team) {
+  PtrLeagueTeamData newTeam = LeagueSpectatorImageAnalyzer::AnalyzeTeamData(team);
+  newTeam->teamName = GetTeamName(team);
+  return newTeam;
+}
+
+std::string LeagueLCSImageAnalyzer::GetTeamName(ELeagueTeams team) {
+  cv::Mat filterImage = FilterImage_Section_Channel_BasicThreshold_Resize(mImage,
+    GetTeamNameSection(team),
+    (team == ELT_BLUE) ? 0 : 2,
+    115.0, 2.0, 2.0);
+  std::string teamText = GetTextFromImage(filterImage, LeagueIdent, std::string("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), tesseract::PSM_SINGLE_WORD);
+  return teamText;
+}
+
+cv::Rect LeagueLCSImageAnalyzer::GetTeamNameSection(ELeagueTeams team) {
+  cv::Rect rect;
+  if (team == ELT_BLUE) {
+    rect = cv::Rect((int)(mImage.cols * (313.0f / 1280.0f)),
+      (int)(mImage.rows * (2.0f / 720.0f)),
+      (int)(mImage.cols * (84.0f / 1280.0f)),
+      (int)(mImage.rows * (31.0f / 720.0f)));
+  } else {
+    rect = cv::Rect((int)(mImage.cols * (877.0f / 1280.0f)),
+      (int)(mImage.rows * (2.0f / 720.0f)),
+      (int)(mImage.cols * (84.0f / 1280.0f)),
+      (int)(mImage.rows * (31.0f / 720.0f)));
+  }
+  return rect;
 }
 
 cv::Rect LeagueLCSImageAnalyzer::GetPlayerChampionSection(uint idx, ELeagueTeams team) {

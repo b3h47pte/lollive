@@ -55,7 +55,7 @@ inline bool IsValid<std::string>(std::string t) {
 // 
 /// CALL THIS FUNCTION ONLY IF SOMETHING IS BELIEVED TO BE WRONG.
 template<typename T>
-inline T SmoothValue(T& newValue, T& curValue, std::function<T(std::shared_ptr<GenericDataStore>)> fnc, std::vector<std::shared_ptr<GenericDataStore>>& inHistory) {
+inline T SmoothValueFreq(T& newValue, T& curValue, std::function<T(std::shared_ptr<GenericDataStore>)> fnc, std::vector<std::shared_ptr<GenericDataStore>>& inHistory) {
   // Need to have a minimum number of frames for analysis to work.
   // TODO: Configurable
   if (!IsValid(newValue)) {
