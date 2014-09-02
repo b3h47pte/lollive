@@ -27,14 +27,14 @@ bool LeagueImageAnalyzer::Analyze() {
     return false;
   }
   
-  //std::cout << "LoL Frame Data: " << std::endl;
-  std::clock_t begin = std::clock();
+  std::cout << "LoL Frame Data: " << std::endl;
+  //std::clock_t begin = std::clock();
 
   // Current match time.
   int time = AnalyzeMatchTime();
   std::shared_ptr<GenericData<int>> timeProp(new GenericData<int>(time));
   (*mData)["CurrentTime"] = timeProp;
-  //std::cout << "Current Time: " << time << std::endl;
+  std::cout << "Current Time: " << time << std::endl;
 
   // Team Data.
   PtrLeagueTeamData blueTeam = AnalyzeTeamData(ELT_BLUE);
