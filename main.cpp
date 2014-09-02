@@ -17,10 +17,10 @@ int main() {
   //VideoFetcher* vf = new VideoFetcher("tsmVSlmq", "twitch.tv/riotgames", test);
   //vf->BeginFetch();
 
-  //WebFrontend* wf = new WebFrontend();
+  WebFrontend* wf = new WebFrontend();
   
-  LeagueLCSImageAnalyzer* img = new LeagueLCSImageAnalyzer(path1);
-  img->Analyze();
+  //LeagueLCSImageAnalyzer* img = new LeagueLCSImageAnalyzer(path1);
+  //img->Analyze();
   /*
   img = new LeagueLCSImageAnalyzer(path2);
   img->Analyze();

@@ -173,10 +173,15 @@ int LeagueSpectatorImageAnalyzer::AnalyzeTeamTowerKills(ELeagueTeams team) {
     (team == ELT_BLUE) ? 0 : 2,
     100.0, 2.0, 2.0);
   std::string towerKills = GetTextFromImage(filterImage, LeagueIdent, std::string("0123456789"), tesseract::PSM_SINGLE_BLOCK);
+  std::string towerKills2 = GetTextFromImage(filterImage, LeagueIdent, std::string("0123456789"), tesseract::PSM_SINGLE_CHAR);
   try {
     return std::stoi(towerKills, NULL);
   } catch (...) {
-    return -1;
+    try {
+      return std::stoi(towerKills2, NULL);
+    } catch (...) {
+      return -1;
+    }
   }
   return -1;
 }
