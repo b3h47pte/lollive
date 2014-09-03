@@ -17,7 +17,7 @@ void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::
   if (inPlayer->kills > kills && inPlayer->kills - kills <= 3) {
     kills = inPlayer->kills;
   } else {
-    kills = SmoothValueFreq<int>(inPlayer->kills, kills, [&](std::shared_ptr<GenericDataStore> data) {
+    kills = SmoothValueVariance<int>(inPlayer->kills, kills, [&](std::shared_ptr<GenericDataStore> data) {
       return GetPlayerData(data, team, playerIdx)->kills;
     }, dataHistory);
   }
@@ -25,7 +25,7 @@ void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::
   if (inPlayer->deaths > deaths && inPlayer->deaths - deaths <= 2) {
     deaths = inPlayer->deaths;
   } else {
-    deaths = SmoothValueFreq<int>(inPlayer->deaths, deaths, [&](std::shared_ptr<GenericDataStore> data) {
+    deaths = SmoothValueVariance<int>(inPlayer->deaths, deaths, [&](std::shared_ptr<GenericDataStore> data) {
       return GetPlayerData(data, team, playerIdx)->deaths;
     }, dataHistory);
   }
@@ -33,7 +33,7 @@ void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::
   if (inPlayer->assists > assists && inPlayer->assists - assists <= 3) {
     assists = inPlayer->assists;
   } else {
-    assists = SmoothValueFreq<int>(inPlayer->assists, assists, [&](std::shared_ptr<GenericDataStore> data) {
+    assists = SmoothValueVariance<int>(inPlayer->assists, assists, [&](std::shared_ptr<GenericDataStore> data) {
       return GetPlayerData(data, team, playerIdx)->assists;
     }, dataHistory);
   }
@@ -43,7 +43,7 @@ void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::
     cs = inPlayer->cs;
   } else {
     // Smooth just in case. Usually this won't result in anything special since CS usually changes constantly.
-    cs = SmoothValueFreq<int>(inPlayer->cs, cs, [&](std::shared_ptr<GenericDataStore> data) {
+    cs = SmoothValueVariance<int>(inPlayer->cs, cs, [&](std::shared_ptr<GenericDataStore> data) {
       return GetPlayerData(data, team, playerIdx)->cs;
     }, dataHistory);
   }

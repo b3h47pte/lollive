@@ -40,7 +40,13 @@ int LeagueSpectatorImageAnalyzer::AnalyzeMatchTime() {
   // just try to manually stick a semi-colon in the right spot.
   if (splitIdx == std::string::npos) {
     try {
-      result.replace(result.end() - 3, result.end() - 2, 1, ':');
+      if (result.size() == 5) {
+        result.replace(result.end() - 3, result.end() - 2, 1, ':');
+      } else if (result.size() < 5) {
+        result.insert(result.end() - 2, ':');
+      } else {
+        return -1; // wtf is this time. no idea.
+      }
     } catch (...) {
       // If for some reason the replacement failed, then assume that we have failed to read in the time.
       return -1;

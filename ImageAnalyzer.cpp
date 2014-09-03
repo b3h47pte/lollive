@@ -31,7 +31,7 @@ void ImageAnalyzer::ShowImageNoPause(cv::Mat& image, const char* name) {
   cv::imshow(name, image);
 }
 
-std::string ImageAnalyzer::GetTextFromImage(cv::Mat& inImage, std::string& language, std::string& whitelist, tesseract::PageSegMode mode, std::vector<std::string>* keys, std::vector<std::string>* values) {
+std::string ImageAnalyzer::GetTextFromImage(cv::Mat& inImage, std::string& language, std::string& whitelist, tesseract::PageSegMode mode, std::vector<std::string>* keys, std::vector<std::string>* values, bool useUserWords) {
   // Get the actual text.
   tesseract::TessBaseAPI tessApi;
   char const* baseDir = getenv("TESSDATA_DIR");
@@ -47,8 +47,11 @@ std::string ImageAnalyzer::GetTextFromImage(cv::Mat& inImage, std::string& langu
       gValues.push_back(STRING(s.c_str()));
     }
   }
-  gKeys.push_back(STRING("user_words_suffix"));
-  gValues.push_back(STRING("user-words"));
+
+  if (useUserWords) {
+    gKeys.push_back(STRING("user_words_suffix"));
+    gValues.push_back(STRING("user-words"));
+  }
 
   tessApi.Init(baseDir, language.c_str(), tesseract::OEM_DEFAULT, NULL, 0, &gKeys, &gValues, false);
   if (!whitelist.empty()) {

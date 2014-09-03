@@ -19,7 +19,7 @@ std::string LeagueLCSImageAnalyzer::GetTeamName(ELeagueTeams team) {
     GetTeamNameSection(team),
     (team == ELT_BLUE) ? 0 : 2,
     115.0, 2.0, 2.0);
-  std::string teamText = GetTextFromImage(filterImage, LeagueIdent, std::string("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), tesseract::PSM_SINGLE_WORD);
+  std::string teamText = GetTextFromImage(filterImage, LeagueIdent, std::string("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), tesseract::PSM_SINGLE_WORD, NULL, NULL, true);
   return teamText;
 }
 
