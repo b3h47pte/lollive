@@ -150,6 +150,9 @@
     <ClInclude Include="TestVideoFetch.h">
       <Filter>VideoFetch\Test</Filter>
     </ClInclude>
+    <ClInclude Include="LeagueConstants.h">
+      <Filter>VideoAnalyze\Image\LoL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VideoFetcher.cpp">

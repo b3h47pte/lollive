@@ -2,6 +2,7 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
 #include <algorithm>
+#include "LeagueConstants.h"
 
 LeagueSpectatorImageAnalyzer::LeagueSpectatorImageAnalyzer(IMAGE_PATH_TYPE ImagePath): LeagueImageAnalyzer(ImagePath) {
 }
@@ -330,7 +331,15 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
   cv::MatND* baseSubHSHistsNoRed = new cv::MatND[x_dim * y_dim];
   cv::MatND* baseSubVHists = new cv::MatND[x_dim * y_dim];
 
+
+  // Champion Hint. This will force us to choose a certain champion and save us a lot of computation. THIS HINT BETTER BE RIGHT.
+  std::string hintKey = CreateLeagueChampionHint(idx, team);
+  
+  std::string championHint = mHints[hintKey];
   for (auto& pair : *db) {
+    if (championHint != "" && pair.second->shortName != championHint) {
+      continue;
+    }
     // Make this image as close to the input image as possible
     baseImage = FilterImage_Resize(pair.second->image, (float)filterImage.cols / pair.second->image.cols, (float)filterImage.rows / pair.second->image.rows);
     cv::GaussianBlur(baseImage, baseImage, cv::Size(3, 3), 0.0); // Blur the image since the input is probably blurry too.
@@ -385,7 +394,7 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
   //  a) The two outputs match (for the RGB image and the GB image). In this case, it should be clear that the character
   //     isn't low on health, and that whatever the RGB image's result is should be taken.
   //  b) The two outputs don't match! In this case we should take whichever gives a higher score. If the no red image
-  //     has the high score, then we know the champion is low on health
+  //     has the high score, then we know the champion is low on health 
        
   // Set this to a default value first
   if (isLowOnHealth) {
@@ -406,7 +415,6 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
         *isDead = false;
       }
     }
-    
   }
   
   // Get the champion level. Since there's a possibility of the image being red, go to HSV and just use the 'value.' :)

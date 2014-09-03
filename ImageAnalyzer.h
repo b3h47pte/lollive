@@ -42,6 +42,9 @@ public:
   // Get Data
   std::shared_ptr<GenericDataStore> GetData() { return mData; }
 
+  // Hint System. Only strings can be used here.
+  void SetHint(std::string& key, std::string& value) { mHints[key] = value; }
+
 protected:
   // Set to true when we are done analyzing the image
   bool bIsFinished;
@@ -79,6 +82,9 @@ protected:
   cv::Mat FilterImage_BasicThreshold(cv::Mat inImage, double threshold);
   cv::Mat FilterImage_Resize(cv::Mat inImage, float resX, float resY);
   cv::Mat FilterImage_Grayscale(cv::Mat inImage);
+
+  // Image Hint System. What we do with these hints is totally up to the subclasses.
+  std::map<std::string, std::string> mHints;
 };
 
 #endif

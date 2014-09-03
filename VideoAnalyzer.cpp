@@ -15,6 +15,8 @@ VideoAnalyzer::~VideoAnalyzer() {
  */
 void VideoAnalyzer::NotifyNewFrame(IMAGE_PATH_TYPE path, IMAGE_FRAME_COUNT_TYPE frame) {
   std::shared_ptr<class ImageAnalyzer> imgAnalyzer = CreateImageAnalyzer(path);
+  mDataCV.wait(mDataLock, [&]() {return mFrameCount == frame; });
+  PostCreateImageAnalyzer(imgAnalyzer);
   try {
     imgAnalyzer->Analyze();
   } catch (...) {
@@ -22,7 +24,6 @@ void VideoAnalyzer::NotifyNewFrame(IMAGE_PATH_TYPE path, IMAGE_FRAME_COUNT_TYPE 
     return;
   }
 
-  mDataCV.wait(mDataLock, [&]() {return mFrameCount == frame; });
   try {
     if (imgAnalyzer->IsAnalysisFinished()) {
       StoreData(imgAnalyzer);

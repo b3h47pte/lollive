@@ -159,6 +159,7 @@
     <ClInclude Include="ImageAnalyzer.h" />
     <ClInclude Include="LeagueChampionData.h" />
     <ClInclude Include="LeagueChampionDatabase.h" />
+    <ClInclude Include="LeagueConstants.h" />
     <ClInclude Include="LeagueImageAnalyzer.h" />
     <ClInclude Include="LeagueLCSImageAnalyzer.h" />
     <ClInclude Include="LeagueLCSVideoAnalyzer.h" />

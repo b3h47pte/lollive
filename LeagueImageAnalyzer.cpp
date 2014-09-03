@@ -28,7 +28,7 @@ bool LeagueImageAnalyzer::Analyze() {
   }
   
   std::cout << "LoL Frame Data: " << std::endl;
-  //std::clock_t begin = std::clock();
+  std::clock_t begin = std::clock();
 
   // Current match time.
   int time = AnalyzeMatchTime();
@@ -47,9 +47,9 @@ bool LeagueImageAnalyzer::Analyze() {
   (*mData)["PurpleTeam"] = purpleTeamProp;
   purpleTeam->Print();
 
-  //std::clock_t end = std::clock();
-  //double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-  //std::cout << "Elapsed Seconds: " << elapsed_secs << std::endl;
+  std::clock_t end = std::clock();
+  double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+  std::cout << "Elapsed Seconds: " << elapsed_secs << std::endl;
 
   bIsFinished = true;
   return ret;

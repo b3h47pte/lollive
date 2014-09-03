@@ -36,6 +36,9 @@ public:
 protected:
   virtual std::shared_ptr<class ImageAnalyzer> CreateImageAnalyzer(std::string& path) = 0;
 
+  // Must have mDataCV locked before calling this.
+  virtual void PostCreateImageAnalyzer(std::shared_ptr<class ImageAnalyzer> img) = 0;
+
   // Overridden by subclasses so that they can do what is necessary to 
   // modify the data. Returns whether or not this frame was used. 
   virtual bool StoreData(std::shared_ptr<class ImageAnalyzer> img) = 0;

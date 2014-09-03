@@ -10,6 +10,7 @@
 class LeagueSpectatorVideoAnalyzer : public LeagueVideoAnalyzer {
 protected:
   virtual std::shared_ptr<class ImageAnalyzer> CreateImageAnalyzer(std::string& path);
+  virtual void PostCreateImageAnalyzer(std::shared_ptr<class ImageAnalyzer> img);
 };
 
 #endif
