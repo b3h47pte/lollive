@@ -30,6 +30,10 @@ bool LeagueVideoAnalyzer::StoreData(std::shared_ptr<ImageAnalyzer> img) {
     ++continuousInvalidFrameCount;
     // TODO: Should be configurable
     isMatchOver = (continuousInvalidFrameCount >= 3); 
+
+    // Once we determine the match is over, clear our data. If they're ever needed again, we'll have to reanalyze.
+    mData = NULL;
+
     return false;
   }
   continuousInvalidFrameCount = 0;
