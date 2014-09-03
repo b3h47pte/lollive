@@ -18,6 +18,12 @@ protected:
 
   // Get JSON
   virtual std::string ParseJSON();
+
+protected:
+  // Need to be able to determine when the match is over. I do this by checking for a sequence of invalid frames.
+  int continuousInvalidFrameCount;
+  bool isMatchOver;
+
 private:
 };
 

@@ -10,6 +10,55 @@ LeagueSpectatorImageAnalyzer::~LeagueSpectatorImageAnalyzer() {
 
 }
 
+#define CHECK_INVALID_INT_COUNT(num, validCount, totalCount) \
+if (num != -1) {\
+  ++validCount; \
+}\
+++totalCount;
+
+/*
+ * If all a majority of data numbers are things like -1 then we assume
+ * that this frame is invalid. Note that I don't check for strings since
+ * that's a bit harder to detect whether or not I got a trash value.
+ */
+bool LeagueSpectatorImageAnalyzer::IsValidFrame() {
+  int totalItems = 0;
+  int validItems = 0;
+
+  // Check time
+  CHECK_INVALID_INT_COUNT(RetrieveData<int>(mData, std::string("CurrentTime")), validItems, totalItems);
+
+  // Check the team data
+  // TODO: Clean up 
+  PtrLeagueTeamData bt = RetrieveData<PtrLeagueTeamData>(mData, std::string("BlueTeam"));
+  CHECK_INVALID_INT_COUNT(bt->kills, validItems, totalItems);
+  CHECK_INVALID_INT_COUNT(bt->gold, validItems, totalItems);
+  CHECK_INVALID_INT_COUNT(bt->towerKills, validItems, totalItems);
+  for (int i = 0; i < 5; ++i) {
+    PtrLeaguePlayerData player = bt->players[i];
+    CHECK_INVALID_INT_COUNT(player->kills, validItems, totalItems);
+    CHECK_INVALID_INT_COUNT(player->deaths, validItems, totalItems);
+    CHECK_INVALID_INT_COUNT(player->assists, validItems, totalItems);
+    CHECK_INVALID_INT_COUNT(player->cs, validItems, totalItems);
+  }
+
+  PtrLeagueTeamData pt = RetrieveData<PtrLeagueTeamData>(mData, std::string("PurpleTeam"));
+  CHECK_INVALID_INT_COUNT(pt->kills, validItems, totalItems);
+  CHECK_INVALID_INT_COUNT(pt->gold, validItems, totalItems);
+  CHECK_INVALID_INT_COUNT(pt->towerKills, validItems, totalItems);
+  for (int i = 0; i < 5; ++i) {
+    PtrLeaguePlayerData player = pt->players[i];
+    CHECK_INVALID_INT_COUNT(player->kills, validItems, totalItems);
+    CHECK_INVALID_INT_COUNT(player->deaths, validItems, totalItems);
+    CHECK_INVALID_INT_COUNT(player->assists, validItems, totalItems);
+    CHECK_INVALID_INT_COUNT(player->cs, validItems, totalItems);
+  }
+
+  double pass = (double)validItems / totalItems;
+  // TODO: Configurable threshold
+  return (pass >= 0.5);
+}
+
 /*
  * Grabs the match time from the header bar in the upper center part of the image. 
  * A value of 0 is returned if no value can be parsed.

@@ -28,6 +28,10 @@ public:
   // if we are able to extract very little data from this image.
   virtual bool Analyze() = 0;
 
+  // Whether or not this frame is a valid frame or not. 
+  // A valid frame would be a frame from the game. 
+  virtual bool IsValidFrame() = 0;
+
   // Whether or not analysis has finished
   bool IsAnalysisFinished() const { return bIsFinished; }
 

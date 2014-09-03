@@ -13,6 +13,8 @@ public:
   LeagueSpectatorImageAnalyzer(IMAGE_PATH_TYPE ImagePath);
   virtual ~LeagueSpectatorImageAnalyzer();
 
+  virtual bool IsValidFrame();
+
 protected:
   // Gets the match timer from the header bar up top.
   virtual int AnalyzeMatchTime();

@@ -3,7 +3,7 @@
 #include "LeagueTeamData.h"
 #include "cjson/cJSON.h"
 
-LeagueVideoAnalyzer::LeagueVideoAnalyzer() {
+LeagueVideoAnalyzer::LeagueVideoAnalyzer() : continuousInvalidFrameCount(0), isMatchOver(false) {
 
 }
 
@@ -25,6 +25,15 @@ bool LeagueVideoAnalyzer::StoreData(std::shared_ptr<ImageAnalyzer> img) {
     mData = newData;
     return true;
   }
+
+  if (!img->IsValidFrame()) {
+    ++continuousInvalidFrameCount;
+    // TODO: Should be configurable
+    isMatchOver = (continuousInvalidFrameCount >= 3); 
+    return false;
+  }
+  continuousInvalidFrameCount = 0;
+  isMatchOver = false;
 
   // There's always going to be a time stamp. Check to make sure this time stamp is more recent,
   // otherwise it's probably a replay.
@@ -64,6 +73,13 @@ std::string LeagueVideoAnalyzer::ParseJSON() {
   }
 
   cJSON* newJson = cJSON_CreateObject();
+  // Game status field to let the user know which part of the game we're in
+  if (isMatchOver) {
+    cJSON_AddStringToObject(newJson, "gamestatus", "matchover");
+  } else {
+    cJSON_AddStringToObject(newJson, "gamestatus", "inprogress");
+  }
+
   if (DataExists(mData, std::string("CurrentTime"))) {
     cJSON_AddNumberToObject(newJson, "timestamp", RetrieveData<int>(mData, std::string("CurrentTime")));
   }
