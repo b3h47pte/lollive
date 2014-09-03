@@ -8,15 +8,20 @@
 
 typedef std::shared_ptr<struct LeagueTeamData> PtrLeagueTeamData;
 struct LeagueTeamData {
+  LeagueTeamData() : team(ELT_BLUE), teamName(""), teamScore(-1), kills(-1), gold(-1), towerKills(-1) {
+  }
+
   ELeagueTeams team;
   std::string teamName;
+  int teamScore; // team score as in games won (when playing in a series).
+
   int kills;
   int gold;
   int towerKills;
   PtrLeaguePlayerData players[5];
 
   void Print() {
-    std::cout << "======== TEAM " << team << " " << teamName << " ========" << std::endl;
+    std::cout << "======== TEAM " << team << " " << teamName  << "(" << teamScore << ")" <<" ========" << std::endl;
     std::cout << "Team Kills: " << kills << std::endl;
     std::cout << "Team Gold: " << gold << std::endl;
     std::cout << "Team Tower Kills: " << towerKills << std::endl;

@@ -55,6 +55,7 @@ cJSON* LeagueTeamData::CreateJSON() {
   cJSON_AddNumberToObject(newJson, "teamgold", gold);
   cJSON_AddNumberToObject(newJson, "teamtowers", towerKills);
   cJSON_AddStringToObject(newJson, "teamname", teamName.c_str());
+  cJSON_AddNumberToObject(newJson, "teamgameswon", teamScore);
 
   cJSON* playersJson = cJSON_CreateArray();
   for (int i = 0; i < 5; ++i) {

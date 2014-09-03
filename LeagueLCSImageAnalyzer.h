@@ -15,8 +15,13 @@ protected:
   // Need to get the team name
   virtual PtrLeagueTeamData AnalyzeTeamData(ELeagueTeams team);
 
+  // Team Name
   virtual std::string GetTeamName(ELeagueTeams team);
   virtual cv::Rect GetTeamNameSection(ELeagueTeams team);
+
+  // Team Series Score
+  virtual int GetTeamGamesWon(ELeagueTeams team);
+  virtual cv::Rect GetTeamGamesWonSection(ELeagueTeams team);
 
   // The location of the side bars for champions is slightly different than regular spectator mode.
   // Wtf Riot.
