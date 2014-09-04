@@ -8,8 +8,8 @@ void test(IMAGE_PATH_TYPE t, IMAGE_FRAME_COUNT_TYPE t1) {
 }
 
 int main() {
-  std::string path1 = "Images/drafttest/frame46.png";
-  std::string path2 = "Images/2014-09-01-league-lcs2/frame27.png";
+  std::string path1 = "Images/drafttest/frame44.png";
+  std::string path2 = "Images/drafttest/frame65.png";
   std::string path3 = "Images/2014-09-01-league-lcs2/frame28.png";
   std::string path4 = "Images/2014-09-01-league-lcs2/frame29.png";
   std::string path5 = "Images/2014-09-01-league-lcs2/frame30.png";

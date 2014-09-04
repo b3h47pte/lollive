@@ -38,8 +38,9 @@ void LeagueTeamData::Update(PtrLeagueTeamData newData, int timeStamp, std::vecto
     }, dataHistory);
   }
 
-  if (towerKills > 7000) {
-    std::cout << "TOWER KILLS TOO HIGH: " << towerKills << " " << timeStamp << std::endl;
+  // Update bans
+  for (int i = 0; i < 3; ++i) {
+    bans[i] = newData->bans[i];
   }
 
   // Now make sure the players get updated too
@@ -56,6 +57,14 @@ cJSON* LeagueTeamData::CreateJSON() {
   cJSON_AddNumberToObject(newJson, "teamtowers", towerKills);
   cJSON_AddStringToObject(newJson, "teamname", teamName.c_str());
   cJSON_AddNumberToObject(newJson, "teamgameswon", teamScore);
+
+  cJSON* bansJson = cJSON_CreateArray();
+  for (int i = 0; i < 3; ++i) {
+    if (bans[i] != "") {
+      cJSON_AddItemToArray(bansJson, cJSON_CreateString(bans[i].c_str()));
+    }
+  }
+  cJSON_AddItemToObject(newJson, "bans", bansJson);
 
   cJSON* playersJson = cJSON_CreateArray();
   for (int i = 0; i < 5; ++i) {

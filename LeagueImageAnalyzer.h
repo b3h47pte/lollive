@@ -78,6 +78,9 @@ protected:
   virtual cv::Rect GetPlayerKDASection(uint idx, ELeagueTeams team) = 0;
   virtual cv::Rect GetPlayerCSSection(uint idx, ELeagueTeams team) = 0;
 
+  // Utility Function to help us determine who the input champion is
+  std::string FindMatchingChampion(cv::Mat filterImage, std::vector<std::string>& championHints, bool& isLowHealth, bool& isDead);
+
 private:
 };
 

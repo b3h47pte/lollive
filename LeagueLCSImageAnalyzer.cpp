@@ -14,6 +14,9 @@ PtrLeagueTeamData LeagueLCSImageAnalyzer::AnalyzeTeamData(ELeagueTeams team) {
   PtrLeagueTeamData newTeam = LeagueSpectatorImageAnalyzer::AnalyzeTeamData(team);
   newTeam->teamName = GetTeamName(team);
   newTeam->teamScore = GetTeamGamesWon(team);
+  if (bIsDraftBan) {
+    GetBans(newTeam->bans, team);
+  }
   return newTeam;
 }
 
@@ -210,4 +213,55 @@ cv::Rect LeagueLCSImageAnalyzer::GetPlayerCSSection(uint idx, ELeagueTeams team)
     (int)(mImage.cols * (23.0f / 1280.0f)),
     (int)(mImage.rows * (14.0f / 720.0f)));
   return rect;
+}
+
+/*
+ * Get Bans! Woo. We assume that the draft screen takes up the entire screen.
+ * TODO: Maybe provide the ban percentage as well?
+ */
+void LeagueLCSImageAnalyzer::GetBans(std::string* outArray, ELeagueTeams team) {
+  // There are always at most three bans.
+  std::vector<std::string> tmpHints;
+  bool tmpB1, tmpB2;
+  for (uint i = 0; i < 3; ++i) {
+    cv::Rect banSection = GetBansSection(team, i);
+    cv::Rect banPercentSection = GetBansPercentageSection(banSection);
+    cv::Mat percImg = FilterImage_Section_Grayscale_BasicThreshold_Resize(mImage, banPercentSection, 100.0f, 3.0f, 3.0f);
+    std::string banPercentage = GetTextFromImage(percImg, LeagueIdent, std::string("0123456789.%"), tesseract::PSM_SINGLE_WORD);
+    if (banPercentage == "") {
+      continue;
+    }
+    cv::Mat img = FilterImage_Section(mImage, banSection);
+    outArray[i] = FindMatchingChampion(img, tmpHints, tmpB1, tmpB2);
+  }
+}
+
+cv::Rect LeagueLCSImageAnalyzer::GetBansSection(ELeagueTeams team, uint idx) {
+  cv::Rect rect;
+  float x; // x -- determined by the index AND the team
+  float y;
+  y = 631.0f;
+  if (team == ELT_BLUE) {
+    x = 17.0f;
+  } else {
+    x = 1092.0f;
+  }
+  x += idx * 63.0f;
+
+  rect = cv::Rect((int)(mImage.cols * (x / 1280.0f)),
+    (int)(mImage.rows * (y / 720.0f)),
+    (int)(mImage.cols * (51.0f / 1280.0f)),
+    (int)(mImage.rows * (51.0f / 720.0f)));
+  return rect;
+}
+
+/*
+ * Takes in the result of 'GetBansSection' and add just changes the height and y-position
+ * to get the appropriate image for the ban percentage.
+ */
+cv::Rect LeagueLCSImageAnalyzer::GetBansPercentageSection(cv::Rect banRect) {
+  cv::Rect newRect = banRect;
+  newRect.y += (int)(mImage.rows * 52.0f / 720.0f);
+  newRect.height = (int)(mImage.rows * 21.0f / 720.0f);
+  return newRect;
 }

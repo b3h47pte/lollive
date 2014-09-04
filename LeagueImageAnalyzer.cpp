@@ -3,6 +3,8 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/superres.hpp"
 #include <ctime>
+#include <algorithm>
+#include "LeagueConstants.h"
 
 LeagueImageAnalyzer::LeagueImageAnalyzer(IMAGE_PATH_TYPE ImagePath): ImageAnalyzer(ImagePath) {
   ChampionDatabase = LeagueChampionDatabase::Get();
@@ -43,7 +45,7 @@ bool LeagueImageAnalyzer::Analyze() {
   PtrLeagueTeamData blueTeam = AnalyzeTeamData(ELT_BLUE);
   std::shared_ptr<GenericData<PtrLeagueTeamData>> blueTeamProp(new GenericData<PtrLeagueTeamData>(blueTeam));
   (*mData)["BlueTeam"] = blueTeamProp;
-  blueTeam->Print();
+  //blueTeam->Print();
 
   PtrLeagueTeamData purpleTeam = AnalyzeTeamData(ELT_PURPLE);
   std::shared_ptr<GenericData<PtrLeagueTeamData>> purpleTeamProp(new GenericData<PtrLeagueTeamData>(purpleTeam));
@@ -88,4 +90,150 @@ PtrLeaguePlayerData LeagueImageAnalyzer::AnalyzePlayerData(uint idx, ELeagueTeam
   newPlayer->name = AnalyzePlayerName(idx, team);
   AnalyzePlayerScore(idx, team, &newPlayer->kills, &newPlayer->deaths, &newPlayer->assists, &newPlayer->cs);
   return newPlayer;
+}
+
+/*
+ * From the given image, we want to give the champion that is the best match as well as whether or not the champion is low on health or is dead.
+ * Optionally, we may provide this function a list of 'hints.' When that is the case, we will only look at champions that are contained within the
+ * hints.
+ */
+std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::vector<std::string>& championHints, bool& isLowOnHealth, bool& isDead) {
+  // Split the image into x_dim * y_dim parts (generally want to have ~25 solid pieces to compare).
+  // TODO: Make this configurable
+  int x_dim = 6;
+  int y_dim = 6;
+
+  int h_buckets = 30;
+  int s_buckets = 32;
+
+  int totalEle = x_dim * y_dim;
+  cv::Mat* filterSubImages = new cv::MatND[x_dim * y_dim];
+  cv::Mat* filterSubImagesNoRed = new cv::MatND[x_dim * y_dim];
+
+  cv::MatND* filterSubHSHists = new cv::MatND[x_dim * y_dim]; // Hue and Saturation. Used to determine who the champion actually is.
+  cv::MatND* filterSubHSHistNoRed = new cv::MatND[x_dim * y_dim]; // Hue and Saturation. Used to determine who the champion is when the champion is low on health.
+  cv::MatND* filterSubVHists = new cv::MatND[x_dim * y_dim]; // Value (from HSV). Used to determine if the champion be dead.
+  SplitImage(filterImage, x_dim, y_dim, &filterSubImages);
+  int cc = 0;
+  std::for_each(filterSubImages, filterSubImages + totalEle, [&](cv::Mat inImg) {
+    filterSubHSHists[cc] = CreateHSHistogram(inImg, h_buckets, s_buckets);
+    filterSubVHists[cc] = CreateVHistogram(inImg, 10);
+
+    // Filter out red channel
+    filterSubImagesNoRed[cc] = FilterImage_2Channel(filterSubImages[cc], 0, 1, 0.0);
+    filterSubHSHistNoRed[cc] = CreateHSHistogram(filterSubImagesNoRed[cc], h_buckets, s_buckets);
+
+    ++cc;
+  });
+  cc = 0;
+
+  // Go through the image database and determine which champion we look like most.
+  const std::map<std::string, PtrLeagueChampionData>* db = ChampionDatabase->GetDatabase();
+
+  // Find the image that is most similar
+  double closestMatch = 0.0;
+  std::string championMatch = "";
+  double championDeadScore = 0.0;
+
+  // Also find the image that is most similar in terms of its red score
+  // In this case we can ignore the dead score because you can't be low on health and dead!
+  double bestNoRedScore = 0.0;
+  std::string championNoRedMatch = "";
+
+  cv::Mat baseImage;
+  cv::Mat* baseSubImages = new cv::MatND[x_dim * y_dim];
+  cv::Mat* baseSubImagesNoRed = new cv::MatND[x_dim * y_dim];
+  cv::MatND* baseSubHSHists = new cv::MatND[x_dim * y_dim];
+  cv::MatND* baseSubHSHistsNoRed = new cv::MatND[x_dim * y_dim];
+  cv::MatND* baseSubVHists = new cv::MatND[x_dim * y_dim];
+
+  for (auto& pair : *db) {
+    if (championHints.size() != 0 && std::find(championHints.begin(), championHints.end(), pair.second->shortName) == championHints.end()) {
+      continue;
+    }
+    // Make this image as close to the input image as possible
+    baseImage = FilterImage_Resize(pair.second->image, (float)filterImage.cols / pair.second->image.cols, (float)filterImage.rows / pair.second->image.rows);
+    cv::GaussianBlur(baseImage, baseImage, cv::Size(3, 3), 0.0); // Blur the image since the input is probably blurry too.
+    SplitImage(baseImage, x_dim, y_dim, &baseSubImages);
+    std::for_each(baseSubImages, baseSubImages + totalEle, [&](cv::Mat inImg) {
+      baseSubHSHists[cc] = CreateHSHistogram(inImg, h_buckets, s_buckets);
+      baseSubVHists[cc] = CreateVHistogram(inImg, 10);
+
+      // Filter out red channel
+      baseSubImagesNoRed[cc] = FilterImage_2Channel(baseSubImages[cc], 0, 1, 0.0);
+      baseSubHSHistsNoRed[cc] = CreateHSHistogram(baseSubImagesNoRed[cc], h_buckets, s_buckets);
+      ++cc;
+    });
+    cc = 0;
+
+    // Now compare the histograms to see if the champion matches & and if the champion is dead.
+    double totalScore = 0.0; // A higher score indicates an increased likeliness that the champion is correct.
+    double deadScore = 0.0;  // A higher score indicates an increased likeliness that the champion is alive.
+    double noRedScore = 0.0;
+    int count = 0;
+    for (int i = 0; i < totalEle; ++i) {
+      // Skip the bottom right corner
+      if (i / y_dim >= y_dim - 2 && i % x_dim >= x_dim - 2) continue;
+
+      totalScore += cv::compareHist(filterSubHSHists[i], baseSubHSHists[i], cv::HISTCMP_CORREL);
+      deadScore += cv::compareHist(filterSubVHists[i], baseSubVHists[i], cv::HISTCMP_CORREL);
+      noRedScore += cv::compareHist(filterSubHSHistNoRed[i], baseSubHSHistsNoRed[i], cv::HISTCMP_CORREL);
+      ++count;
+    }
+    totalScore /= count;
+    deadScore /= count;
+    noRedScore /= count;
+
+    if (totalScore > closestMatch) {
+      closestMatch = totalScore;
+      championMatch = pair.second->shortName;
+      championDeadScore = deadScore;
+    }
+
+    if (noRedScore > bestNoRedScore) {
+      bestNoRedScore = noRedScore;
+      championNoRedMatch = pair.second->shortName;
+    }
+  }
+
+  // TODO: Configurable
+  isDead = (championDeadScore < 0.5);
+
+  // At this point, there are two possibilities:
+  //  a) The two outputs match (for the RGB image and the GB image). In this case, it should be clear that the character
+  //     isn't low on health, and that whatever the RGB image's result is should be taken.
+  //  b) The two outputs don't match! In this case we should take whichever gives a higher score. If the no red image
+  //     has the high score, then we know the champion is low on health 
+
+  // Set this to a default value first
+  isLowOnHealth = false;
+
+  if (championMatch != championNoRedMatch) {
+    championMatch = (closestMatch > bestNoRedScore) ? championMatch : championNoRedMatch;
+
+    // No red score is higher, which means taking red out of the image helped our analysis => LOW ON HEALTH. RED FLASHES. LIGHTS. EVERYWHERE. RUN.
+    if (closestMatch < bestNoRedScore) {
+      isLowOnHealth = true;
+
+      // But we can't be dead if we're low on health
+      isDead = false;
+    }
+  }
+
+  if (championMatch == LEAGUE_NO_CHAMPION) {
+    championMatch = "";
+  }
+
+  if (filterSubImages) delete[] filterSubImages;
+  if (filterSubImagesNoRed) delete[] filterSubImagesNoRed;
+  if (filterSubHSHists) delete[] filterSubHSHists;
+  if (filterSubHSHistNoRed) delete[] filterSubHSHistNoRed;
+  if (filterSubVHists) delete[] filterSubVHists;
+  if (baseSubImages) delete[] baseSubImages;
+  if (baseSubHSHists) delete[] baseSubHSHists;
+  if (baseSubVHists) delete[] baseSubVHists;
+  if (baseSubImagesNoRed) delete[] baseSubImagesNoRed;
+  if (baseSubHSHistsNoRed) delete[] baseSubHSHistsNoRed;
+
+  return championMatch;
 }

@@ -18,6 +18,11 @@ protected:
   virtual cv::Rect GetBansTextSection(ELeagueTeams team);
   virtual cv::Rect GetVersusTextSection();
 
+  // Get bans during the draft stage
+  virtual void GetBans(std::string* outArray, ELeagueTeams team);
+  virtual cv::Rect GetBansSection(ELeagueTeams team, uint idx);
+  virtual cv::Rect GetBansPercentageSection(cv::Rect banRect);
+
   // Need to get the team name
   virtual PtrLeagueTeamData AnalyzeTeamData(ELeagueTeams team);
 

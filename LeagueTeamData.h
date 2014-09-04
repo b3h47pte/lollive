@@ -20,11 +20,15 @@ struct LeagueTeamData {
   int towerKills;
   PtrLeaguePlayerData players[5];
 
+  // Champion bans -- useful when we actually get to see the draft stage
+  std::string bans[3];
+
   void Print() {
     std::cout << "======== TEAM " << team << " " << teamName  << "(" << teamScore << ")" <<" ========" << std::endl;
     std::cout << "Team Kills: " << kills << std::endl;
     std::cout << "Team Gold: " << gold << std::endl;
     std::cout << "Team Tower Kills: " << towerKills << std::endl;
+    std::cout << "Team Bans: " << bans[0] << " " << bans[1] << " " << bans[2] << std::endl;
     for (int i = 0; i < 5; ++i) players[i]->Print();
   }
 
