@@ -8,7 +8,7 @@ void test(IMAGE_PATH_TYPE t, IMAGE_FRAME_COUNT_TYPE t1) {
 }
 
 int main() {
-  std::string path1 = "Images/drafttest/frame57.png";
+  std::string path1 = "Images/drafttest/frame46.png";
   std::string path2 = "Images/2014-09-01-league-lcs2/frame27.png";
   std::string path3 = "Images/2014-09-01-league-lcs2/frame28.png";
   std::string path4 = "Images/2014-09-01-league-lcs2/frame29.png";
@@ -17,10 +17,10 @@ int main() {
   //VideoFetcher* vf = new VideoFetcher("drafttest", "twitch.tv/riotgames", test);
   //vf->BeginFetch();
 
-  //WebFrontend* wf = new WebFrontend();
+  WebFrontend* wf = new WebFrontend();
   
-  LeagueLCSImageAnalyzer* img = new LeagueLCSImageAnalyzer(path1);
-  img->Analyze();
+  //LeagueLCSImageAnalyzer* img = new LeagueLCSImageAnalyzer(path1);
+  //img->Analyze();
   /*
   img = new LeagueLCSImageAnalyzer(path2);
   img->Analyze();

@@ -484,5 +484,9 @@
       <name>Zyra</name>
       <shortname>Zyra</shortname>
     </champion>
+    <champion>
+      <name>None</name>
+      <shortname>None</shortname>
+    </champion>
   </champions>
 </database>

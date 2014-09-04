@@ -14,4 +14,7 @@ inline std::string CreateLeagueChampionHint(uint index, uint team) {
   return hintKey;
 }
 
+// No champion (i.e. pick/ban screen)
+const std::string LEAGUE_NO_CHAMPION = "None";
+
 #endif

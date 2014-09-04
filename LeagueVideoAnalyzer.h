@@ -28,6 +28,9 @@ protected:
   // TODO: Make this work for regular games. For now focus on LCS.
   bool isDraftPhase;
 
+  // This indicates that we are in the phase between the draft stage and the game actually starting
+  bool isWaitingToStart;
+
 private:
 };
 

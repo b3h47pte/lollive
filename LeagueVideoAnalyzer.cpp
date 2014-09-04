@@ -17,21 +17,31 @@ LeagueVideoAnalyzer::~LeagueVideoAnalyzer() {
  * Update properties into the data store that already exists.
  * 
  * no need to lock/unlock because the callee does that for us.
+ * Return value is kinda useless here. TODO: Remove return value?
  */
 bool LeagueVideoAnalyzer::StoreData(std::shared_ptr<ImageAnalyzer> img) {
   std::shared_ptr<GenericDataStore> newData = img->GetData();
 
-  // Not much to do if this is the first frame. Just do a straight copy.
-  if (!mData) {
-    mData = newData;
-    return true;
-  }
-
-  isDraftPhase = false;
+   isDraftPhase = false;
   if (!img->IsValidFrame()) {
+    // There are a couple situations where the frame isn't valid
+    // 1) The game ended (and we're waiting for the next one to start)
+    // 2) The players are currently in the pick/ban stage
+    // 3) The players are finished with picks and bans and we're just waiting for the game to start
+
     std::shared_ptr<LeagueImageAnalyzer> limg = std::static_pointer_cast<LeagueImageAnalyzer>(img);
-    isDraftPhase = limg->GetIsDraftBan();
-    if (isDraftPhase) {
+    bool newDraftPhase = limg->GetIsDraftBan();
+    // If we are currently drafting, we want to keep updating our data so we know who the bans and champions are.
+    if (!newDraftPhase) {
+      // If we were just drafting then this means we are waiting for the game to start.
+      // In this case there's nothing to update so we can just return.
+      // Of course, if we're already waiting to start, that state should remain the same.
+      if (isWaitingToStart || isDraftPhase) {
+        isWaitingToStart = true;
+        isDraftPhase = false;
+        return false;
+      }
+      
       ++continuousInvalidFrameCount;
       // TODO: Should be configurable
       isMatchOver = (continuousInvalidFrameCount >= 3);
@@ -40,10 +50,28 @@ bool LeagueVideoAnalyzer::StoreData(std::shared_ptr<ImageAnalyzer> img) {
       mData = NULL;
 
       return false;
+    } else {
+      isDraftPhase = newDraftPhase; // We are now currently drafting!
     }
+  } else {
+    // We can't depend on us catching the champion switch during the draft phase. So when we enter the game for the first time,
+    // clear the data.
+    if (isWaitingToStart || isDraftPhase) {
+      mData = NULL;
+    }
+
+    // In this case, we are no longer waiting for the game to start, waiting for the next game, or in pick/ban
+    continuousInvalidFrameCount = 0;
+    isMatchOver = false;
+    isDraftPhase = false;
+    isWaitingToStart = false;
   }
-  continuousInvalidFrameCount = 0;
-  isMatchOver = false;
+
+  // Not much to do if this is the first frame. Just do a straight copy.
+  if (!mData) {
+    mData = newData;
+    return true;
+  }
 
   // There's always going to be a time stamp. Check to make sure this time stamp is more recent,
   // otherwise it's probably a replay.
@@ -83,11 +111,13 @@ std::string LeagueVideoAnalyzer::ParseJSON() {
   }
 
   cJSON* newJson = cJSON_CreateObject();
-  // Game status field to let the user know which part of the game we're in
+  // Game status field to let the user know which part of the game we're in}
   if (isMatchOver) {
     cJSON_AddStringToObject(newJson, "gamestatus", "matchover");
   } else if (isDraftPhase) {
     cJSON_AddStringToObject(newJson, "gamestatus", "draft");
+  } else if (isWaitingToStart) {
+    cJSON_AddStringToObject(newJson, "gamestatus", "waiting");
   } else {
     cJSON_AddStringToObject(newJson, "gamestatus", "inprogress");
   }

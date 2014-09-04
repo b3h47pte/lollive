@@ -1,5 +1,6 @@
 #include "TestVideoFetch.h"
 #include <fstream>
+#include <windows.h>
 
 TestVideoFetch::TestVideoFetch(std::string Id, std::string Url, std::function<void(IMAGE_PATH_TYPE, IMAGE_FRAME_COUNT_TYPE)> Callback): VideoFetcher(Id, Url, Callback) {
 

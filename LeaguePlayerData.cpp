@@ -12,7 +12,11 @@ PtrLeaguePlayerData GetPlayerData(std::shared_ptr<GenericDataStore> data, ELeagu
  * For example, kills can't go down.
  */
 void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::vector<std::shared_ptr<GenericDataStore>>& dataHistory) {
-  // FOR NOW: Assume name and champion never changes
+  // If we don't yet have a champion, update the champion
+  if (champion == "") {
+    champion = inPlayer->champion;
+  }
+
   // TODO: This will probably have to change at some point. Probably from user input.
   if (inPlayer->kills > kills && inPlayer->kills - kills <= 3) {
     kills = inPlayer->kills;

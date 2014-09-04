@@ -416,6 +416,10 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagu
       }
     }
   }
+
+  if (championMatch == LEAGUE_NO_CHAMPION) {
+    championMatch = "";
+  }
   
   // Get the champion level. Since there's a possibility of the image being red, go to HSV and just use the 'value.' :)
   if (bIs1080p) {

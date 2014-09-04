@@ -134,16 +134,29 @@ cv::Rect LeagueLCSImageAnalyzer::GetPlayerChampionSection(uint idx, ELeagueTeams
   cv::Rect rect;
   float x; // x -- determined by the team
   float y; // y -- determined by the player index 
-  y = 155.0f + idx * 70.0f;
-  if (team == ELT_BLUE) {
-    x = 26.0f;
+  if (bIsDraftBan) {
+    y = 118.0f + idx * 90.0f;
+    if (team == ELT_BLUE) {
+      x = 67.0f;
+    } else {
+      x = 1137.0f;
+    }
+    rect = cv::Rect((int)(mImage.cols * (x / 1280.0f)),
+      (int)(mImage.rows * (y / 720.0f)),
+      (int)(mImage.cols * (51.0f / 1280.0f)),
+      (int)(mImage.rows * (51.0f / 720.0f)));
   } else {
-    x = 1223.0f;
+    y = 155.0f + idx * 70.0f;
+    if (team == ELT_BLUE) {
+      x = 26.0f;
+    } else {
+      x = 1223.0f;
+    }
+    rect = cv::Rect((int)(mImage.cols * (x / 1280.0f)),
+      (int)(mImage.rows * (y / 720.0f)),
+      (int)(mImage.cols * (32.0f / 1280.0f)),
+      (int)(mImage.rows * (32.0f / 720.0f)));
   }
-  rect = cv::Rect((int)(mImage.cols * (x / 1280.0f)),
-    (int)(mImage.rows * (y / 720.0f)),
-    (int)(mImage.cols * (32.0f / 1280.0f)),
-    (int)(mImage.rows * (32.0f / 720.0f)));
   return rect;
 }
 
