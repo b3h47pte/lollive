@@ -64,6 +64,7 @@ std::string VideoFetcher::GetStreamURL() {
     }
   }
   _pclose(ls);
+  streamUrl = "http://media-cdn.twitch.tv/store136.media93/archives/2014-9-1/live_user_riotgames_1409605956.flv";
   return streamUrl;
 }
 

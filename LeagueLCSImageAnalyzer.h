@@ -11,6 +11,12 @@ public:
   LeagueLCSImageAnalyzer(IMAGE_PATH_TYPE ImagePath);
   virtual ~LeagueLCSImageAnalyzer();
 protected:
+  // Need to determine when we are on the draft ban screen.
+  // We do this by finding text on the screen. The most prominent text 
+  // is the "BANS" text and the "VS" text.
+  virtual bool AnalyzeIsDraftBan();
+  virtual cv::Rect GetBansTextSection(ELeagueTeams team);
+  virtual cv::Rect GetVersusTextSection();
 
   // Need to get the team name
   virtual PtrLeagueTeamData AnalyzeTeamData(ELeagueTeams team);

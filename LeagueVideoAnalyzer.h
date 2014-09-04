@@ -24,6 +24,10 @@ protected:
   int continuousInvalidFrameCount;
   bool isMatchOver;
 
+  // Need to be able to determine when we are in the pick/ban phase of a draft match. 
+  // TODO: Make this work for regular games. For now focus on LCS.
+  bool isDraftPhase;
+
 private:
 };
 

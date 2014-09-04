@@ -23,9 +23,16 @@ public:
   // must be handled by the subclasses.
   virtual bool Analyze();
 
+  bool GetIsDraftBan() const { return bIsDraftBan; }
+
 protected:
   // See if the image is 1080p prior to scaling
   bool bIs1080p;
+
+  // Whether or not we are in the draft ban stage
+  // Detection of this is specified by subclasses
+  virtual bool AnalyzeIsDraftBan() { return false; }
+  bool bIsDraftBan;
 
   // Get match time specified in seconds since match start.
   virtual int AnalyzeMatchTime() = 0;

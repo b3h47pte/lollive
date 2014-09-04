@@ -30,6 +30,9 @@ bool LeagueImageAnalyzer::Analyze() {
   std::cout << "LoL Frame Data: " << std::endl;
   std::clock_t begin = std::clock();
 
+  // Whether we're currently in the draft ban stage.
+  bIsDraftBan = AnalyzeIsDraftBan();
+
   // Current match time.
   int time = AnalyzeMatchTime();
   std::shared_ptr<GenericData<int>> timeProp(new GenericData<int>(time));

@@ -1,5 +1,7 @@
 #include "LeagueLCSImageAnalyzer.h"
 #include "LeagueTeamData.h"
+#include <algorithm>
+#include <string>
 
 LeagueLCSImageAnalyzer::LeagueLCSImageAnalyzer(IMAGE_PATH_TYPE ImagePath) : LeagueSpectatorImageAnalyzer(ImagePath) {
 }
@@ -13,6 +15,58 @@ PtrLeagueTeamData LeagueLCSImageAnalyzer::AnalyzeTeamData(ELeagueTeams team) {
   newTeam->teamName = GetTeamName(team);
   newTeam->teamScore = GetTeamGamesWon(team);
   return newTeam;
+}
+
+/*
+ * Determine whether or not we are on the draft/ban screen.
+ */
+bool LeagueLCSImageAnalyzer::AnalyzeIsDraftBan() {
+  cv::Mat versusImage = FilterImage_Section_Grayscale_BasicThreshold_Resize(mImage,
+    GetVersusTextSection(),
+    30.0, 2.0, 2.0);
+
+  // Make sure versus text is there
+  std::string versusText = GetTextFromImage(versusImage, LeagueIdent, std::string("vsVS"));
+  std::transform(versusText.begin(), versusText.end(), versusText.begin(), ::toupper);
+  if (versusText != "VS") {
+    return false;
+  }
+
+  // Make sure bans text is there
+  cv::Mat btBans = FilterImage_Section_Channel_BasicThreshold_Resize(mImage,
+    GetBansTextSection(ELT_BLUE), 0, 80.0, 2.0, 2.0);
+  cv::Mat ptBans = FilterImage_Section_Channel_BasicThreshold_Resize(mImage,
+    GetBansTextSection(ELT_PURPLE), 2, 80.0, 2.0, 2.0);
+  std::string btBansText = GetTextFromImage(btBans, LeagueIdent, std::string("BANS"));
+  std::string ptBansText = GetTextFromImage(ptBans, LeagueIdent, std::string("BANS"));
+  if (btBansText != "BANS" || ptBansText != "BANS") {
+    return false;
+  }
+
+  return true;
+}
+
+cv::Rect LeagueLCSImageAnalyzer::GetBansTextSection(ELeagueTeams team) {
+  cv::Rect rect;
+  if (team == ELT_BLUE) {
+    rect = cv::Rect((int)(mImage.cols * (44.0f / 1280.0f)),
+      (int)(mImage.rows * (573.0f / 720.0f)),
+      (int)(mImage.cols * (120.0f / 1280.0f)),
+      (int)(mImage.rows * (40.0f / 720.0f)));
+  } else {
+    rect = cv::Rect((int)(mImage.cols * (1115.0f / 1280.0f)),
+      (int)(mImage.rows * (573.0f / 720.0f)),
+      (int)(mImage.cols * (120.0f / 1280.0f)),
+      (int)(mImage.rows * (40.0f / 720.0f)));
+  }
+  return rect;
+}
+
+cv::Rect LeagueLCSImageAnalyzer::GetVersusTextSection() {
+  return cv::Rect((int)(mImage.cols * (610.0f / 1280.0f)),
+    (int)(mImage.rows * (49.0f / 720.0f)),
+    (int)(mImage.cols * (48.0f / 1280.0f)),
+    (int)(mImage.rows * (29.0f / 720.0f)));
 }
 
 /*

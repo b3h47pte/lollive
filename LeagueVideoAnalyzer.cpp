@@ -1,9 +1,10 @@
 #include "LeagueVideoAnalyzer.h"
 #include "ImageAnalyzer.h"
+#include "LeagueImageAnalyzer.h"
 #include "LeagueTeamData.h"
 #include "cjson/cJSON.h"
 
-LeagueVideoAnalyzer::LeagueVideoAnalyzer() : continuousInvalidFrameCount(0), isMatchOver(false) {
+LeagueVideoAnalyzer::LeagueVideoAnalyzer() : continuousInvalidFrameCount(0), isMatchOver(false), isDraftPhase(false) {
 
 }
 
@@ -26,15 +27,20 @@ bool LeagueVideoAnalyzer::StoreData(std::shared_ptr<ImageAnalyzer> img) {
     return true;
   }
 
+  isDraftPhase = false;
   if (!img->IsValidFrame()) {
-    ++continuousInvalidFrameCount;
-    // TODO: Should be configurable
-    isMatchOver = (continuousInvalidFrameCount >= 3); 
+    std::shared_ptr<LeagueImageAnalyzer> limg = std::static_pointer_cast<LeagueImageAnalyzer>(img);
+    isDraftPhase = limg->GetIsDraftBan();
+    if (isDraftPhase) {
+      ++continuousInvalidFrameCount;
+      // TODO: Should be configurable
+      isMatchOver = (continuousInvalidFrameCount >= 3);
 
-    // Once we determine the match is over, clear our data. If they're ever needed again, we'll have to reanalyze.
-    mData = NULL;
+      // Once we determine the match is over, clear our data. If they're ever needed again, we'll have to reanalyze.
+      mData = NULL;
 
-    return false;
+      return false;
+    }
   }
   continuousInvalidFrameCount = 0;
   isMatchOver = false;
@@ -80,6 +86,8 @@ std::string LeagueVideoAnalyzer::ParseJSON() {
   // Game status field to let the user know which part of the game we're in
   if (isMatchOver) {
     cJSON_AddStringToObject(newJson, "gamestatus", "matchover");
+  } else if (isDraftPhase) {
+    cJSON_AddStringToObject(newJson, "gamestatus", "draft");
   } else {
     cJSON_AddStringToObject(newJson, "gamestatus", "inprogress");
   }
