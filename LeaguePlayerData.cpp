@@ -84,5 +84,12 @@ cJSON* LeaguePlayerData::CreateJSON() {
   cJSON_AddBoolToObject(newJson, "isLowHealth", isLowHealth);
   cJSON_AddStringToObject(newJson, "name", name.c_str());
   cJSON_AddStringToObject(newJson, "champion", champion.c_str());
+
+  cJSON* itemsArr = cJSON_CreateArray();
+  for (int i = 0; i < 7; ++i) {
+    cJSON_AddItemToArray(itemsArr, cJSON_CreateString(items[i].c_str()));
+  }
+  cJSON_AddItemToObject(newJson, "items", itemsArr);
+
   return newJson;
 }

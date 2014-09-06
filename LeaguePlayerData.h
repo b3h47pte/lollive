@@ -45,7 +45,7 @@ struct LeaguePlayerData {
     std::cout << "-- Player Level: " << level << std::endl;
     std::cout << "-- Player Items: ";
     for (auto& i : items) {
-      std::cout << items[0] << " ";
+      std::cout << i << " ";
     }
     std::cout << std::endl;
   }

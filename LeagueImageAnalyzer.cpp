@@ -31,8 +31,8 @@ bool LeagueImageAnalyzer::Analyze() {
     return false;
   }
   
-  //std::cout << "LoL Frame Data: " << std::endl;
-  //std::clock_t begin = std::clock();
+  std::cout << "LoL Frame Data: " << std::endl;
+  std::clock_t begin = std::clock();
 
   // Whether we're currently in the draft ban stage.
   bIsDraftBan = AnalyzeIsDraftBan();
@@ -41,22 +41,22 @@ bool LeagueImageAnalyzer::Analyze() {
   int time = AnalyzeMatchTime();
   std::shared_ptr<GenericData<int>> timeProp(new GenericData<int>(time));
   (*mData)["CurrentTime"] = timeProp;
-  //std::cout << "Current Time: " << time << std::endl;
+  std::cout << "Current Time: " << time << std::endl;
 
   // Team Data.
   PtrLeagueTeamData blueTeam = AnalyzeTeamData(ELT_BLUE);
   std::shared_ptr<GenericData<PtrLeagueTeamData>> blueTeamProp(new GenericData<PtrLeagueTeamData>(blueTeam));
   (*mData)["BlueTeam"] = blueTeamProp;
-  //blueTeam->Print();
+  blueTeam->Print();
 
   PtrLeagueTeamData purpleTeam = AnalyzeTeamData(ELT_PURPLE);
   std::shared_ptr<GenericData<PtrLeagueTeamData>> purpleTeamProp(new GenericData<PtrLeagueTeamData>(purpleTeam));
   (*mData)["PurpleTeam"] = purpleTeamProp;
-  //purpleTeam->Print();
+  purpleTeam->Print();
 
-  //std::clock_t end = std::clock();
-  //double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-  //std::cout << "Elapsed Seconds: " << elapsed_secs << std::endl;
+  std::clock_t end = std::clock();
+  double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+  std::cout << "Elapsed Seconds: " << elapsed_secs << std::endl;
 
   bIsFinished = true;
   return ret;
