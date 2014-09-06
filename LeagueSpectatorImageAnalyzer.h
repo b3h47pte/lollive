@@ -49,6 +49,9 @@ protected:
   virtual std::string AnalyzePlayerName(uint idx, ELeagueTeams team);
   virtual cv::Rect GetPlayerNameSection(uint idx, ELeagueTeams team);
 
+  // Player Items
+  virtual cv::Rect GetPlayerItemSection(uint playerIdx, ELeagueTeams team, uint itemIdx);
+
   // Player Score. 
   // TODO: Return the champion that the scoreboard say it is associated with. This way we can see if the scoreboard matches up with the sidebar.
   // For now, just assume that it does

@@ -5,9 +5,11 @@
 #include <ctime>
 #include <algorithm>
 #include "LeagueConstants.h"
+#include "LeagueItemData.h"
 
 LeagueImageAnalyzer::LeagueImageAnalyzer(IMAGE_PATH_TYPE ImagePath): ImageAnalyzer(ImagePath) {
   ChampionDatabase = LeagueChampionDatabase::Get();
+  ItemDatabase = LeagueItemDatabase::Get();
 
   bIs1080p = (mImage.cols == 1920 && mImage.rows == 1080);
 
@@ -89,6 +91,9 @@ PtrLeaguePlayerData LeagueImageAnalyzer::AnalyzePlayerData(uint idx, ELeagueTeam
   newPlayer->champion = AnalyzePlayerChampion(idx, team, &newPlayer->isDead, &newPlayer->isLowHealth, &newPlayer->level);
   newPlayer->name = AnalyzePlayerName(idx, team);
   AnalyzePlayerScore(idx, team, &newPlayer->kills, &newPlayer->deaths, &newPlayer->assists, &newPlayer->cs);
+  for (uint i = 0; i < 7; ++i) {
+    newPlayer->items[i] = AnalyzePlayerItem(idx, team, i);
+  }
   return newPlayer;
 }
 
@@ -236,4 +241,44 @@ std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::
   if (baseSubHSHistsNoRed) delete[] baseSubHSHistsNoRed;
 
   return championMatch;
+}
+
+/*
+ * Given an item image, we need to use template matching to find the item's image in the
+ * giant image with all the items. 
+ * 
+ * However, since template matching doesn't do too well with scaling, we rescale the 
+ * base image to match the template's size.
+ * 
+ * TODO: Use an image pyramid to speed this up. Also use multiple indicators to increase accuracy.
+ */
+std::string LeagueImageAnalyzer::AnalyzePlayerItem(uint playerIdx, ELeagueTeams team, uint itemIdx) {
+  cv::Mat itemImage = FilterImage_Section(mImage, GetPlayerItemSection(playerIdx, team, itemIdx));
+  cv::Mat baseImage = ItemDatabase->GetDatabaseImage().clone();
+
+  // Resize the base image so that each individual cell matches the size of the item image.
+  float factor = (float)itemImage.cols / LEAGUE_ITEM_SQUARE_SIZE;
+  baseImage = FilterImage_Resize(baseImage, factor, factor);
+
+  // Do template matching to find where we have a match
+  cv::Mat matchResult;
+  cv::matchTemplate(baseImage, itemImage, matchResult, cv::TM_SQDIFF_NORMED);
+  cv::normalize(matchResult, matchResult, 0, 1, cv::NORM_MINMAX, -1, cv::Mat());
+
+  // Now find the minimum and maximum results
+  double minVal;
+  double maxVal;
+  cv::Point minPoint; // WHILE WE USE TM_SQDIFF_NORMED, MINPOINT IS THE ACTUAL POINT WE WANT TO USE.
+  cv::Point maxPoint;
+  cv::minMaxLoc(matchResult, &minVal, &maxVal, &minPoint, &maxPoint, cv::Mat());
+
+  // Convert the point to an actual index.
+  int y_idx = minPoint.y / itemImage.rows;
+  int x_idx = minPoint.x / itemImage.cols;
+  PtrLeagueItemData item = ItemDatabase->GetItem(x_idx, y_idx);
+  if (!item || item->IsInvalid()) {
+    return "";
+  }
+
+  return item->itemID;
 }

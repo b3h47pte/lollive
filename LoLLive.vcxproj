@@ -161,6 +161,8 @@
     <ClInclude Include="LeagueChampionDatabase.h" />
     <ClInclude Include="LeagueConstants.h" />
     <ClInclude Include="LeagueImageAnalyzer.h" />
+    <ClInclude Include="LeagueItemData.h" />
+    <ClInclude Include="LeagueItemDatabase.h" />
     <ClInclude Include="LeagueLCSImageAnalyzer.h" />
     <ClInclude Include="LeagueLCSVideoAnalyzer.h" />
     <ClInclude Include="LeaguePlayerData.h" />
@@ -186,6 +188,7 @@
     <ClCompile Include="Dispatch.cpp" />
     <ClCompile Include="LeagueChampionDatabase.cpp" />
     <ClCompile Include="LeagueImageAnalyzer.cpp" />
+    <ClCompile Include="LeagueItemDatabase.cpp" />
     <ClCompile Include="LeagueLCSImageAnalyzer.cpp" />
     <ClCompile Include="LeagueLCSVideoAnalyzer.cpp" />
     <ClCompile Include="LeaguePlayerData.cpp" />

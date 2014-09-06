@@ -6,6 +6,7 @@
 #include "LeaguePlayerData.h"
 #include "LeagueTeamData.h"
 #include "LeagueChampionDatabase.h"
+#include "LeagueItemDatabase.h"
 
 /*
  * Base class for analyzing League of Legends screenshots. Eventually need to split it to analyze
@@ -77,6 +78,11 @@ protected:
   virtual std::string AnalyzePlayerScore(uint idx, ELeagueTeams team, int* kills, int* deaths, int* assists, int* cs) = 0;
   virtual cv::Rect GetPlayerKDASection(uint idx, ELeagueTeams team) = 0;
   virtual cv::Rect GetPlayerCSSection(uint idx, ELeagueTeams team) = 0;
+
+  // Player Items -- Item index can be any number from 0-6 (6 items + 1 trinket).
+  virtual std::string AnalyzePlayerItem(uint playerIdx, ELeagueTeams team, uint itemIdx);
+  virtual cv::Rect GetPlayerItemSection(uint playerIdx, ELeagueTeams team, uint itemIdx) = 0;
+  std::shared_ptr<const LeagueItemDatabase> ItemDatabase;
 
   // Utility Function to help us determine who the input champion is
   std::string FindMatchingChampion(cv::Mat filterImage, std::vector<std::string>& championHints, bool& isLowHealth, bool& isDead);

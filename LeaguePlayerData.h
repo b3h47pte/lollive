@@ -34,6 +34,8 @@ struct LeaguePlayerData {
   ELeagueTeams team;
   int playerIdx;
 
+  std::string items[7];
+
   void Print() {
     std::cout << "- Player: " << name << " as " << champion << std::endl;
     std::cout << "-- Player Score: " << kills << "/" << deaths << "/" << assists << std::endl;
@@ -41,6 +43,11 @@ struct LeaguePlayerData {
     std::cout << "-- Is Dead?: " << isDead << std::endl;
     std::cout << "-- Is Low Health?: " << isLowHealth << std::endl;
     std::cout << "-- Player Level: " << level << std::endl;
+    std::cout << "-- Player Items: ";
+    for (auto& i : items) {
+      std::cout << items[0] << " ";
+    }
+    std::cout << std::endl;
   }
 
   void Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::vector<std::shared_ptr<GenericDataStore>>& dataHistory);

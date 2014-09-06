@@ -52,6 +52,11 @@ void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::
     }, dataHistory);
   }
 
+  // Need to do a straight copy of items. No real way to sanity check this. 
+  for (int i = 0; i < 7; ++i) {
+    items[i] = inPlayer->items[i];
+  }
+
   if (inPlayer->level > level) {
     level = inPlayer->level;
   }

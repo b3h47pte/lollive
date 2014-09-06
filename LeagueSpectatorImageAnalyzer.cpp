@@ -583,3 +583,24 @@ bool LeagueSpectatorImageAnalyzer::IsValidScore(std::string& inScore) {
   }
   return false;
 }
+
+/*
+ * Using 1080p as a reference.
+ */
+cv::Rect LeagueSpectatorImageAnalyzer::GetPlayerItemSection(uint playerIdx, ELeagueTeams team, uint itemIdx) {
+  float x = 0.0f;
+  float y = 0.0f;
+  if (team == ELT_BLUE) {
+    x = 590.0f;
+  } else {
+    x = 1145.0f;
+  }
+  x += itemIdx * 27.0f;
+  y = 925.0f + playerIdx * 31.0f;
+  cv::Rect newRect = cv::Rect((int)(mImage.cols * (x / 1920.0f)),
+    (int)(mImage.rows * (y / 1080.0f)),
+    (int)(mImage.cols * (25.0f / 1920.0f)),
+    (int)(mImage.rows * (25.0f / 1080.0f)));
+
+  return newRect;
+}
