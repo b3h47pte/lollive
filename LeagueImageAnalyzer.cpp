@@ -4,6 +4,7 @@
 #include "opencv2/superres.hpp"
 #include <ctime>
 #include <algorithm>
+#include <thread>
 #include "LeagueConstants.h"
 #include "LeagueItemData.h"
 
@@ -40,16 +41,29 @@ bool LeagueImageAnalyzer::Analyze() {
   // Current match time.
   int time = AnalyzeMatchTime();
   std::shared_ptr<GenericData<int>> timeProp(new GenericData<int>(time));
+  mDataMutex.lock();
   (*mData)["CurrentTime"] = timeProp;
+  mDataMutex.unlock();
   std::cout << "Current Time: " << time << std::endl;
 
+  PtrLeagueTeamData blueTeam;
   // Team Data.
-  PtrLeagueTeamData blueTeam = AnalyzeTeamData(ELT_BLUE);
+  std::thread btThread(std::bind([&]() {
+    blueTeam = AnalyzeTeamData(ELT_BLUE);
+  }));
+
+  PtrLeagueTeamData purpleTeam;
+  std::thread ptThread(std::bind([&]() {
+    purpleTeam = AnalyzeTeamData(ELT_PURPLE);
+  }));
+
+  btThread.join();
+  ptThread.join();
+
   std::shared_ptr<GenericData<PtrLeagueTeamData>> blueTeamProp(new GenericData<PtrLeagueTeamData>(blueTeam));
   (*mData)["BlueTeam"] = blueTeamProp;
   blueTeam->Print();
 
-  PtrLeagueTeamData purpleTeam = AnalyzeTeamData(ELT_PURPLE);
   std::shared_ptr<GenericData<PtrLeagueTeamData>> purpleTeamProp(new GenericData<PtrLeagueTeamData>(purpleTeam));
   (*mData)["PurpleTeam"] = purpleTeamProp;
   purpleTeam->Print();
@@ -103,6 +117,8 @@ PtrLeaguePlayerData LeagueImageAnalyzer::AnalyzePlayerData(uint idx, ELeagueTeam
  * hints.
  */
 std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::vector<std::string>& championHints, bool& isLowOnHealth, bool& isDead) {
+  std::clock_t begin = std::clock();
+
   // Split the image into x_dim * y_dim parts (generally want to have ~25 solid pieces to compare).
   // TODO: Make this configurable
   int x_dim = 6;
@@ -240,6 +256,10 @@ std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::
   if (baseSubImagesNoRed) delete[] baseSubImagesNoRed;
   if (baseSubHSHistsNoRed) delete[] baseSubHSHistsNoRed;
 
+  std::clock_t end = std::clock();
+  double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+  std::cout << "Find Champion Elapsed Seconds: " << elapsed_secs << std::endl;
+
   return championMatch;
 }
 
@@ -253,6 +273,7 @@ std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::
  * TODO: Use an image pyramid to speed this up. Also use multiple indicators to increase accuracy.
  */
 std::string LeagueImageAnalyzer::AnalyzePlayerItem(uint playerIdx, ELeagueTeams team, uint itemIdx) {
+  std::clock_t begin = std::clock();
   cv::Mat itemImage = FilterImage_Section(mImage, GetPlayerItemSection(playerIdx, team, itemIdx));
   cv::Mat baseImage = ItemDatabase->GetDatabaseImage().clone();
 
@@ -271,6 +292,10 @@ std::string LeagueImageAnalyzer::AnalyzePlayerItem(uint playerIdx, ELeagueTeams 
   cv::Point minPoint; // WHILE WE USE TM_SQDIFF_NORMED, MINPOINT IS THE ACTUAL POINT WE WANT TO USE.
   cv::Point maxPoint;
   cv::minMaxLoc(matchResult, &minVal, &maxVal, &minPoint, &maxPoint, cv::Mat());
+
+  std::clock_t end = std::clock();
+  double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+  std::cout << " Find Item Elapsed Seconds: " << elapsed_secs << std::endl;
 
   // Convert the point to an actual index.
   int y_idx = minPoint.y / itemImage.rows;

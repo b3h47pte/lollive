@@ -5,6 +5,7 @@
 #include "opencv2/core.hpp"
 #include "tesseract/baseapi.h"
 #include "Data.h"
+#include <mutex>
 
 /*
  * Takes one frame of the video and analyzes it. 
@@ -56,6 +57,7 @@ protected:
   cv::Mat mImage;
 
   // Holds all the information about this image. 
+  std::mutex mDataMutex;
   std::shared_ptr<GenericDataStore> mData;
 
   // Utility Function to get text.
