@@ -39,4 +39,17 @@ struct LeagueTeamData {
   struct cJSON* CreateJSON();
 };
 
+// Given a location, tell us which side of the map we are on (blue/purple)
+// Assume that x and y are 0 <= x/y <= 1.0
+inline ELeagueTeams GetTeamFromMapLocation(double x, double y) {
+  if (x + y <= 0.5) {
+    return ELT_BLUE;
+  }
+  return ELT_PURPLE;
+}
+
+inline ELeagueTeams GetOtherTeam(ELeagueTeams team) {
+  return (team == ELT_BLUE) ? ELT_PURPLE : ELT_BLUE;
+}
+
 #endif

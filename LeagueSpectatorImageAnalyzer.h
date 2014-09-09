@@ -19,6 +19,10 @@ protected:
   // Gets the match timer from the header bar up top.
   virtual int AnalyzeMatchTime();
 
+  // Camera Analysis.
+  virtual void AnalyzeMapPosition(double& xPos, double& yPos);
+  virtual cv::Rect GetMapSection();
+
   // Team Kills. Also part of the header bar at the top of the screen.
   virtual int AnalyzeTeamKills(ELeagueTeams team);
   virtual cv::Rect GetTeamKillsSection(ELeagueTeams team);

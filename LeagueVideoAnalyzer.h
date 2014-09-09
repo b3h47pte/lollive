@@ -3,6 +3,7 @@
 #define _LEAGUEVIDEOANALYZER_H
 
 #include "VideoAnalyzer.h"
+#include "LeaguePlayerData.h"
 
 /*
  * Handles analyzing video footage from a League of Legends stream.
@@ -21,8 +22,14 @@ protected:
 
 protected:
   // Need to be able to determine when the match is over. I do this by checking for a sequence of invalid frames.
+  // When the match is over, also determine who the winning team is.
   int continuousInvalidFrameCount;
   bool isMatchOver;
+  ELeagueTeams winningTeam;
+
+  // Need to keep track of the camera position as it changes over time.
+  double lastMapPositionX;
+  double lastMapPositionY;
 
   // Need to be able to determine when we are in the pick/ban phase of a draft match. 
   // TODO: Make this work for regular games. For now focus on LCS.

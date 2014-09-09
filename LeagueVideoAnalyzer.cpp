@@ -21,15 +21,15 @@ LeagueVideoAnalyzer::~LeagueVideoAnalyzer() {
  */
 bool LeagueVideoAnalyzer::StoreData(std::shared_ptr<ImageAnalyzer> img) {
   std::shared_ptr<GenericDataStore> newData = img->GetData();
+  std::shared_ptr<LeagueImageAnalyzer> limg = std::static_pointer_cast<LeagueImageAnalyzer>(img);
 
-   isDraftPhase = false;
+  isDraftPhase = false;
   if (!img->IsValidFrame()) {
     // There are a couple situations where the frame isn't valid
     // 1) The game ended (and we're waiting for the next one to start)
     // 2) The players are currently in the pick/ban stage
     // 3) The players are finished with picks and bans and we're just waiting for the game to start
 
-    std::shared_ptr<LeagueImageAnalyzer> limg = std::static_pointer_cast<LeagueImageAnalyzer>(img);
     bool newDraftPhase = limg->GetIsDraftBan();
     // If we are currently drafting, we want to keep updating our data so we know who the bans and champions are.
     if (!newDraftPhase) {
@@ -45,6 +45,13 @@ bool LeagueVideoAnalyzer::StoreData(std::shared_ptr<ImageAnalyzer> img) {
       ++continuousInvalidFrameCount;
       // TODO: Should be configurable
       isMatchOver = (continuousInvalidFrameCount >= 3);
+
+      // We operate under the assumption that the camera is at the losing team's nexus at the end of the match.
+      if (isMatchOver) {
+        winningTeam = GetTeamFromMapLocation(lastMapPositionX, lastMapPositionY);
+        // The winning team isn't the one we're looking at , its' the other team
+        winningTeam = GetOtherTeam(winningTeam);
+      }
 
       // Once we determine the match is over, clear our data. If they're ever needed again, we'll have to reanalyze.
       mData = NULL;
@@ -65,6 +72,9 @@ bool LeagueVideoAnalyzer::StoreData(std::shared_ptr<ImageAnalyzer> img) {
     isMatchOver = false;
     isDraftPhase = false;
     isWaitingToStart = false;
+
+    // Only valid frames have the timestamp on it so only update that here.
+    limg->GetMapLocation(lastMapPositionX, lastMapPositionY);
   }
 
   // Not much to do if this is the first frame. Just do a straight copy.

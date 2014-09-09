@@ -604,3 +604,49 @@ cv::Rect LeagueSpectatorImageAnalyzer::GetPlayerItemSection(uint playerIdx, ELea
 
   return newRect;
 }
+
+/*
+ * Determine where the camera is. The camera is a rectangle on the minimap so we say
+ * that the camera's position is the very center of the rectangle (since that is what should
+ * be at the center of the screen).
+ */
+void LeagueSpectatorImageAnalyzer::AnalyzeMapPosition(double& xPos, double& yPos) {
+  cv::Mat mapImg = FilterImage_Section_Grayscale_BasicThreshold_Resize(mImage, GetMapSection(), 155.0f, 1.0f, 1.0f);
+
+  // Find the contours in this image to find the giant rectangle which indicates the location of the camera.
+  std::vector<std::vector<cv::Point> > contours;
+  cv::findContours(mapImg, contours, cv::RETR_CCOMP, cv::CHAIN_APPROX_NONE);
+
+  int largestContourIdx = -1;
+  double largestContourArea = 0.0f;
+
+  for (size_t i = 0; i < contours.size(); ++i) {
+    // Find the largest contours in a rectangle that is also a valid camera rectangle.
+    // The height of the box can't be larger than the width. 
+    cv::Rect r = cv::boundingRect(contours[i]);
+    if (r.width <= r.height) {
+      continue;
+    }
+
+    double a = r.width * r.height;
+    if (a > largestContourArea) {
+      largestContourArea = a;
+      largestContourIdx = i;
+    }
+  }
+
+  cv::Rect cameraRectangle = cv::boundingRect(contours[largestContourIdx]);
+  double x = (2 * cameraRectangle.x + cameraRectangle.width) / 2.0;
+  double y = (2 * cameraRectangle.y + cameraRectangle.height) / 2.0;
+  xPos = x / mapImg.cols;
+  yPos = y / mapImg.rows;
+}
+
+cv::Rect LeagueSpectatorImageAnalyzer::GetMapSection() {
+  cv::Rect newRect = cv::Rect((int)(mImage.cols * (1626.0f / 1920.0f)),
+    (int)(mImage.rows * (784.0f / 1080.0f)),
+    (int)(mImage.cols * (288.0f / 1920.0f)),
+    (int)(mImage.rows * (288.0f / 1080.0f)));
+
+  return newRect;
+}

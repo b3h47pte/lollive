@@ -26,6 +26,11 @@ public:
 
   bool GetIsDraftBan() const { return bIsDraftBan; }
 
+  void GetMapLocation(double& x, double& y) {
+    x = mapLocX;
+    y = mapLocY;
+  }
+
 protected:
   // See if the image is 1080p prior to scaling
   bool bIs1080p;
@@ -37,6 +42,12 @@ protected:
 
   // Get match time specified in seconds since match start.
   virtual int AnalyzeMatchTime() = 0;
+
+  // Camera Location Analysis. We represent the map as being a unit square.
+  // So any position on the map is represented as a percentage.
+  virtual void AnalyzeMapPosition(double& xPos, double& yPos) = 0;
+  virtual cv::Rect GetMapSection() = 0;
+  double mapLocX, mapLocY;
 
   // Team Analysis. There are two teams in all League of Legends games [if Riot ever adds a one team mode or 3+ team mode, fml],
   // and the amount of information we have about each team is limited. 

@@ -46,8 +46,9 @@ bool LeagueImageAnalyzer::Analyze() {
   mDataMutex.unlock();
   std::cout << "Current Time: " << time << std::endl;
 
-  PtrLeagueTeamData blueTeam;
   // Team Data.
+  // Thread the analysis to make it faster (not sure how this will be like when we start running more threads for different streams).
+  PtrLeagueTeamData blueTeam;
   std::thread btThread(std::bind([&]() {
     blueTeam = AnalyzeTeamData(ELT_BLUE);
   }));
@@ -61,12 +62,20 @@ bool LeagueImageAnalyzer::Analyze() {
   ptThread.join();
 
   std::shared_ptr<GenericData<PtrLeagueTeamData>> blueTeamProp(new GenericData<PtrLeagueTeamData>(blueTeam));
+  mDataMutex.lock();
   (*mData)["BlueTeam"] = blueTeamProp;
   blueTeam->Print();
 
   std::shared_ptr<GenericData<PtrLeagueTeamData>> purpleTeamProp(new GenericData<PtrLeagueTeamData>(purpleTeam));
   (*mData)["PurpleTeam"] = purpleTeamProp;
   purpleTeam->Print();
+  mDataMutex.unlock();
+
+  // At this point we know whether or not this was a valid frame..if so get the map position
+  if (IsValidFrame()) {
+    // Camera Location
+    AnalyzeMapPosition(mapLocX, mapLocY);
+  }
 
   std::clock_t end = std::clock();
   double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
