@@ -155,8 +155,11 @@
     <ClInclude Include="civetweb\civetweb.h" />
     <ClInclude Include="cjson\cJSON.h" />
     <ClInclude Include="common.h" />
+    <ClInclude Include="ConfigManager.h" />
     <ClInclude Include="Dispatch.h" />
     <ClInclude Include="ImageAnalyzer.h" />
+    <ClInclude Include="inih\ini.h" />
+    <ClInclude Include="inih\INIReader.h" />
     <ClInclude Include="LeagueChampionData.h" />
     <ClInclude Include="LeagueChampionDatabase.h" />
     <ClInclude Include="LeagueConstants.h" />
@@ -185,7 +188,10 @@
     <ClCompile Include="civetweb\CivetServer.cpp" />
     <ClCompile Include="civetweb\civetweb.c" />
     <ClCompile Include="cjson\cJSON.c" />
+    <ClCompile Include="ConfigManager.cpp" />
     <ClCompile Include="Dispatch.cpp" />
+    <ClCompile Include="inih\ini.c" />
+    <ClCompile Include="inih\INIReader.cpp" />
     <ClCompile Include="LeagueChampionDatabase.cpp" />
     <ClCompile Include="LeagueImageAnalyzer.cpp" />
     <ClCompile Include="LeagueItemDatabase.cpp" />

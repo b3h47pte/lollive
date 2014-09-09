@@ -73,6 +73,12 @@
     <Filter Include="VideoAnalyze\Data\LoL\Items">
       <UniqueIdentifier>{bc03ca1f-847a-4a47-a2d9-0e6d699650e7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="External\inih">
+      <UniqueIdentifier>{e0b2a921-78b6-442b-8897-000a157e2eca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Configuration">
+      <UniqueIdentifier>{125aa425-1983-4411-ba12-89425855c9d5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VideoFetcher.h">
@@ -162,6 +168,15 @@
     <ClInclude Include="LeagueItemData.h">
       <Filter>VideoAnalyze\Data\LoL\Items</Filter>
     </ClInclude>
+    <ClInclude Include="inih\ini.h">
+      <Filter>External\inih</Filter>
+    </ClInclude>
+    <ClInclude Include="inih\INIReader.h">
+      <Filter>External\inih</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigManager.h">
+      <Filter>Core\Configuration</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VideoFetcher.cpp">
@@ -226,6 +241,15 @@
     </ClCompile>
     <ClCompile Include="LeagueItemDatabase.cpp">
       <Filter>VideoAnalyze\Data\LoL\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="inih\ini.c">
+      <Filter>External\inih</Filter>
+    </ClCompile>
+    <ClCompile Include="inih\INIReader.cpp">
+      <Filter>External\inih</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigManager.cpp">
+      <Filter>Core\Configuration</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -7,6 +7,7 @@
 #include <memory>
 #include <map>
 #include <vector>
+#include "ConfigManager.h"
 
 typedef std::string& IMAGE_PATH_TYPE;
 typedef uint64_t IMAGE_FRAME_COUNT_TYPE;

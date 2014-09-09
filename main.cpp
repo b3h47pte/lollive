@@ -15,10 +15,10 @@ int main() {
   std::string path4 = "Images/2014-09-01-league-lcs2/frame29.png";
   std::string path5 = "Images/2014-09-01-league-lcs2/frame30.png";
 
-  //VideoFetcher* vf = new VideoFetcher("drafttest", "twitch.tv/riotgames", test);
-  //vf->BeginFetch();
+  VideoFetcher* vf = new VideoFetcher("drafttest", "twitch.tv/riotgames", test);
+  vf->BeginFetch();
 
-  WebFrontend* wf = new WebFrontend();
+  //WebFrontend* wf = new WebFrontend();
  
   //LeagueLCSImageAnalyzer* img = new LeagueLCSImageAnalyzer(path1);
   //img->Analyze();
