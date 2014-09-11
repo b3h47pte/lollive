@@ -52,6 +52,8 @@ private:
   // Helper function to spin up a thread to begin the video analysis
   void Thread_StartNewDispatch(std::shared_ptr<DispatchObject> newObj, std::string& game, std::string& mode, std::string& url, bool bIsDebug);
 
+  // Config File Constants (Found in general.ini)
+  const std::string DispatchSection = "Dispatch";
 };
 
 #endif 

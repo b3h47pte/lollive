@@ -15,8 +15,10 @@ int main() {
   std::string path4 = "Images/2014-09-01-league-lcs2/frame29.png";
   std::string path5 = "Images/2014-09-01-league-lcs2/frame30.png";
 
-  VideoFetcher* vf = new VideoFetcher("drafttest", "twitch.tv/riotgames", test);
-  vf->BeginFetch();
+  std::cout << ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_GENERAL_FILENAME, std::string("WebFrontend"), std::string("LeagueWebPath"), std::string("")) << std::endl;
+
+  //VideoFetcher* vf = new VideoFetcher("drafttest", "twitch.tv/riotgames", test);
+  //vf->BeginFetch();
 
   //WebFrontend* wf = new WebFrontend();
  

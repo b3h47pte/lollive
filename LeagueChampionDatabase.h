@@ -32,6 +32,12 @@ private:
   std::map<std::string, PtrLeagueChampionData> mData;
 
   LeagueChampionDatabase();
+
+  // Config File Constants
+  const std::string ChampionDataSection = "Champions";
+  const std::string DataDirectoryName = "ChampionDataDirectory";
+  const std::string DatabaseFilenameName = "ChampionDatabaseFilename";
+  const std::string ImageDirectoryName = "ImageDirectory";
 };
 
 #endif

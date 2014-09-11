@@ -37,6 +37,16 @@ struct LeagueTeamData {
 
   // JSONify
   struct cJSON* CreateJSON();
+  
+  // Config Constants
+  const std::string TeamDataSection = "TeamData";
+  const std::string JsonTeamKillsName = "JsonTeamKillsName";
+  const std::string JsonTeamGoldName = "JsonTeamGoldName";
+  const std::string JsonTeamTowersName = "JsonTeamTowersName";
+  const std::string JsonTeamNameName = "JsonTeamNameName";
+  const std::string JsonTeamGamesWonName = "JsonTeamGamesWonName";
+  const std::string JsonTeamBansName = "JsonTeamBansName";
+  const std::string JsonTeamPlayersName = "JsonTeamPlayersName";
 };
 
 // Given a location, tell us which side of the map we are on (blue/purple)

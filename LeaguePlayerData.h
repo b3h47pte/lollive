@@ -54,6 +54,25 @@ struct LeaguePlayerData {
 
   // JSONify
   struct cJSON* CreateJSON();
+
+  // Config File Constants
+  const std::string PlayerDataSection = "PlayerData";
+  const std::string KillUpdateThresholdName = "KillUpdateThreshold";
+  const std::string DeathUpdateThresholdName = "DeathUpdateThreshold";
+  const std::string AssistUpdateThresholdName = "AssistUpdateThreshold";
+  const std::string CreepUpdateThresholdName = "CreepUpdateThreshold";
+  const std::string LowHealthThresholdName = "LowHealthUpdateThreshold";
+
+  const std::string JsonKillsName = "JsonKillsName";
+  const std::string JsonDeathsName = "JsonDeathsName";
+  const std::string JsonAssistsName = "JsonAssistsName";
+  const std::string JsonCSName = "JsonCSName";
+  const std::string JsonLevelName = "JsonLevelName";
+  const std::string JsonIsDeadName = "JsonIsDeadName";
+  const std::string JsonLowHealthName = "JsonLowHealthName";
+  const std::string JsonNameName = "JsonNameName";
+  const std::string JsonChampionName = "JsonChampionName";
+  const std::string JsonItemsName = "JsonItemsName";
 };
 
 #endif

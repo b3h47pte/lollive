@@ -34,21 +34,21 @@ std::string ConfigManager::GenerateFilePath(std::string& fileName) {
   return std::string(envDir) + CONFIG_FILE_DIRECTORY + fileName;
 }
 
-std::string ConfigManager::GetStringFromINI(std::string& fileName, std::string& section, std::string& name, std::string& defaultValue) {
+std::string ConfigManager::GetStringFromINI(const std::string& fileName, const std::string& section, const std::string& name, const std::string& defaultValue) {
   if (mINIMapping.find(fileName) == mINIMapping.end()) {
     return defaultValue;
   }
   return mINIMapping[fileName]->Get(section, name, defaultValue);
 }
 
-int ConfigManager::GetIntFromINI(std::string& fileName, std::string& section, std::string& name, int defaultValue) {
+int ConfigManager::GetIntFromINI(const std::string& fileName, const std::string& section, const std::string& name, const int defaultValue) {
   if (mINIMapping.find(fileName) == mINIMapping.end()) {
     return defaultValue;
   }
   return mINIMapping[fileName]->GetInteger(section, name, defaultValue);
 }
 
-bool ConfigManager::GetBoolFromINI(std::string& fileName, std::string& section, std::string& name, bool defaultValue) {
+bool ConfigManager::GetBoolFromINI(const std::string& fileName, const std::string& section, const std::string& name, const bool defaultValue) {
   if (mINIMapping.find(fileName) == mINIMapping.end()) {
     return defaultValue;
   }

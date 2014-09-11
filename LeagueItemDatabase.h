@@ -46,6 +46,12 @@ private:
   int numImageDim;
 
   LeagueItemDatabase();
+
+  const std::string ItemDataSection = "Items";
+  const std::string DataDirectoryName = "ItemDataDirectory";
+  const std::string DatabaseFilenameName = "ItemDatabaseFilename";
+  const std::string DatabaseImageFilenameName = "ItemDatabaseImageFilename";
+  const std::string ImageDirectoryName = "ImageDirectory";
 };
 
 #endif

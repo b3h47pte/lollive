@@ -52,11 +52,11 @@ void LeagueTeamData::Update(PtrLeagueTeamData newData, int timeStamp, std::vecto
 // JSONify
 cJSON* LeagueTeamData::CreateJSON() {
   cJSON* newJson = cJSON_CreateObject();
-  cJSON_AddNumberToObject(newJson, "teamkills", kills);
-  cJSON_AddNumberToObject(newJson, "teamgold", gold);
-  cJSON_AddNumberToObject(newJson, "teamtowers", towerKills);
-  cJSON_AddStringToObject(newJson, "teamname", teamName.c_str());
-  cJSON_AddNumberToObject(newJson, "teamgameswon", teamScore);
+  cJSON_AddNumberToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, TeamDataSection, JsonTeamKillsName, std::string("")).c_str(), kills);
+  cJSON_AddNumberToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, TeamDataSection, JsonTeamGoldName, std::string("")).c_str(), gold);
+  cJSON_AddNumberToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, TeamDataSection, JsonTeamTowersName, std::string("")).c_str(), towerKills);
+  cJSON_AddStringToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, TeamDataSection, JsonTeamNameName, std::string("")).c_str(), teamName.c_str());
+  cJSON_AddNumberToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, TeamDataSection, JsonTeamGamesWonName, std::string("")).c_str(), teamScore);
 
   cJSON* bansJson = cJSON_CreateArray();
   for (int i = 0; i < 3; ++i) {
@@ -64,14 +64,14 @@ cJSON* LeagueTeamData::CreateJSON() {
       cJSON_AddItemToArray(bansJson, cJSON_CreateString(bans[i].c_str()));
     }
   }
-  cJSON_AddItemToObject(newJson, "bans", bansJson);
+  cJSON_AddItemToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, TeamDataSection, JsonTeamBansName, std::string("")).c_str(), bansJson);
 
   cJSON* playersJson = cJSON_CreateArray();
   for (int i = 0; i < 5; ++i) {
     cJSON_AddItemToArray(playersJson, players[i]->CreateJSON());
   }
 
-  cJSON_AddItemToObject(newJson, "players", playersJson);
+  cJSON_AddItemToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, TeamDataSection, JsonTeamPlayersName, std::string("")).c_str(), playersJson);
 
   return newJson;
 }

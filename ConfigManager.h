@@ -26,9 +26,9 @@ public:
 
   // Accessor functions to get certain values in the config file. These are simple wraps over the INIReader class.
   // This config file must have been loaded already
-  std::string GetStringFromINI(std::string& fileName, std::string& section, std::string& name, std::string& defaultValue);
-  int GetIntFromINI(std::string& fileName, std::string& section, std::string& name, int defaultValue);
-  bool GetBoolFromINI(std::string& fileName, std::string& section, std::string& name, bool defaultValue);
+  std::string GetStringFromINI(const std::string& fileName, const std::string& section, const std::string& name, const std::string& defaultValue);
+  int GetIntFromINI(const std::string& fileName, const std::string& section, const std::string& name, const int defaultValue);
+  bool GetBoolFromINI(const std::string& fileName, const std::string& section, const std::string& name, const bool defaultValue);
 private:
   static std::shared_ptr<ConfigManager> mSingleton;
 

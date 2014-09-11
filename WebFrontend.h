@@ -17,6 +17,9 @@ public:
   ~WebFrontend();
 private:
   std::shared_ptr<CivetServer> mServer;
+
+  // Config File Constants (Found in general.ini)
+  const std::string FrontendSection = "WebFrontend";
 };
 
 #endif

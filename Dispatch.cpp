@@ -43,7 +43,7 @@ std::string Dispatch::GetJSONResponse(std::string& game, std::string& mode, std:
   mMappingMutex.unlock();
 
   if (bJustMade) {
-    return "{\"status\":\"waiting\"}";
+    return ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_GENERAL_FILENAME, DispatchSection, std::string("JustMadeResponse"), std::string(""));
   }
 
   // The dispatcher doesn't know about the data the analyzer has so we need the analyzer

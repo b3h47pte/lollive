@@ -18,8 +18,8 @@ if (!chk) {\
 LeagueChampionDatabase::LeagueChampionDatabase() {
   // Load all the data on construction. 
   // TODO: Make the location of the database configurable.
-  std::string dir = "Data/Champions/";
-  std::string fileName = "database.xml";
+  std::string dir = ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, ChampionDataSection, DataDirectoryName, std::string(""));
+  std::string fileName = ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, ChampionDataSection, DatabaseFilenameName, std::string(""));
   LoadChampionDatabase(dir, fileName);
 }
 
@@ -73,7 +73,7 @@ void LeagueChampionDatabase::LoadChampionDatabase(std::string& dir, std::string&
   LOAD_CHAMPION_DATABASE_ERR(championsNode, "champions");
 
   rapidxml::xml_node<>* championNode = championsNode->first_node("champion");
-  std::string imageDir = "Images/";
+  std::string imageDir = ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, ChampionDataSection, ImageDirectoryName, std::string(""));
   while (championNode) {
     PtrLeagueChampionData data(new LeagueChampionData);
     data->longName = championNode->first_node("name")->value();

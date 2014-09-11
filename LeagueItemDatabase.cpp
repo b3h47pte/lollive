@@ -19,17 +19,18 @@ if (!chk) {\
 LeagueItemDatabase::LeagueItemDatabase() {
   // Load all the data on construction. 
   // TODO: Make the location of the database configurable.
-  std::string dir = "Data/Items/";
-  std::string fileName = "database.xml";
+  std::string dir = ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, ItemDataSection, DataDirectoryName, std::string(""));
+  std::string fileName = ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, ItemDataSection, DatabaseFilenameName, std::string(""));
   LoadItemDatabase(dir, fileName);
 
   // Load in database image (table of all the items)
-  std::string imgName = "database.png";
+  std::string imgName = ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, ItemDataSection, DatabaseImageFilenameName, std::string(""));
   char* envDir = getenv("LLLDB_DIR");
   if (envDir == NULL) envDir = "";
   mDatabaseImage = cv::imread(std::string(envDir) + dir + imgName, cv::IMREAD_COLOR);
   if (mDatabaseImage.data == NULL) {
     mDatabaseImage = CreateDatabaseImage(dir);
+    cv::imwrite(std::string(envDir) + dir + imgName, mDatabaseImage);
   }
   LoadItemDatabaseImage();
 }
@@ -69,7 +70,7 @@ void LeagueItemDatabase::LoadItemDatabase(std::string& dir, std::string& fileNam
   LOAD_ITEM_DATABASE_ERR(allItemsNode, "items");
 
   rapidxml::xml_node<>* itemNode = allItemsNode->first_node("item");
-  std::string imageDir = "Images/";
+  std::string imageDir = ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, ItemDataSection, ImageDirectoryName, std::string(""));
   while (itemNode) {
     PtrLeagueItemData itemData(new LeagueItemData);
     itemData->itemCount = std::stoi(itemNode->first_node("count")->value(), NULL);

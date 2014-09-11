@@ -18,7 +18,8 @@ void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::
   }
 
   // TODO: This will probably have to change at some point. Probably from user input.
-  if (inPlayer->kills > kills && inPlayer->kills - kills <= 3) {
+  int killThreshold = ConfigManager::Get()->GetIntFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, KillUpdateThresholdName, 0);
+  if (inPlayer->kills > kills && inPlayer->kills - kills <= killThreshold) {
     kills = inPlayer->kills;
   } else {
     kills = SmoothValueVariance<int>(inPlayer->kills, kills, [&](std::shared_ptr<GenericDataStore> data) {
@@ -26,7 +27,8 @@ void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::
     }, dataHistory);
   }
 
-  if (inPlayer->deaths > deaths && inPlayer->deaths - deaths <= 2) {
+  int deathThreshold = ConfigManager::Get()->GetIntFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, DeathUpdateThresholdName, 0);
+  if (inPlayer->deaths > deaths && inPlayer->deaths - deaths <= deathThreshold) {
     deaths = inPlayer->deaths;
   } else {
     deaths = SmoothValueVariance<int>(inPlayer->deaths, deaths, [&](std::shared_ptr<GenericDataStore> data) {
@@ -34,7 +36,9 @@ void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::
     }, dataHistory);
   }
 
-  if (inPlayer->assists > assists && inPlayer->assists - assists <= 3) {
+
+  int assistThreshold = ConfigManager::Get()->GetIntFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, AssistUpdateThresholdName, 0);
+  if (inPlayer->assists > assists && inPlayer->assists - assists <= assistThreshold) {
     assists = inPlayer->assists;
   } else {
     assists = SmoothValueVariance<int>(inPlayer->assists, assists, [&](std::shared_ptr<GenericDataStore> data) {
@@ -43,7 +47,8 @@ void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::
   }
 
   // Need some sanity check here. Hopefully 100cs is reasonable..?
-  if (inPlayer->cs > cs && inPlayer->cs - cs < 100) {
+  int csThreshold = ConfigManager::Get()->GetIntFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, CreepUpdateThresholdName, 0);
+  if (inPlayer->cs > cs && inPlayer->cs - cs < csThreshold) {
     cs = inPlayer->cs;
   } else {
     // Smooth just in case. Usually this won't result in anything special since CS usually changes constantly.
@@ -65,8 +70,8 @@ void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::
   
   // isLowHealth is a tricky because it flashes on and off [we don't read the health bar].
   // This requires us to know when we last updated this value and introduce some arbitrary threshold.
-  // TODO: Make threshold configurable
-  if (inPlayer->isLowHealth != isLowHealth && (timeStamp - lastLowHealthUpdate) > 5) {
+  int lowHealthThreshold = ConfigManager::Get()->GetIntFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, LowHealthThresholdName, 0);
+  if (inPlayer->isLowHealth != isLowHealth && (timeStamp - lastLowHealthUpdate) > lowHealthThreshold) {
     isLowHealth = inPlayer->isLowHealth;
     lastLowHealthUpdate = timeStamp;
   }
@@ -75,21 +80,21 @@ void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::
 // JSONify
 cJSON* LeaguePlayerData::CreateJSON() {
   cJSON* newJson = cJSON_CreateObject();
-  cJSON_AddNumberToObject(newJson, "kills", kills);
-  cJSON_AddNumberToObject(newJson, "deaths", deaths);
-  cJSON_AddNumberToObject(newJson, "assists", assists);
-  cJSON_AddNumberToObject(newJson, "cs", cs);
-  cJSON_AddNumberToObject(newJson, "level", level);
-  cJSON_AddBoolToObject(newJson, "isDead", isDead);
-  cJSON_AddBoolToObject(newJson, "isLowHealth", isLowHealth);
-  cJSON_AddStringToObject(newJson, "name", name.c_str());
-  cJSON_AddStringToObject(newJson, "champion", champion.c_str());
+  cJSON_AddNumberToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonKillsName, std::string("")).c_str(), kills);
+  cJSON_AddNumberToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonDeathsName, std::string("")).c_str(), deaths);
+  cJSON_AddNumberToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonAssistsName, std::string("")).c_str(), assists);
+  cJSON_AddNumberToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonCSName, std::string("")).c_str(), cs);
+  cJSON_AddNumberToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonLevelName, std::string("")).c_str(), level);
+  cJSON_AddBoolToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonIsDeadName, std::string("")).c_str(), isDead);
+  cJSON_AddBoolToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonLowHealthName, std::string("")).c_str(), isLowHealth);
+  cJSON_AddStringToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonNameName, std::string("")).c_str(), name.c_str());
+  cJSON_AddStringToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonChampionName, std::string("")).c_str(), champion.c_str());
 
   cJSON* itemsArr = cJSON_CreateArray();
   for (int i = 0; i < 7; ++i) {
     cJSON_AddItemToArray(itemsArr, cJSON_CreateString(items[i].c_str()));
   }
-  cJSON_AddItemToObject(newJson, "items", itemsArr);
+  cJSON_AddItemToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonItemsName, std::string("")).c_str(), itemsArr);
 
   return newJson;
 }
