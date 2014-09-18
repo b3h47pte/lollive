@@ -54,3 +54,10 @@ bool ConfigManager::GetBoolFromINI(const std::string& fileName, const std::strin
   }
   return mINIMapping[fileName]->GetBoolean(section, name, defaultValue);
 }
+
+double ConfigManager::GetDoubleFromINI(const std::string& fileName, const std::string& section, const std::string& name, const double defaultValue) {
+  if (mINIMapping.find(fileName) == mINIMapping.end()) {
+    return defaultValue;
+  }
+  return mINIMapping[fileName]->GetReal(section, name, defaultValue);
+}

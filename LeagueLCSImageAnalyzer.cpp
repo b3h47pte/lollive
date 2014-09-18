@@ -26,23 +26,31 @@ PtrLeagueTeamData LeagueLCSImageAnalyzer::AnalyzeTeamData(ELeagueTeams team) {
 bool LeagueLCSImageAnalyzer::AnalyzeIsDraftBan() {
   cv::Mat versusImage = FilterImage_Section_Grayscale_BasicThreshold_Resize(mImage,
     GetVersusTextSection(),
-    30.0, 2.0, 2.0);
+    GetVersusThreshold(),
+    GetVersusResizeX(),
+    GetVersusResizeY());
 
   // Make sure versus text is there
   std::string versusText = GetTextFromImage(versusImage, LeagueIdent, std::string("vsVS"));
   std::transform(versusText.begin(), versusText.end(), versusText.begin(), ::toupper);
-  if (versusText != "VS") {
+  if (versusText != GetVersusText()) {
     return false;
   }
 
   // Make sure bans text is there
+  double BansThreshold = GetBansThreshold();
+  double BansResizeX = GetBansResizeX();
+  double BansResizeY = GetBansResizeY();
+
   cv::Mat btBans = FilterImage_Section_Channel_BasicThreshold_Resize(mImage,
-    GetBansTextSection(ELT_BLUE), 0, 80.0, 2.0, 2.0);
+    GetBansTextSection(ELT_BLUE), 0, BansThreshold, BansResizeX, BansResizeY);
   cv::Mat ptBans = FilterImage_Section_Channel_BasicThreshold_Resize(mImage,
-    GetBansTextSection(ELT_PURPLE), 2, 80.0, 2.0, 2.0);
+    GetBansTextSection(ELT_PURPLE), 2, BansThreshold, BansResizeX, BansResizeY);
   std::string btBansText = GetTextFromImage(btBans, LeagueIdent, std::string("BANS"));
   std::string ptBansText = GetTextFromImage(ptBans, LeagueIdent, std::string("BANS"));
-  if (btBansText != "BANS" || ptBansText != "BANS") {
+
+  std::string BansTextCheck = GetBansText();
+  if (btBansText != BansTextCheck || ptBansText != BansTextCheck) {
     return false;
   }
 
@@ -52,24 +60,24 @@ bool LeagueLCSImageAnalyzer::AnalyzeIsDraftBan() {
 cv::Rect LeagueLCSImageAnalyzer::GetBansTextSection(ELeagueTeams team) {
   cv::Rect rect;
   if (team == ELT_BLUE) {
-    rect = cv::Rect((int)(mImage.cols * (44.0f / 1280.0f)),
-      (int)(mImage.rows * (573.0f / 720.0f)),
-      (int)(mImage.cols * (120.0f / 1280.0f)),
-      (int)(mImage.rows * (40.0f / 720.0f)));
+    rect = cv::Rect((int)(mImage.cols * (GetBansBlueXStart() / GetRefImageXSize())),
+      (int)(mImage.rows * (GetBansYStart() / GetRefImageYSize())),
+      (int)(mImage.cols * (GetBansWidth() / GetRefImageXSize())),
+      (int)(mImage.rows * (GetBansHeight() / GetRefImageYSize())));
   } else {
-    rect = cv::Rect((int)(mImage.cols * (1115.0f / 1280.0f)),
-      (int)(mImage.rows * (573.0f / 720.0f)),
-      (int)(mImage.cols * (120.0f / 1280.0f)),
-      (int)(mImage.rows * (40.0f / 720.0f)));
+    rect = cv::Rect((int)(mImage.cols * (GetBansPurpleXStart() / GetRefImageXSize())),
+      (int)(mImage.rows * (GetBansYStart() / GetRefImageYSize())),
+      (int)(mImage.cols * (GetBansWidth() / GetRefImageXSize())),
+      (int)(mImage.rows * (GetBansHeight() / GetRefImageYSize())));
   }
   return rect;
 }
 
 cv::Rect LeagueLCSImageAnalyzer::GetVersusTextSection() {
-  return cv::Rect((int)(mImage.cols * (610.0f / 1280.0f)),
-    (int)(mImage.rows * (49.0f / 720.0f)),
-    (int)(mImage.cols * (48.0f / 1280.0f)),
-    (int)(mImage.rows * (29.0f / 720.0f)));
+  return cv::Rect((int)(mImage.cols * (GetVersusXStart() / GetRefImageXSize())),
+    (int)(mImage.rows * (GetVersusYStart() / GetRefImageYSize())),
+    (int)(mImage.cols * (GetVersusWidth() / GetRefImageXSize())),
+    (int)(mImage.rows * (GetVersusHeight() / GetRefImageYSize())));
 }
 
 /*
@@ -79,7 +87,7 @@ int LeagueLCSImageAnalyzer::GetTeamGamesWon(ELeagueTeams team) {
   cv::Mat filterImage = FilterImage_Section_Channel_BasicThreshold_Resize(mImage,
     GetTeamGamesWonSection(team),
     (team == ELT_BLUE) ? 0 : 2,
-    115.0, 2.0, 2.0);
+    GetTeamGamesThreshold(), GetTeamGamesResizeX(), GetTeamGamesResizeY());
   std::string teamText = GetTextFromImage(filterImage, LeagueIdent, std::string("0123456789"), tesseract::PSM_SINGLE_CHAR);
   try {
     return std::stoi(teamText, NULL);
@@ -91,15 +99,15 @@ int LeagueLCSImageAnalyzer::GetTeamGamesWon(ELeagueTeams team) {
 cv::Rect LeagueLCSImageAnalyzer::GetTeamGamesWonSection(ELeagueTeams team) {
   cv::Rect rect;
   if (team == ELT_BLUE) {
-    rect = cv::Rect((int)(mImage.cols * (262.0f / 1280.0f)),
-      (int)(mImage.rows * (3.0f / 720.0f)),
-      (int)(mImage.cols * (38.0f / 1280.0f)),
-      (int)(mImage.rows * (29.0f / 720.0f)));
+    rect = cv::Rect((int)(mImage.cols * (GetTeamGamesBlueXStart() / GetRefImageXSize())),
+      (int)(mImage.rows * (GetTeamGamesYStart() / GetRefImageYSize())),
+      (int)(mImage.cols * (GetTeamGamesWidth() / GetRefImageXSize())),
+      (int)(mImage.rows * (GetTeamGamesHeight() / GetRefImageYSize())));
   } else {
-    rect = cv::Rect((int)(mImage.cols * (979.0f / 1280.0f)),
-      (int)(mImage.rows * (3.0f / 720.0f)),
-      (int)(mImage.cols * (38.0f / 1280.0f)),
-      (int)(mImage.rows * (29.0f / 720.0f)));
+    rect = cv::Rect((int)(mImage.cols * (GetTeamGamesPurpleXStart() / GetRefImageXSize())),
+      (int)(mImage.rows * (GetTeamGamesYStart() / GetRefImageYSize())),
+      (int)(mImage.cols * (GetTeamGamesWidth() / GetRefImageXSize())),
+      (int)(mImage.rows * (GetTeamGamesHeight() / GetRefImageYSize())));
   }
   return rect;
 }
@@ -112,7 +120,7 @@ std::string LeagueLCSImageAnalyzer::GetTeamName(ELeagueTeams team) {
   cv::Mat filterImage = FilterImage_Section_Channel_BasicThreshold_Resize(mImage,
     GetTeamNameSection(team),
     (team == ELT_BLUE) ? 0 : 2,
-    115.0, 2.0, 2.0);
+    GetTeamNameThreshold(), GetTeamNameResizeX(), GetTeamNameResizeY());
   std::string teamText = GetTextFromImage(filterImage, LeagueIdent, std::string("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), tesseract::PSM_SINGLE_WORD, NULL, NULL, true);
   return teamText;
 }
@@ -120,15 +128,15 @@ std::string LeagueLCSImageAnalyzer::GetTeamName(ELeagueTeams team) {
 cv::Rect LeagueLCSImageAnalyzer::GetTeamNameSection(ELeagueTeams team) {
   cv::Rect rect;
   if (team == ELT_BLUE) {
-    rect = cv::Rect((int)(mImage.cols * (313.0f / 1280.0f)),
-      (int)(mImage.rows * (2.0f / 720.0f)),
-      (int)(mImage.cols * (84.0f / 1280.0f)),
-      (int)(mImage.rows * (31.0f / 720.0f)));
+    rect = cv::Rect((int)(mImage.cols * (GetTeamNameBlueXStart() / GetRefImageXSize())),
+      (int)(mImage.rows * (GetTeamNameYStart() / GetRefImageYSize())),
+      (int)(mImage.cols * (GetTeamNameWidth() / GetRefImageXSize())),
+      (int)(mImage.rows * (GetTeamNameHeight() / GetRefImageYSize())));
   } else {
-    rect = cv::Rect((int)(mImage.cols * (877.0f / 1280.0f)),
-      (int)(mImage.rows * (2.0f / 720.0f)),
-      (int)(mImage.cols * (84.0f / 1280.0f)),
-      (int)(mImage.rows * (31.0f / 720.0f)));
+    rect = cv::Rect((int)(mImage.cols * (GetTeamNamePurpleXStart() / GetRefImageXSize())),
+      (int)(mImage.rows * (GetTeamNameYStart() / GetRefImageYSize())),
+      (int)(mImage.cols * (GetTeamNameWidth() / GetRefImageXSize())),
+      (int)(mImage.rows * (GetTeamNameHeight() / GetRefImageYSize())));
   }
   return rect;
 }
@@ -200,18 +208,18 @@ cv::Rect LeagueLCSImageAnalyzer::GetPlayerKDASection(uint idx, ELeagueTeams team
 
 cv::Rect LeagueLCSImageAnalyzer::GetPlayerCSSection(uint idx, ELeagueTeams team) {
   cv::Rect rect;
-  float x; // x -- determined by the team
-  float y; // y -- determined by the player index 
-  y = 623.0f + idx * 20.0f;
+  double x; // x -- determined by the team
+  double y; // y -- determined by the player index 
+  y = GetCSYStart() + idx * GetCSYIncrement();
   if (team == ELT_BLUE) {
-    x = 595.0f;
+    x = GetCSXBlueStart();
   } else {
-    x = 662.0f;
+    x = GetCSXPurpleStart();
   }
-  rect = cv::Rect((int)(mImage.cols * (x / 1280.0f)),
-    (int)(mImage.rows * (y / 720.0f)),
-    (int)(mImage.cols * (23.0f / 1280.0f)),
-    (int)(mImage.rows * (14.0f / 720.0f)));
+  rect = cv::Rect((int)(mImage.cols * (x / GetRefImageXSize())),
+    (int)(mImage.rows * (y / GetRefImageYSize())),
+    (int)(mImage.cols * (GetCSXSize() / GetRefImageXSize())),
+    (int)(mImage.rows * (GetCSYSize() / GetRefImageYSize())));
   return rect;
 }
 

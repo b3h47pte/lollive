@@ -109,7 +109,7 @@ cv::MatND ImageAnalyzer::CreateVHistogram(cv::Mat inImage, int value_bins) {
 
 // Generic Function to analyze a part of an image. 
 // Will take an image and cut out a section. From that section, we will use ONE channel. Then we will resize the image.
-cv::Mat ImageAnalyzer::FilterImage_Section_Channel_BasicThreshold_Resize(cv::Mat inImage, cv::Rect& section, int channel, double threshold, float resX, float resY) {
+cv::Mat ImageAnalyzer::FilterImage_Section_Channel_BasicThreshold_Resize(cv::Mat inImage, cv::Rect& section, int channel, double threshold, double resX, double resY) {
   cv::Mat newMat = FilterImage_Section(inImage, section);
   newMat = FilterImage_Channel(newMat, channel);
   newMat = FilterImage_BasicThreshold(newMat, threshold);
@@ -117,7 +117,7 @@ cv::Mat ImageAnalyzer::FilterImage_Section_Channel_BasicThreshold_Resize(cv::Mat
   return newMat;
 }
 
-cv::Mat ImageAnalyzer::FilterImage_Section_Grayscale_BasicThreshold_Resize(cv::Mat inImage, cv::Rect& section, double threshold, float resX, float resY) {
+cv::Mat ImageAnalyzer::FilterImage_Section_Grayscale_BasicThreshold_Resize(cv::Mat inImage, cv::Rect& section, double threshold, double resX, double resY) {
   cv::Mat newMat = FilterImage_Section(inImage, section);
   newMat = FilterImage_Grayscale(newMat);
   newMat = FilterImage_BasicThreshold(newMat, threshold);
@@ -150,7 +150,7 @@ cv::Mat ImageAnalyzer::FilterImage_BasicThreshold(cv::Mat inImage, double thresh
   return newImage;
 }
 
-cv::Mat ImageAnalyzer::FilterImage_Resize(cv::Mat inImage, float resX, float resY) {
+cv::Mat ImageAnalyzer::FilterImage_Resize(cv::Mat inImage, double resX, double resY) {
   cv::Size newSize;
   cv::Mat newImage;
   cv::resize(inImage, newImage, newSize, resX, resY);

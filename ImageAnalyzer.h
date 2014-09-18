@@ -75,14 +75,14 @@ protected:
   static std::string LeagueIdent;
 
   // Generic Functions to analyze a part of an image.
-  cv::Mat FilterImage_Section_Grayscale_BasicThreshold_Resize(cv::Mat inImage, cv::Rect& section, double threshold, float resX, float resY);
-  cv::Mat FilterImage_Section_Channel_BasicThreshold_Resize(cv::Mat inImage, cv::Rect& section, int channel, double threshold, float resX, float resY);
+  cv::Mat FilterImage_Section_Grayscale_BasicThreshold_Resize(cv::Mat inImage, cv::Rect& section, double threshold, double resX, double resY);
+  cv::Mat FilterImage_Section_Channel_BasicThreshold_Resize(cv::Mat inImage, cv::Rect& section, int channel, double threshold, double resX, double resY);
 
   cv::Mat FilterImage_Section(cv::Mat inImage, cv::Rect& section);
   cv::Mat FilterImage_Channel(cv::Mat inImage, int channel); 
   cv::Mat FilterImage_2Channel(cv::Mat inImage, int channel1, int channel2, double fillValue);
   cv::Mat FilterImage_BasicThreshold(cv::Mat inImage, double threshold);
-  cv::Mat FilterImage_Resize(cv::Mat inImage, float resX, float resY);
+  cv::Mat FilterImage_Resize(cv::Mat inImage, double resX, double resY);
   cv::Mat FilterImage_Grayscale(cv::Mat inImage);
 
   // Image Hint System. What we do with these hints is totally up to the subclasses.
