@@ -75,7 +75,12 @@ private:
 // Need to easily be able to define variables as being stored in the config file and then easily retrieve them
 // Obviously the best way to do this would be to access them like variables, but the easier alternative is to just use functions
 #define DECLARE_CONFIG_VARIABLE(var_name, var_type, config_file, config_section, def_value) \
-  var_type Get##var_name() { \
-  return ConfigManager::Get()->GetFromINI<var_type>(config_file, std::string(config_section), #var_name, def_value); \
+  var_type _cached_value_##var_name; \
+  bool _is_cached_##var_name = false;\
+  inline var_type Get##var_name() { \
+    if (!_is_cached_##var_name) {\
+      _cached_value_##var_name = ConfigManager::Get()->GetFromINI<var_type>(config_file, std::string(config_section), #var_name, def_value); \
+    }\
+    return _cached_value_##var_name;\
   }
 #endif
