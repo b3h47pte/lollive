@@ -84,6 +84,34 @@ private:
   DECLARE_CONFIG_VARIABLE(TeamNameWidth, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
   DECLARE_CONFIG_VARIABLE(TeamNameHeight, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
 
+  DECLARE_CONFIG_VARIABLE(PlayerChampDraftYStart, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerChampDraftYIncr, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerChampDraftBlueXStart, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerChampDraftPurpleXStart, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerChampDraftWidth, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerChampDraftHeight, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+
+  DECLARE_CONFIG_VARIABLE(PlayerChampYStart, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerChampYIncr, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerChampBlueXStart, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerChampPurpleXStart, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerChampWidth, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerChampHeight, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+
+  DECLARE_CONFIG_VARIABLE(PlayerNameYStart, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerNameYIncr, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerNameBlueXStart, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerNamePurpleXStart, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerNameWidth, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerNameHeight, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+
+  DECLARE_CONFIG_VARIABLE(PlayerKDAYStart, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerKDAYIncr, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerKDABlueXStart, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerKDAPurpleXStart, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerKDAWidth, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerKDAHeight, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+
   DECLARE_CONFIG_VARIABLE(CSYStart, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
   DECLARE_CONFIG_VARIABLE(CSYIncrement, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
   DECLARE_CONFIG_VARIABLE(CSXBlueStart, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
@@ -91,6 +119,18 @@ private:
   DECLARE_CONFIG_VARIABLE(CSXSize, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
   DECLARE_CONFIG_VARIABLE(CSYSize, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
 
+  DECLARE_CONFIG_VARIABLE(BanChampThreshold, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(BanChampResizeX, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(BanChampResizeY, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(BanChampYStart, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(BanChampBlueXStart, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(BanChampPurpleXStart, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(BanChampXIncrement, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(BanChampWidth, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(BanChampHeight, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+
+  DECLARE_CONFIG_VARIABLE(BanPercentYAdjust, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(BanPercentHeightAdjust, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
 };
 
 #endif

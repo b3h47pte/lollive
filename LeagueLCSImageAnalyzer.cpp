@@ -143,66 +143,66 @@ cv::Rect LeagueLCSImageAnalyzer::GetTeamNameSection(ELeagueTeams team) {
 
 cv::Rect LeagueLCSImageAnalyzer::GetPlayerChampionSection(uint idx, ELeagueTeams team) {
   cv::Rect rect;
-  float x; // x -- determined by the team
-  float y; // y -- determined by the player index 
+  double x; // x -- determined by the team
+  double y; // y -- determined by the player index 
   if (bIsDraftBan) {
-    y = 118.0f + idx * 90.0f;
+    y = GetPlayerChampDraftYStart() + idx * GetPlayerChampDraftYIncr();
     if (team == ELT_BLUE) {
-      x = 67.0f;
+      x = GetPlayerChampDraftBlueXStart();
     } else {
-      x = 1137.0f;
+      x = GetTeamGamesPurpleXStart();
     }
-    rect = cv::Rect((int)(mImage.cols * (x / 1280.0f)),
-      (int)(mImage.rows * (y / 720.0f)),
-      (int)(mImage.cols * (51.0f / 1280.0f)),
-      (int)(mImage.rows * (51.0f / 720.0f)));
+    rect = cv::Rect((int)(mImage.cols * (x / GetRefImageXSize())),
+      (int)(mImage.rows * (y / GetRefImageYSize())),
+      (int)(mImage.cols * (GetPlayerChampDraftWidth() / GetRefImageXSize())),
+      (int)(mImage.rows * (GetPlayerChampDraftHeight() / GetRefImageYSize())));
   } else {
-    y = 155.0f + idx * 70.0f;
+    y = GetPlayerChampYStart() + idx * GetPlayerChampYIncr();
     if (team == ELT_BLUE) {
-      x = 26.0f;
+      x = GetPlayerChampBlueXStart();
     } else {
-      x = 1223.0f;
+      x = GetPlayerChampPurpleXStart();
     }
-    rect = cv::Rect((int)(mImage.cols * (x / 1280.0f)),
-      (int)(mImage.rows * (y / 720.0f)),
-      (int)(mImage.cols * (32.0f / 1280.0f)),
-      (int)(mImage.rows * (32.0f / 720.0f)));
+    rect = cv::Rect((int)(mImage.cols * (x / GetRefImageXSize())),
+      (int)(mImage.rows * (y / GetRefImageYSize())),
+      (int)(mImage.cols * (GetPlayerChampWidth() / GetRefImageXSize())),
+      (int)(mImage.rows * (GetPlayerChampHeight() / GetRefImageYSize())));
   }
   return rect;
 }
 
 cv::Rect LeagueLCSImageAnalyzer::GetPlayerNameSection(uint idx, ELeagueTeams team) {
   cv::Rect rect;
-  float x; // x -- determined by the team
-  float y; // y -- determined by the player index 
-  y = 142.0f + idx * 70.0f;
+  double x; // x -- determined by the team
+  double y; // y -- determined by the player index 
+  y = GetPlayerNameYStart() + idx * GetPlayerNameYIncr();
   if (team == ELT_BLUE) {
-    x = 2.0f;
+    x = GetPlayerNameBlueXStart();
   } else {
-    x = 1215.0f;
+    x = GetPlayerNamePurpleXStart();
   }
-  rect = cv::Rect((int)(mImage.cols * (x / 1280.0f)),
-    (int)(mImage.rows * (y / 720.0f)),
-    (int)(mImage.cols * (65.0f / 1280.0f)),
-    (int)(mImage.rows * (8.0f / 720.0f)));
+  rect = cv::Rect((int)(mImage.cols * (x / GetRefImageXSize())),
+    (int)(mImage.rows * (y / GetRefImageYSize())),
+    (int)(mImage.cols * (GetPlayerNameWidth() / GetRefImageXSize())),
+    (int)(mImage.rows * (GetPlayerNameHeight() / GetRefImageYSize())));
   return rect;
 }
 
 
 cv::Rect LeagueLCSImageAnalyzer::GetPlayerKDASection(uint idx, ELeagueTeams team) {
   cv::Rect rect;
-  float x; // x -- determined by the team
-  float y; // y -- determined by the player index 
-  y = 623.0f + idx * 20.0f;
+  double x; // x -- determined by the team
+  double y; // y -- determined by the player index 
+  y = GetPlayerKDAYStart() + idx * GetPlayerKDAYIncr();
   if (team == ELT_BLUE) {
-    x = 532.0f;
+    x = GetPlayerKDABlueXStart();
   } else {
-    x = 700.0f;
+    x = GetPlayerKDAPurpleXStart();
   }
-  rect = cv::Rect((int)(mImage.cols * (x / 1280.0f)),
-    (int)(mImage.rows * (y / 720.0f)),
-    (int)(mImage.cols * (48.0f / 1280.0f)),
-    (int)(mImage.rows * (14.0f / 720.0f)));
+  rect = cv::Rect((int)(mImage.cols * (x / GetRefImageXSize())),
+    (int)(mImage.rows * (y / GetRefImageYSize())),
+    (int)(mImage.cols * (GetPlayerKDAWidth() / GetRefImageXSize())),
+    (int)(mImage.rows * (GetPlayerKDAHeight() / GetRefImageYSize())));
   return rect;
 }
 
@@ -234,7 +234,10 @@ void LeagueLCSImageAnalyzer::GetBans(std::string* outArray, ELeagueTeams team) {
   for (uint i = 0; i < 3; ++i) {
     cv::Rect banSection = GetBansSection(team, i);
     cv::Rect banPercentSection = GetBansPercentageSection(banSection);
-    cv::Mat percImg = FilterImage_Section_Grayscale_BasicThreshold_Resize(mImage, banPercentSection, 100.0f, 3.0f, 3.0f);
+    cv::Mat percImg = FilterImage_Section_Grayscale_BasicThreshold_Resize(mImage, banPercentSection, 
+      GetBanChampThreshold(), 
+      GetBanChampResizeX(), 
+      GetBanChampResizeY());
     std::string banPercentage = GetTextFromImage(percImg, LeagueIdent, std::string("0123456789.%"), tesseract::PSM_SINGLE_WORD);
     if (banPercentage == "") {
       continue;
@@ -246,30 +249,30 @@ void LeagueLCSImageAnalyzer::GetBans(std::string* outArray, ELeagueTeams team) {
 
 cv::Rect LeagueLCSImageAnalyzer::GetBansSection(ELeagueTeams team, uint idx) {
   cv::Rect rect;
-  float x; // x -- determined by the index AND the team
-  float y;
-  y = 631.0f;
+  double x; // x -- determined by the index AND the team
+  double y;
+  y = GetBanChampYStart();
   if (team == ELT_BLUE) {
-    x = 17.0f;
+    x = GetBanChampBlueXStart();
   } else {
-    x = 1092.0f;
+    x = GetBanChampPurpleXStart();
   }
-  x += idx * 63.0f;
+  x += idx * GetBanChampXIncrement();
 
-  rect = cv::Rect((int)(mImage.cols * (x / 1280.0f)),
-    (int)(mImage.rows * (y / 720.0f)),
-    (int)(mImage.cols * (51.0f / 1280.0f)),
-    (int)(mImage.rows * (51.0f / 720.0f)));
+  rect = cv::Rect((int)(mImage.cols * (x / GetRefImageXSize())),
+    (int)(mImage.rows * (y / GetRefImageYSize())),
+    (int)(mImage.cols * (GetBanChampWidth() / GetRefImageXSize())),
+    (int)(mImage.rows * (GetBanChampHeight() / GetRefImageYSize())));
   return rect;
 }
 
 /*
- * Takes in the result of 'GetBansSection' and add just changes the height and y-position
+ * Takes in the result of 'GetBansSection' and changes the height and y-position
  * to get the appropriate image for the ban percentage.
  */
 cv::Rect LeagueLCSImageAnalyzer::GetBansPercentageSection(cv::Rect banRect) {
   cv::Rect newRect = banRect;
-  newRect.y += (int)(mImage.rows * 52.0f / 720.0f);
-  newRect.height = (int)(mImage.rows * 21.0f / 720.0f);
+  newRect.y += (int)(mImage.rows * GetBanPercentYAdjust() / GetRefImageYSize());
+  newRect.height = (int)(mImage.rows * GetBanPercentHeightAdjust() / GetRefImageYSize());
   return newRect;
 }
