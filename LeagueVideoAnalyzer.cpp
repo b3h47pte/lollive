@@ -44,7 +44,7 @@ bool LeagueVideoAnalyzer::StoreData(std::shared_ptr<ImageAnalyzer> img) {
       
       ++continuousInvalidFrameCount;
       // TODO: Should be configurable
-      isMatchOver = (continuousInvalidFrameCount >= 3);
+      isMatchOver = (continuousInvalidFrameCount >= GetMatchOverThreshold());
 
       // We operate under the assumption that the camera is at the losing team's nexus at the end of the match.
       if (isMatchOver) {
