@@ -99,6 +99,12 @@ protected:
   std::string FindMatchingChampion(cv::Mat filterImage, std::vector<std::string>& championHints, bool& isLowHealth, bool& isDead);
 
 private:
+  DECLARE_CONFIG_VARIABLE(ChampImgSplitDimX, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(ChampImgSplitDimY, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(ChampImgHBuckets, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(ChampImgSBuckets, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(ChampImgVBuckets, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(ChampDeadThreshold, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
 };
 
 #endif

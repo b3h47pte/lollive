@@ -129,12 +129,11 @@ std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::
   std::clock_t begin = std::clock();
 
   // Split the image into x_dim * y_dim parts (generally want to have ~25 solid pieces to compare).
-  // TODO: Make this configurable
-  int x_dim = 6;
-  int y_dim = 6;
+  int x_dim = GetChampImgSplitDimX();
+  int y_dim = GetChampImgSplitDimY();
 
-  int h_buckets = 30;
-  int s_buckets = 32;
+  int h_buckets = GetChampImgHBuckets();
+  int s_buckets = GetChampImgSBuckets();
 
   int totalEle = x_dim * y_dim;
   cv::Mat* filterSubImages = new cv::MatND[x_dim * y_dim];
@@ -147,7 +146,7 @@ std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::
   int cc = 0;
   std::for_each(filterSubImages, filterSubImages + totalEle, [&](cv::Mat inImg) {
     filterSubHSHists[cc] = CreateHSHistogram(inImg, h_buckets, s_buckets);
-    filterSubVHists[cc] = CreateVHistogram(inImg, 10);
+    filterSubVHists[cc] = CreateVHistogram(inImg, GetChampImgVBuckets());
 
     // Filter out red channel
     filterSubImagesNoRed[cc] = FilterImage_2Channel(filterSubImages[cc], 0, 1, 0.0);
@@ -187,7 +186,7 @@ std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::
     SplitImage(baseImage, x_dim, y_dim, &baseSubImages);
     std::for_each(baseSubImages, baseSubImages + totalEle, [&](cv::Mat inImg) {
       baseSubHSHists[cc] = CreateHSHistogram(inImg, h_buckets, s_buckets);
-      baseSubVHists[cc] = CreateVHistogram(inImg, 10);
+      baseSubVHists[cc] = CreateVHistogram(inImg, GetChampImgVBuckets());
 
       // Filter out red channel
       baseSubImagesNoRed[cc] = FilterImage_2Channel(baseSubImages[cc], 0, 1, 0.0);
@@ -226,8 +225,7 @@ std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::
     }
   }
 
-  // TODO: Configurable
-  isDead = (championDeadScore < 0.5);
+  isDead = (championDeadScore < GetChampDeadThreshold());
 
   // At this point, there are two possibilities:
   //  a) The two outputs match (for the RGB image and the GB image). In this case, it should be clear that the character
