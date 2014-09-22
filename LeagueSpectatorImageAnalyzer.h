@@ -152,6 +152,22 @@ private:
   DECLARE_CONFIG_VARIABLE(PlayerCSPurpleX, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
   DECLARE_CONFIG_VARIABLE(PlayerCSWidth, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
   DECLARE_CONFIG_VARIABLE(PlayerCSHeight, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+
+  DECLARE_CONFIG_VARIABLE(PlayerItemBlueX, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerItemPurpleX, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerItemXIncr, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerItemY, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerItemYIncr, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerItemWidth, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerItemHeight, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+
+  DECLARE_CONFIG_VARIABLE(MapThreshold, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(MapResizeX, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(MapResizeY, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(MapX, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(MapY, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(MapWidth, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(MapHeight, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
 };
 
 #endif

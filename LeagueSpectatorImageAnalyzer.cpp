@@ -450,8 +450,8 @@ std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerScore(uint idx, ELeagueTe
 
 cv::Rect LeagueSpectatorImageAnalyzer::GetPlayerKDASection(uint idx, ELeagueTeams team) {
   cv::Rect rect;
-  float x; // x -- determined by the team
-  float y; // y -- determined by the player index 
+  double x; // x -- determined by the team
+  double y; // y -- determined by the player index 
   y = GetPlayerKDAY() + idx * GetPlayerKDAYIncr();
   if (team == ELT_BLUE) {
     x = GetPlayerKDABlueX();
@@ -467,18 +467,18 @@ cv::Rect LeagueSpectatorImageAnalyzer::GetPlayerKDASection(uint idx, ELeagueTeam
 
 cv::Rect LeagueSpectatorImageAnalyzer::GetPlayerCSSection(uint idx, ELeagueTeams team) {
   cv::Rect rect;
-  float x; // x -- determined by the team
-  float y; // y -- determined by the player index 
-  y = 929.0f + idx * 31.0f;
+  double x; // x -- determined by the team
+  double y; // y -- determined by the player index 
+  y = GetPlayerCSY() + idx * GetPlayerCSYIncr();
   if (team == ELT_BLUE) {
-    x = 895.0f;
+    x = GetPlayerCSBlueX();
   } else {
-    x = 997.0f;
+    x = GetPlayerCSPurpleX();
   }
-  rect = cv::Rect((int)(mImage.cols * (x / 1920.0f)),
-    (int)(mImage.rows * (y / 1080.0f)),
-    (int)(mImage.cols * (30.0f / 1920.0f)),
-    (int)(mImage.rows * (18.0f / 1080.0f)));
+  rect = cv::Rect((int)(mImage.cols * (x / GetLargeRefImageX())),
+    (int)(mImage.rows * (y / GetLargeRefImageY())),
+    (int)(mImage.cols * (GetPlayerCSWidth() / GetLargeRefImageX())),
+    (int)(mImage.rows * (GetPlayerCSHeight() / GetLargeRefImageY())));
   return rect;
 }
 
@@ -597,19 +597,19 @@ bool LeagueSpectatorImageAnalyzer::IsValidScore(std::string& inScore) {
  * Using 1080p as a reference.
  */
 cv::Rect LeagueSpectatorImageAnalyzer::GetPlayerItemSection(uint playerIdx, ELeagueTeams team, uint itemIdx) {
-  float x = 0.0f;
-  float y = 0.0f;
+  double x = 0.0f;
+  double y = 0.0f;
   if (team == ELT_BLUE) {
-    x = 590.0f;
+    x = GetPlayerItemBlueX();
   } else {
-    x = 1145.0f;
+    x = GetPlayerItemPurpleX();
   }
-  x += itemIdx * 27.0f;
-  y = 925.0f + playerIdx * 31.0f;
-  cv::Rect newRect = cv::Rect((int)(mImage.cols * (x / 1920.0f)),
-    (int)(mImage.rows * (y / 1080.0f)),
-    (int)(mImage.cols * (25.0f / 1920.0f)),
-    (int)(mImage.rows * (25.0f / 1080.0f)));
+  x += itemIdx * GetPlayerItemXIncr();
+  y = GetPlayerItemY() + playerIdx * GetPlayerItemYIncr();
+  cv::Rect newRect = cv::Rect((int)(mImage.cols * (x / GetLargeRefImageX())),
+    (int)(mImage.rows * (y / GetLargeRefImageY())),
+    (int)(mImage.cols * (GetPlayerItemWidth() / GetLargeRefImageX())),
+    (int)(mImage.rows * (GetPlayerItemHeight() / GetLargeRefImageY())));
 
   return newRect;
 }
@@ -620,7 +620,8 @@ cv::Rect LeagueSpectatorImageAnalyzer::GetPlayerItemSection(uint playerIdx, ELea
  * be at the center of the screen).
  */
 void LeagueSpectatorImageAnalyzer::AnalyzeMapPosition(double& xPos, double& yPos) {
-  cv::Mat mapImg = FilterImage_Section_Grayscale_BasicThreshold_Resize(mImage, GetMapSection(), 155.0f, 1.0f, 1.0f);
+  cv::Mat mapImg = FilterImage_Section_Grayscale_BasicThreshold_Resize(mImage, GetMapSection(), 
+    GetMapThreshold(), GetMapResizeX(), GetMapResizeY());
 
   // Find the contours in this image to find the giant rectangle which indicates the location of the camera.
   std::vector<std::vector<cv::Point> > contours;
@@ -652,10 +653,10 @@ void LeagueSpectatorImageAnalyzer::AnalyzeMapPosition(double& xPos, double& yPos
 }
 
 cv::Rect LeagueSpectatorImageAnalyzer::GetMapSection() {
-  cv::Rect newRect = cv::Rect((int)(mImage.cols * (1626.0f / 1920.0f)),
-    (int)(mImage.rows * (784.0f / 1080.0f)),
-    (int)(mImage.cols * (288.0f / 1920.0f)),
-    (int)(mImage.rows * (288.0f / 1080.0f)));
+  cv::Rect newRect = cv::Rect((int)(mImage.cols * (GetMapX() / GetLargeRefImageX())),
+    (int)(mImage.rows * (GetMapY() / GetLargeRefImageY())),
+    (int)(mImage.cols * (GetMapWidth() / GetLargeRefImageX())),
+    (int)(mImage.rows * (GetMapHeight() / GetLargeRefImageY())));
 
   return newRect;
 }
