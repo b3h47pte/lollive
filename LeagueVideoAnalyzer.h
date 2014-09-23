@@ -39,7 +39,7 @@ protected:
   bool isWaitingToStart;
 
 private:
-  DECLARE_CONFIG_VARIABLE(MatchOverThreshold, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "VideoAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(MatchOverThreshold, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "VideoAnalyzer", 0)
 };
 
 #endif

@@ -5,22 +5,46 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LoLLive", "LoLLive.vcxproj", "{A1206ABC-E07B-4788-9F01-B53EFB1147D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RAFViewer", "..\RAFViewer\RAFViewer.csproj", "{BA7DC0D9-F5CC-418A-A4F4-DFC27A61727F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
 		Release|Win32 = Release|Win32
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A1206ABC-E07B-4788-9F01-B53EFB1147D8}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{A1206ABC-E07B-4788-9F01-B53EFB1147D8}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{A1206ABC-E07B-4788-9F01-B53EFB1147D8}.Debug|Mixed Platforms.Build.0 = Debug|Win32
 		{A1206ABC-E07B-4788-9F01-B53EFB1147D8}.Debug|Win32.ActiveCfg = Debug|Win32
 		{A1206ABC-E07B-4788-9F01-B53EFB1147D8}.Debug|Win32.Build.0 = Debug|Win32
 		{A1206ABC-E07B-4788-9F01-B53EFB1147D8}.Debug|x64.ActiveCfg = Debug|x64
 		{A1206ABC-E07B-4788-9F01-B53EFB1147D8}.Debug|x64.Build.0 = Debug|x64
+		{A1206ABC-E07B-4788-9F01-B53EFB1147D8}.Release|Any CPU.ActiveCfg = Release|Win32
+		{A1206ABC-E07B-4788-9F01-B53EFB1147D8}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{A1206ABC-E07B-4788-9F01-B53EFB1147D8}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{A1206ABC-E07B-4788-9F01-B53EFB1147D8}.Release|Win32.ActiveCfg = Release|Win32
 		{A1206ABC-E07B-4788-9F01-B53EFB1147D8}.Release|Win32.Build.0 = Release|Win32
 		{A1206ABC-E07B-4788-9F01-B53EFB1147D8}.Release|x64.ActiveCfg = Release|x64
 		{A1206ABC-E07B-4788-9F01-B53EFB1147D8}.Release|x64.Build.0 = Release|x64
+		{BA7DC0D9-F5CC-418A-A4F4-DFC27A61727F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA7DC0D9-F5CC-418A-A4F4-DFC27A61727F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA7DC0D9-F5CC-418A-A4F4-DFC27A61727F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{BA7DC0D9-F5CC-418A-A4F4-DFC27A61727F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BA7DC0D9-F5CC-418A-A4F4-DFC27A61727F}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{BA7DC0D9-F5CC-418A-A4F4-DFC27A61727F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BA7DC0D9-F5CC-418A-A4F4-DFC27A61727F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA7DC0D9-F5CC-418A-A4F4-DFC27A61727F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA7DC0D9-F5CC-418A-A4F4-DFC27A61727F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{BA7DC0D9-F5CC-418A-A4F4-DFC27A61727F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{BA7DC0D9-F5CC-418A-A4F4-DFC27A61727F}.Release|Win32.ActiveCfg = Release|Any CPU
+		{BA7DC0D9-F5CC-418A-A4F4-DFC27A61727F}.Release|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
