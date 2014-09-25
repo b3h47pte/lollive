@@ -64,6 +64,11 @@ protected:
   virtual cv::Rect GetPlayerCSSection(uint idx, ELeagueTeams team);
   virtual std::string FixScore(std::string inScore);
   virtual bool IsValidScore(std::string &inScore);
+
+  // EVENT DATA.
+  // Events are the same everywhere, so the only thing we have to change is where to grab the events from.
+  virtual cv::Rect GetMinibarSection(uint idx);
+  virtual cv::Rect GetAnnouncementSection();
 private:
   // Config File
   DECLARE_CONFIG_VARIABLE(ValidFrameThreshold, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
@@ -168,6 +173,11 @@ private:
   DECLARE_CONFIG_VARIABLE(MapY, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
   DECLARE_CONFIG_VARIABLE(MapWidth, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
   DECLARE_CONFIG_VARIABLE(MapHeight, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+
+  DECLARE_CONFIG_VARIABLE(AnnouncementX, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(AnnouncementY, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(AnnouncementWidth, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(AnnouncementHeight, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
 };
 
 #endif

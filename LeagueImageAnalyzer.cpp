@@ -4,6 +4,7 @@
 #include "opencv2/superres.hpp"
 #include <ctime>
 #include <algorithm>
+#include <string>
 #include <thread>
 #include "LeagueConstants.h"
 #include "LeagueItemData.h"
@@ -46,6 +47,7 @@ bool LeagueImageAnalyzer::Analyze() {
   mDataMutex.unlock();
   std::cout << "Current Time: " << time << std::endl;
 
+  /*
   // Team Data.
   // Thread the analysis to make it faster (not sure how this will be like when we start running more threads for different streams).
   PtrLeagueTeamData blueTeam;
@@ -70,6 +72,11 @@ bool LeagueImageAnalyzer::Analyze() {
   (*mData)["PurpleTeam"] = purpleTeamProp;
   purpleTeam->Print();
   mDataMutex.unlock();
+  */
+
+  // Get Events. 
+  PtrLeagueEvent announcementEvent = GetAnnouncementEvent();
+  std::shared_ptr<VectorPtrLeagueEvent> minibarEvents = GetMinibarEvents();
 
   // At this point we know whether or not this was a valid frame..if so get the map position
   if (IsValidFrame()) {
@@ -126,8 +133,6 @@ PtrLeaguePlayerData LeagueImageAnalyzer::AnalyzePlayerData(uint idx, ELeagueTeam
  * hints.
  */
 std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::vector<std::string>& championHints, bool& isLowOnHealth, bool& isDead) {
-  std::clock_t begin = std::clock();
-
   // Split the image into x_dim * y_dim parts (generally want to have ~25 solid pieces to compare).
   int x_dim = GetChampImgSplitDimX();
   int y_dim = GetChampImgSplitDimY();
@@ -263,10 +268,6 @@ std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::
   if (baseSubImagesNoRed) delete[] baseSubImagesNoRed;
   if (baseSubHSHistsNoRed) delete[] baseSubHSHistsNoRed;
 
-  std::clock_t end = std::clock();
-  double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-  std::cout << "Find Champion Elapsed Seconds: " << elapsed_secs << std::endl;
-
   return championMatch;
 }
 
@@ -280,7 +281,6 @@ std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::
  * TODO: Use an image pyramid to speed this up. Also use multiple indicators to increase accuracy.
  */
 std::string LeagueImageAnalyzer::AnalyzePlayerItem(uint playerIdx, ELeagueTeams team, uint itemIdx) {
-  std::clock_t begin = std::clock();
   cv::Mat itemImage = FilterImage_Section(mImage, GetPlayerItemSection(playerIdx, team, itemIdx));
   cv::Mat baseImage = ItemDatabase->GetDatabaseImage().clone();
 
@@ -300,10 +300,6 @@ std::string LeagueImageAnalyzer::AnalyzePlayerItem(uint playerIdx, ELeagueTeams 
   cv::Point maxPoint;
   cv::minMaxLoc(matchResult, &minVal, &maxVal, &minPoint, &maxPoint, cv::Mat());
 
-  std::clock_t end = std::clock();
-  double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-  std::cout << " Find Item Elapsed Seconds: " << elapsed_secs << std::endl;
-
   // Convert the point to an actual index.
   int y_idx = minPoint.y / itemImage.rows;
   int x_idx = minPoint.x / itemImage.cols;
@@ -313,4 +309,47 @@ std::string LeagueImageAnalyzer::AnalyzePlayerItem(uint playerIdx, ELeagueTeams 
   }
 
   return item->itemID;
+}
+
+/*
+ * Get the announcement for the inhibitor kill and attribute it to a team.
+ * Sadly we can't attribute it to an actual player since we don't know player names usually.
+ */
+PtrLeagueEvent LeagueImageAnalyzer::GetAnnouncementEvent() {
+  cv::Mat filterImage, mask;
+  cv::cvtColor(mImage, filterImage, cv::COLOR_BGR2HSV);
+  filterImage = FilterImage_Section(filterImage, GetAnnouncementSection());
+  cv::inRange(filterImage, cv::Scalar(GetAnnouncementLowH(), GetAnnouncementLowS(), GetAnnouncementLowV()), 
+    cv::Scalar(GetAnnouncementHighH(), GetAnnouncementHighS(), GetAnnouncementHighV()), filterImage);
+  std::string result = GetTextFromImage(filterImage, EnglishIdent, std::string("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvxywz!"), tesseract::PSM_SINGLE_BLOCK);
+  std::transform(result.begin(), result.end(), result.begin(), ::toupper);
+
+  // This text shouldn't be that intelligible since we have a bunch of other stuff in here, like the background and any images.
+  // The best we can do is hope to find keywords in here. Luckily we're only depending on the announcement to get the inhibitor announcement
+  // right.
+  PtrLeagueEvent newEvent(new LeagueEvent());
+  
+  // The only thing we're looking for is 'inhibitor'.
+  if (result.find("INHIBITOR") != std::string::npos) {
+    newEvent->EventId = ELEI_INHIB;
+    // Then we want to know if we killed the red or blue inhibitor.
+    if (result.find("RED") != std::string::npos) {
+      newEvent->RelevantTeam = ELT_BLUE;
+    } else if (result.find("BLUE") != std::string::npos) {
+      newEvent->RelevantTeam = ELT_PURPLE;
+    } else {
+      // Can't really do anything with this, sadly.
+      newEvent->EventId = ELEI_UNKNOWN;
+    }
+  }
+
+  return newEvent;
+}
+
+/*
+ * The rest of the live events [besides inhibitor kills] will get picked up here.
+ * Assume that there is some max number of events at any given time.
+ */
+std::shared_ptr<VectorPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
+  return NULL;
 }

@@ -5,6 +5,7 @@
 #include "ImageAnalyzer.h"
 #include "LeaguePlayerData.h"
 #include "LeagueTeamData.h"
+#include "LeagueEvent.h"
 #include "LeagueChampionDatabase.h"
 #include "LeagueItemDatabase.h"
 
@@ -48,6 +49,14 @@ protected:
   virtual void AnalyzeMapPosition(double& xPos, double& yPos) = 0;
   virtual cv::Rect GetMapSection() = 0;
   double mapLocX, mapLocY;
+
+  // Event Analysis. Events are usually listed in league as a little colored bar that has some images on it.
+  // However, inhibitor kills are only displayed as an announcement. 
+  virtual std::shared_ptr<VectorPtrLeagueEvent> GetMinibarEvents();
+  virtual cv::Rect GetMinibarSection(uint idx) = 0;
+
+  virtual PtrLeagueEvent GetAnnouncementEvent();
+  virtual cv::Rect GetAnnouncementSection()= 0 ;
 
   // Team Analysis. There are two teams in all League of Legends games [if Riot ever adds a one team mode or 3+ team mode, fml],
   // and the amount of information we have about each team is limited. 
@@ -105,6 +114,13 @@ private:
   DECLARE_CONFIG_VARIABLE(ChampImgSBuckets, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0)
   DECLARE_CONFIG_VARIABLE(ChampImgVBuckets, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0)
   DECLARE_CONFIG_VARIABLE(ChampDeadThreshold, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0.0)
+
+  DECLARE_CONFIG_VARIABLE(AnnouncementLowH, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0)
+  DECLARE_CONFIG_VARIABLE(AnnouncementLowS, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0)
+  DECLARE_CONFIG_VARIABLE(AnnouncementLowV, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0)
+  DECLARE_CONFIG_VARIABLE(AnnouncementHighH, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0)
+  DECLARE_CONFIG_VARIABLE(AnnouncementHighS, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0)
+  DECLARE_CONFIG_VARIABLE(AnnouncementHighV, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0)
 };
 
 #endif

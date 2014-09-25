@@ -79,6 +79,9 @@
     <Filter Include="Core\Configuration">
       <UniqueIdentifier>{125aa425-1983-4411-ba12-89425855c9d5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="VideoAnalyze\Data\LoL\Events">
+      <UniqueIdentifier>{0bea31c4-411a-469c-b795-5870e6d0db22}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VideoFetcher.h">
@@ -176,6 +179,9 @@
     </ClInclude>
     <ClInclude Include="ConfigManager.h">
       <Filter>Core\Configuration</Filter>
+    </ClInclude>
+    <ClInclude Include="LeagueEvent.h">
+      <Filter>VideoAnalyze\Data\LoL\Events</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

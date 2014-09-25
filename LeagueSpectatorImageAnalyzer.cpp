@@ -660,3 +660,21 @@ cv::Rect LeagueSpectatorImageAnalyzer::GetMapSection() {
 
   return newRect;
 }
+
+cv::Rect LeagueSpectatorImageAnalyzer::GetMinibarSection(uint idx) {
+  cv::Rect newRect = cv::Rect((int)(mImage.cols * (GetMapX() / GetLargeRefImageX())),
+    (int)(mImage.rows * (GetMapY() / GetLargeRefImageY())),
+    (int)(mImage.cols * (GetMapWidth() / GetLargeRefImageX())),
+    (int)(mImage.rows * (GetMapHeight() / GetLargeRefImageY())));
+
+  return newRect;
+}
+
+cv::Rect LeagueSpectatorImageAnalyzer::GetAnnouncementSection() {
+  cv::Rect newRect = cv::Rect((int)(mImage.cols * (GetAnnouncementX() / GetLargeRefImageX())),
+    (int)(mImage.rows * (GetAnnouncementY() / GetLargeRefImageY())),
+    (int)(mImage.cols * (GetAnnouncementWidth() / GetLargeRefImageX())),
+    (int)(mImage.rows * (GetAnnouncementHeight() / GetLargeRefImageY())));
+
+  return newRect;
+}

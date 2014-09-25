@@ -163,6 +163,7 @@
     <ClInclude Include="LeagueChampionData.h" />
     <ClInclude Include="LeagueChampionDatabase.h" />
     <ClInclude Include="LeagueConstants.h" />
+    <ClInclude Include="LeagueEvent.h" />
     <ClInclude Include="LeagueImageAnalyzer.h" />
     <ClInclude Include="LeagueItemData.h" />
     <ClInclude Include="LeagueItemDatabase.h" />

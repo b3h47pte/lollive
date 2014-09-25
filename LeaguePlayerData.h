@@ -6,7 +6,8 @@
 
 enum ELeagueTeams {
   ELT_BLUE,
-  ELT_PURPLE
+  ELT_PURPLE,
+  ELT_UNKNOWN
 };
 
 

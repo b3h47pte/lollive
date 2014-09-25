@@ -1,0 +1,10 @@
+Dragon - dragon_Sqare
+Baron - ChaosTurretWorm_Square
+Outer Turret (Red Team) - ChaosLaneTower_Icon
+Inner Turret (Red Team) - ChaosLaneTower_Icon_C
+Inhib Turret (Red Team) - ChaosGateTower_Icon
+Nexus Turret (Red Team) - ChaosHqTower_Icon
+Outer Turret (Blue Team) - OrderLaneTower_Icon
+Inner Turret (Blue Team) - OrderLaneTower_Icon_C
+Inhib Turret (Blue Team) - OrderGateTower_Icon
+Nexus Turret (Blue Team) - OrderHqTower_Icon
