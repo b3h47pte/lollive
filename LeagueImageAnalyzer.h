@@ -8,6 +8,7 @@
 #include "LeagueEvent.h"
 #include "LeagueChampionDatabase.h"
 #include "LeagueItemDatabase.h"
+#include "LeagueEventDatabase.h"
 
 /*
  * Base class for analyzing League of Legends screenshots. Eventually need to split it to analyze
@@ -121,6 +122,13 @@ private:
   DECLARE_CONFIG_VARIABLE(AnnouncementHighH, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0)
   DECLARE_CONFIG_VARIABLE(AnnouncementHighS, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0)
   DECLARE_CONFIG_VARIABLE(AnnouncementHighV, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0)
+
+  DECLARE_CONFIG_VARIABLE(MinibarEventMax, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0)
+  DECLARE_CONFIG_VARIABLE(KillObjective, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Objectives", "")
+  DECLARE_CONFIG_VARIABLE(KillStreakObjective, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Objectives", "")
+  DECLARE_CONFIG_VARIABLE(KillShutdownObjective, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Objectives", "")
+
+  GENERATE_OBJECTIVE_CONFIG_STRINGS()
 };
 
 #endif

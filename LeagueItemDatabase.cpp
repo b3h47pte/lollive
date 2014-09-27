@@ -18,7 +18,6 @@ if (!chk) {\
 
 LeagueItemDatabase::LeagueItemDatabase() {
   // Load all the data on construction. 
-  // TODO: Make the location of the database configurable.
   std::string dir = ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, ItemDataSection, DataDirectoryName, std::string(""));
   std::string fileName = ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, ItemDataSection, DatabaseFilenameName, std::string(""));
   LoadItemDatabase(dir, fileName);

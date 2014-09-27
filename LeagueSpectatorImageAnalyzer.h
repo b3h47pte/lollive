@@ -178,6 +178,12 @@ private:
   DECLARE_CONFIG_VARIABLE(AnnouncementY, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
   DECLARE_CONFIG_VARIABLE(AnnouncementWidth, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
   DECLARE_CONFIG_VARIABLE(AnnouncementHeight, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+
+  DECLARE_CONFIG_VARIABLE(MinibarEventX, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(MinibarEventY, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(MinibarEventYIncr, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(MinibarEventWidth, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(MinibarEventHeight, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
 };
 
 #endif

@@ -164,6 +164,7 @@
     <ClInclude Include="LeagueChampionDatabase.h" />
     <ClInclude Include="LeagueConstants.h" />
     <ClInclude Include="LeagueEvent.h" />
+    <ClInclude Include="LeagueEventDatabase.h" />
     <ClInclude Include="LeagueImageAnalyzer.h" />
     <ClInclude Include="LeagueItemData.h" />
     <ClInclude Include="LeagueItemDatabase.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="inih\ini.c" />
     <ClCompile Include="inih\INIReader.cpp" />
     <ClCompile Include="LeagueChampionDatabase.cpp" />
+    <ClCompile Include="LeagueEventDatabase.cpp" />
     <ClCompile Include="LeagueImageAnalyzer.cpp" />
     <ClCompile Include="LeagueItemDatabase.cpp" />
     <ClCompile Include="LeagueLCSImageAnalyzer.cpp" />

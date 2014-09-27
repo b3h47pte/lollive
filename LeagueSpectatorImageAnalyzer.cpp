@@ -662,10 +662,14 @@ cv::Rect LeagueSpectatorImageAnalyzer::GetMapSection() {
 }
 
 cv::Rect LeagueSpectatorImageAnalyzer::GetMinibarSection(uint idx) {
-  cv::Rect newRect = cv::Rect((int)(mImage.cols * (GetMapX() / GetLargeRefImageX())),
-    (int)(mImage.rows * (GetMapY() / GetLargeRefImageY())),
-    (int)(mImage.cols * (GetMapWidth() / GetLargeRefImageX())),
-    (int)(mImage.rows * (GetMapHeight() / GetLargeRefImageY())));
+  double x = GetMinibarEventX();
+  double y = GetMinibarEventY();
+  y += idx * GetMinibarEventYIncr();
+
+  cv::Rect newRect = cv::Rect((int)(mImage.cols * (x / GetLargeRefImageX())),
+    (int)(mImage.rows * (y / GetLargeRefImageY())),
+    (int)(mImage.cols * (GetMinibarEventWidth() / GetLargeRefImageX())),
+    (int)(mImage.rows * (GetMinibarEventHeight() / GetLargeRefImageY())));
 
   return newRect;
 }

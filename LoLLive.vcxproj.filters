@@ -183,6 +183,9 @@
     <ClInclude Include="LeagueEvent.h">
       <Filter>VideoAnalyze\Data\LoL\Events</Filter>
     </ClInclude>
+    <ClInclude Include="LeagueEventDatabase.h">
+      <Filter>VideoAnalyze\Data\LoL\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VideoFetcher.cpp">
@@ -256,6 +259,9 @@
     </ClCompile>
     <ClCompile Include="ConfigManager.cpp">
       <Filter>Core\Configuration</Filter>
+    </ClCompile>
+    <ClCompile Include="LeagueEventDatabase.cpp">
+      <Filter>VideoAnalyze\Data\LoL\Events</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

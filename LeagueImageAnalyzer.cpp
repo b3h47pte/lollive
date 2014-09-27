@@ -8,6 +8,7 @@
 #include <thread>
 #include "LeagueConstants.h"
 #include "LeagueItemData.h"
+#include "LeagueEventDatabase.h"
 
 LeagueImageAnalyzer::LeagueImageAnalyzer(IMAGE_PATH_TYPE ImagePath): ImageAnalyzer(ImagePath) {
   ChampionDatabase = LeagueChampionDatabase::Get();
@@ -291,6 +292,7 @@ std::string LeagueImageAnalyzer::AnalyzePlayerItem(uint playerIdx, ELeagueTeams 
   // Do template matching to find where we have a match
   cv::Mat matchResult;
   cv::matchTemplate(baseImage, itemImage, matchResult, cv::TM_SQDIFF_NORMED);
+  // TODO: Check if this normalize is needed.
   cv::normalize(matchResult, matchResult, 0, 1, cv::NORM_MINMAX, -1, cv::Mat());
 
   // Now find the minimum and maximum results
@@ -351,5 +353,69 @@ PtrLeagueEvent LeagueImageAnalyzer::GetAnnouncementEvent() {
  * Assume that there is some max number of events at any given time.
  */
 std::shared_ptr<VectorPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
-  return NULL;
+  std::shared_ptr<VectorPtrLeagueEvent> RetArray(new VectorPtrLeagueEvent());
+  std::string killObjectives[3] = { GetKillObjective(), GetKillStreakObjective(), GetKillShutdownObjective() };
+
+  double minVal;
+  double maxVal;
+  cv::Point minPoint;
+  cv::Point maxPoint;
+
+  // Do the same event analysis for each event. 
+  // Each subclass will tell us where to look for this minibar.
+  for (int i = 0; i < GetMinibarEventMax(); ++i) {
+    cv::Rect eventSection = GetMinibarSection(i);
+    cv::Mat filterImage = FilterImage_Section(mImage, eventSection);
+
+    // What's the background color?
+    cv::Vec3b bgColor = filterImage.at<cv::Vec3b>(cv::Point(filterImage.cols - 5, 5));
+
+    cv::Mat sobelFilterImage;
+    cv::Sobel(filterImage, sobelFilterImage, CV_8U, 1, 0);
+    cv::convertScaleAbs(sobelFilterImage, sobelFilterImage);
+
+    // First orient ourselves by finding the 'kill' icon. 
+    // This can either be a regular kill, multi-kill, or shutdown icon.
+    bool bFoundMatch = false;
+    int j = 0;
+    for (j = 0; j < 3; ++j) {
+      cv::Mat origKillImg = LeagueEventDatabase::Get()->GetObjectiveImage(killObjectives[j]);
+      cv::Mat killImg;
+      origKillImg.copyTo(killImg);
+      // Before we do a sobel, we need to make sure we don't somehow trick ourselves into thinking that 
+      // the background is white and thus lose out some edges.
+      cv::Mat mask;
+      cv::inRange(killImg, cv::Scalar(0, 0, 0, 0),
+        cv::Scalar(255, 255, 255, 50), mask);
+      killImg.setTo(cv::Scalar((int)bgColor[0], (int)bgColor[1], (int)bgColor[2], 255), mask);
+
+      cv::Mat sobelKillImg;
+      // Perform a Sobel edge detection on the image
+      cv::Sobel(killImg, sobelKillImg, CV_8U, 1, 0);
+      cv::convertScaleAbs(sobelKillImg, sobelKillImg);
+      cv::cvtColor(sobelKillImg, sobelKillImg, cv::COLOR_BGRA2BGR);
+
+      // Do template matching to find where we have a match
+      cv::Mat matchResult;
+      cv::matchTemplate(sobelFilterImage, sobelKillImg, matchResult, cv::TM_CCOEFF_NORMED);
+
+      // Now find the minimum and maximum results
+      cv::minMaxLoc(matchResult, &minVal, &maxVal, &minPoint, &maxPoint, cv::Mat());
+      
+      if (maxVal >= 0.6) {
+        bFoundMatch = true;
+        break;
+      }
+    }
+
+    // If we don't find a kill symbol, nothing happened here.
+    if (!bFoundMatch) {
+      continue;
+    }
+
+    // Otherwise, we know what kind of kill we did.
+    // Now figure out what we did the kill on. 
+    
+  }
+  return RetArray;
 }
