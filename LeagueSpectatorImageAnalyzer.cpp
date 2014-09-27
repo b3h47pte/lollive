@@ -172,7 +172,7 @@ int LeagueSpectatorImageAnalyzer::AnalyzeTeamGold(ELeagueTeams team) {
   cv::Mat filterImage = FilterImage_Section_Channel_BasicThreshold_Resize(mImage,
     GetTeamGoldSection(team),
     (team == ELT_BLUE) ? 0 : 2,
-    90.0, 2.0, 2.0);
+    GetTeamGoldThreshold(), GetTeamGoldResizeX(), GetTeamGoldResizeY());
   std::string goldText = GetTextFromImage(filterImage, LeagueIdent, std::string("0123456789.k"));
   // Need to parse the number to return the actual amount of gold.
   // For example 51.7k should return 51700.

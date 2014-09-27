@@ -354,12 +354,13 @@ PtrLeagueEvent LeagueImageAnalyzer::GetAnnouncementEvent() {
  */
 std::shared_ptr<VectorPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
   std::shared_ptr<VectorPtrLeagueEvent> RetArray(new VectorPtrLeagueEvent());
-  std::string killObjectives[3] = { GetKillObjective(), GetKillStreakObjective(), GetKillShutdownObjective() };
-
-  double minVal;
-  double maxVal;
-  cv::Point minPoint;
-  cv::Point maxPoint;
+  std::string killObjectives[ELKT_MAX];
+  killObjectives[ELKT_KILL] = GetKillObjective();
+  killObjectives[ELKT_MULTI] = GetKillStreakObjective();
+  killObjectives[ELKT_SHUTDOWN] = GetKillShutdownObjective();
+  std::string targetObjective[10] = { GetDragonObjective(), GetPurpleOuterTurretObjective(), GetBlueOuterTurretObjective(), GetBaronObjective(),
+    GetPurpleInnerTurretObjective(), GetBlueInnerTurretObjective(), GetPurpleInhibTurretObjective(), GetBlueInhibTurretObjective(),
+    GetPurpleNexusTurretObjective(), GetBlueNexusTurretObjective() };
 
   // Do the same event analysis for each event. 
   // Each subclass will tell us where to look for this minibar.
@@ -370,38 +371,17 @@ std::shared_ptr<VectorPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
     // What's the background color?
     cv::Vec3b bgColor = filterImage.at<cv::Vec3b>(cv::Point(filterImage.cols - 5, 5));
 
-    cv::Mat sobelFilterImage;
-    cv::Sobel(filterImage, sobelFilterImage, CV_8U, 1, 0);
-    cv::convertScaleAbs(sobelFilterImage, sobelFilterImage);
-
     // First orient ourselves by finding the 'kill' icon. 
     // This can either be a regular kill, multi-kill, or shutdown icon.
     bool bFoundMatch = false;
     int j = 0;
-    for (j = 0; j < 3; ++j) {
+    for (j = 0; j < ELKT_MAX; ++j) {
       cv::Mat origKillImg = LeagueEventDatabase::Get()->GetObjectiveImage(killObjectives[j]);
       cv::Mat killImg;
       origKillImg.copyTo(killImg);
-      // Before we do a sobel, we need to make sure we don't somehow trick ourselves into thinking that 
-      // the background is white and thus lose out some edges.
-      cv::Mat mask;
-      cv::inRange(killImg, cv::Scalar(0, 0, 0, 0),
-        cv::Scalar(255, 255, 255, 50), mask);
-      killImg.setTo(cv::Scalar((int)bgColor[0], (int)bgColor[1], (int)bgColor[2], 255), mask);
-
-      cv::Mat sobelKillImg;
-      // Perform a Sobel edge detection on the image
-      cv::Sobel(killImg, sobelKillImg, CV_8U, 1, 0);
-      cv::convertScaleAbs(sobelKillImg, sobelKillImg);
-      cv::cvtColor(sobelKillImg, sobelKillImg, cv::COLOR_BGRA2BGR);
-
-      // Do template matching to find where we have a match
-      cv::Mat matchResult;
-      cv::matchTemplate(sobelFilterImage, sobelKillImg, matchResult, cv::TM_CCOEFF_NORMED);
-
-      // Now find the minimum and maximum results
-      cv::minMaxLoc(matchResult, &minVal, &maxVal, &minPoint, &maxPoint, cv::Mat());
       
+      double maxVal = SobelTemplateMatching(killImg, filterImage, bgColor);
+
       if (maxVal >= 0.6) {
         bFoundMatch = true;
         break;
@@ -413,9 +393,36 @@ std::shared_ptr<VectorPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
       continue;
     }
 
+    PtrLeagueEvent newEvent(new LeagueEvent());
+    newEvent->KillType = (ELeagueKillType)j;
+
     // Otherwise, we know what kind of kill we did.
-    // Now figure out what we did the kill on. 
-    
+    // Now figure out what we did the kill on. This should be a turret, baron, dragon, or a champion.
+    // But we don't want to figure out what the champion is until we determine it's not anything else (that'd be expensive!).
+    bFoundMatch = false;
+    for (j = 0; j < 10; ++j) {
+      // DID WE FIND IT?
+      cv::Mat targetImg = LeagueEventDatabase::Get()->GetObjectiveImage(targetObjective[j]);
+      // Need to resize the image to become the appropriate resolution.
+      cv::Mat useTargetImg = FilterImage_Resize(targetImg, 0.375, 0.375);
+
+      double maxVal = SobelTemplateMatching(useTargetImg, filterImage, bgColor);
+      if (maxVal < 0.6) {
+        continue;
+      }
+
+      // If we find the match, then we want to remember what we killed, which will determine the event ID as long as any
+      // 'AdditionalInfo'
+      switch (j) {
+      case 0:
+        break;
+      default:
+        newEvent->EventId = ELEI_UNKNOWN;
+        break;
+      }
+      //break;
+    }
+   
   }
   return RetArray;
 }

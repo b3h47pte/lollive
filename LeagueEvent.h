@@ -14,6 +14,14 @@ enum ELeagueEventId {
   ELEI_UNKNOWN
 };
 
+enum ELeagueKillType {
+  ELKT_KILL,
+  ELKT_MULTI,
+  ELKT_SHUTDOWN,
+  ELKT_MAX
+};
+
+
 /*
  * Provides functionality to store and hold an event. An event is any one of the following:
  *  - Turret Destruction
@@ -44,6 +52,8 @@ struct LeagueEvent {
   // by necessity, they are obviously the same since they're so close together. The timestamp should only be used later
   // to determine when this event actually happened.
   int Timestamp;
+  // Kill Type Information. Can't encode this in any other section.
+  ELeagueKillType KillType;
 
   // Gets a unique identifier for this event.
   std::size_t GetIdentifier() const {

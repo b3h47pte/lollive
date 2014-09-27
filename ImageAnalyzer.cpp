@@ -193,3 +193,37 @@ void ImageAnalyzer::SplitImage(cv::Mat& inImage, int x_dim, int y_dim, cv::Mat**
   }
   *out = res;
 }
+
+double ImageAnalyzer::SobelTemplateMatching(cv::Mat templateImage, cv::Mat sourceImage, cv::Vec3b bgColor) {
+  cv::Mat sobelFilterImage;
+  cv::Sobel(sourceImage, sobelFilterImage, CV_8U, 1, 0);
+  cv::convertScaleAbs(sobelFilterImage, sobelFilterImage);
+
+  // Before we do a sobel, we need to make sure we don't somehow trick ourselves into thinking that 
+  // the background is white and thus lose out some edges. This is only relevant when the image actually
+  // has an alpha channel
+  if (templateImage.channels() == 4) {
+    cv::Mat mask;
+    cv::inRange(templateImage, cv::Scalar(0, 0, 0, 0),
+      cv::Scalar(255, 255, 255, 50), mask);
+    templateImage.setTo(cv::Scalar((int)bgColor[0], (int)bgColor[1], (int)bgColor[2], 255), mask);
+    cv::cvtColor(templateImage, templateImage, cv::COLOR_BGRA2BGR);
+  }
+
+  cv::Mat sobelKillImg;
+  // Perform a Sobel edge detection on the image
+  cv::Sobel(templateImage, sobelKillImg, CV_8U, 1, 0);
+  cv::convertScaleAbs(sobelKillImg, sobelKillImg);
+  
+  // Do template matching to find where we have a match
+  cv::Mat matchResult;
+  cv::matchTemplate(sobelFilterImage, sobelKillImg, matchResult, cv::TM_CCOEFF_NORMED);
+  // Now find the minimum and maximum results
+  double minVal;
+  double maxVal;
+  cv::Point minPoint;
+  cv::Point maxPoint;
+
+  cv::minMaxLoc(matchResult, &minVal, &maxVal, &minPoint, &maxPoint, cv::Mat());
+  return maxVal;
+}
