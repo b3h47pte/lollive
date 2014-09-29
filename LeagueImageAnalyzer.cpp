@@ -48,7 +48,6 @@ bool LeagueImageAnalyzer::Analyze() {
   mDataMutex.unlock();
   std::cout << "Current Time: " << time << std::endl;
 
-  /*
   // Team Data.
   // Thread the analysis to make it faster (not sure how this will be like when we start running more threads for different streams).
   PtrLeagueTeamData blueTeam;
@@ -73,7 +72,6 @@ bool LeagueImageAnalyzer::Analyze() {
   (*mData)["PurpleTeam"] = purpleTeamProp;
   purpleTeam->Print();
   mDataMutex.unlock();
-  */
 
   // Get Events. 
   PtrLeagueEvent announcementEvent = GetAnnouncementEvent();
@@ -351,6 +349,8 @@ PtrLeagueEvent LeagueImageAnalyzer::GetAnnouncementEvent() {
 /*
  * The rest of the live events [besides inhibitor kills] will get picked up here.
  * Assume that there is some max number of events at any given time.
+ * 
+ * TODO: Need to adjust numbers to make sure they work for multiple resolutions.
  */
 std::shared_ptr<VectorPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
   std::shared_ptr<VectorPtrLeagueEvent> RetArray(new VectorPtrLeagueEvent());
@@ -370,6 +370,16 @@ std::shared_ptr<VectorPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
 
     // What's the background color?
     cv::Vec3b bgColor = filterImage.at<cv::Vec3b>(cv::Point(filterImage.cols - 5, 5));
+    cv::Point killIconLocation;
+
+    // Determine which team performed this action based on the background color
+    ELeagueTeams instigatorTeam = ELT_UNKNOWN;
+    if (bgColor[1] > bgColor[2]) {
+      // Green = Blue Team
+      instigatorTeam = ELT_BLUE;
+    } else {
+      instigatorTeam = ELT_PURPLE;
+    }
 
     // First orient ourselves by finding the 'kill' icon. 
     // This can either be a regular kill, multi-kill, or shutdown icon.
@@ -380,7 +390,7 @@ std::shared_ptr<VectorPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
       cv::Mat killImg;
       origKillImg.copyTo(killImg);
       
-      double maxVal = SobelTemplateMatching(killImg, filterImage, bgColor);
+      double maxVal = SobelTemplateMatching(killImg, filterImage, bgColor, killIconLocation);
 
       if (maxVal >= 0.6) {
         bFoundMatch = true;
@@ -394,6 +404,7 @@ std::shared_ptr<VectorPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
     }
 
     PtrLeagueEvent newEvent(new LeagueEvent());
+    newEvent->RelevantTeam = instigatorTeam;
     newEvent->KillType = (ELeagueKillType)j;
 
     // Otherwise, we know what kind of kill we did.
@@ -404,9 +415,11 @@ std::shared_ptr<VectorPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
       // DID WE FIND IT?
       cv::Mat targetImg = LeagueEventDatabase::Get()->GetObjectiveImage(targetObjective[j]);
       // Need to resize the image to become the appropriate resolution.
+      // TODO: Resize based on the current resolution.
       cv::Mat useTargetImg = FilterImage_Resize(targetImg, 0.375, 0.375);
 
-      double maxVal = SobelTemplateMatching(useTargetImg, filterImage, bgColor);
+      cv::Point objIconLocation;
+      double maxVal = SobelTemplateMatching(useTargetImg, filterImage, bgColor, objIconLocation);
       if (maxVal < 0.6) {
         continue;
       }
@@ -414,15 +427,78 @@ std::shared_ptr<VectorPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
       // If we find the match, then we want to remember what we killed, which will determine the event ID as long as any
       // 'AdditionalInfo'
       switch (j) {
-      case 0:
+      case 0: // Dragon
+        newEvent->EventId = ELEI_DRAGON;
         break;
-      default:
-        newEvent->EventId = ELEI_UNKNOWN;
+      case 3: // Baron
+        newEvent->EventId = ELEI_BARON;
+        break;
+      case 1: // Purple Outer Turret
+      case 2: // Blue Outer Turret 
+      case 4: // Purple Inner
+      case 5: // Blue Inner
+      case 6: // Purple Inhib Turret
+      case 7: // Blue Inhib Turret
+      case 8: // Purple Nexus Turret
+      case 9: // Blue Nexus Turret
+        newEvent->EventId = ELEI_TURRET;
+        newEvent->AdditionalInfo = targetObjective[j];
+        break;
+      default: // Champion Kill
+        newEvent->EventId = ELEI_CHAMP;
         break;
       }
-      //break;
+      break;
     }
-   
+
+    // Need to determine the champions involved in the event so we want to determine the contours in the image.
+    // Use the value channel in the HSV image so it's easier for us to pick out the black outline.
+    std::vector<std::vector<cv::Point> > contours;
+    cv::Mat hsvImg;
+    cv::cvtColor(filterImage, hsvImg, cv::COLOR_BGR2HSV);
+    cv::Mat edgeImg = FilterImage_Channel(hsvImg, 2);
+    cv::threshold(edgeImg, edgeImg, 11.0, 255.0, cv::THRESH_BINARY_INV);
+    cv::findContours(edgeImg, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+    for (size_t x = 0; x < contours.size(); ++x) {
+      cv::Rect r = cv::boundingRect(contours[x]);
+      if (r.width <= 15 || r.height <= 15) continue;
+      // Depending on which side of the sword we're on, we can know which team the champion is for.
+      // And from that we can know which champions are available to us.
+      ELeagueTeams currentTeam = instigatorTeam;
+      if (r.x >= killIconLocation.x) {
+        currentTeam = GetOtherTeam(currentTeam);
+      }
+      std::vector<std::string> possibleChamps;
+      PtrLeagueTeamData team = NULL;
+      if (currentTeam == ELT_BLUE) {
+        team = RetrieveData<PtrLeagueTeamData>(mData, std::string("BlueTeam"));
+      } else {
+        team = RetrieveData<PtrLeagueTeamData>(mData, std::string("PurpleTeam"));
+      }
+      for (int j = 0; j < 5; ++j) {
+        possibleChamps.push_back(team->players[j]->champion);
+      }
+
+      if (team == NULL) {
+        continue;
+      }
+
+      cv::Mat champImg = FilterImage_Section(filterImage, r);
+      bool b1, b2;
+      std::string champStr = FindMatchingChampion(champImg, possibleChamps, b1, b2);
+      if (r.width >= 40) {
+        if (currentTeam == instigatorTeam) {
+          newEvent->PlayerInstigator = champStr;
+        } else {
+          newEvent->AdditionalInfo = champStr;
+        }
+      } else {
+        newEvent->SupportingPlayers.push_back(champStr);
+      }
+    }
+
+    newEvent->Print();
+    RetArray->push_back(newEvent);
   }
   return RetArray;
 }

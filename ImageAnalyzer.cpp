@@ -194,7 +194,7 @@ void ImageAnalyzer::SplitImage(cv::Mat& inImage, int x_dim, int y_dim, cv::Mat**
   *out = res;
 }
 
-double ImageAnalyzer::SobelTemplateMatching(cv::Mat templateImage, cv::Mat sourceImage, cv::Vec3b bgColor) {
+double ImageAnalyzer::SobelTemplateMatching(cv::Mat templateImage, cv::Mat sourceImage, cv::Vec3b bgColor, cv::Point& matchPoint) {
   cv::Mat sobelFilterImage;
   cv::Sobel(sourceImage, sobelFilterImage, CV_8U, 1, 0);
   cv::convertScaleAbs(sobelFilterImage, sobelFilterImage);
@@ -225,5 +225,6 @@ double ImageAnalyzer::SobelTemplateMatching(cv::Mat templateImage, cv::Mat sourc
   cv::Point maxPoint;
 
   cv::minMaxLoc(matchResult, &minVal, &maxVal, &minPoint, &maxPoint, cv::Mat());
+  matchPoint = maxPoint;
   return maxVal;
 }

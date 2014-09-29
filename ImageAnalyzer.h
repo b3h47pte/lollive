@@ -86,7 +86,7 @@ protected:
   cv::Mat FilterImage_Grayscale(cv::Mat inImage);
 
   // Template Matching
-  double SobelTemplateMatching(cv::Mat templateImage, cv::Mat sourceImage, cv::Vec3b bgColor);
+  double SobelTemplateMatching(cv::Mat templateImage, cv::Mat sourceImage, cv::Vec3b bgColor, cv::Point& matchPoint);
 
   // Image Hint System. What we do with these hints is totally up to the subclasses.
   std::map<std::string, std::string> mHints;
