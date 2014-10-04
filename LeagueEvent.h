@@ -4,6 +4,7 @@
 
 #include "common.h"
 #include "LeaguePlayerData.h"
+#include "ConfigManager.h"
 
 enum ELeagueEventId {
   ELEI_TURRET,
@@ -90,6 +91,18 @@ struct LeagueEvent {
     Timestamp = timestamp;
     KillType = newEvent->KillType;
   }
+
+  // JSONify
+  struct cJSON* CreateJSON();
+
+private:
+  DECLARE_CONFIG_VARIABLE(TeamJsonId, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Events", "")
+  DECLARE_CONFIG_VARIABLE(EventJsonId, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Events", "")
+  DECLARE_CONFIG_VARIABLE(AdditionalInfoJsonId, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Events", "")
+  DECLARE_CONFIG_VARIABLE(PlayerInstigatorJsonId, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Events", "")
+  DECLARE_CONFIG_VARIABLE(SupportingPlayerJsonId, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Events", "")
+  DECLARE_CONFIG_VARIABLE(TimestampJsonId, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Events", "")
+  DECLARE_CONFIG_VARIABLE(KillTypeJsonId, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Events", "")
 };
 
 #endif

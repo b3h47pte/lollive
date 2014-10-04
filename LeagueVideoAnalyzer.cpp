@@ -174,6 +174,19 @@ std::string LeagueVideoAnalyzer::ParseJSON() {
     cJSON_AddItemToObject(newJson, "purpleteam", RetrieveData<PtrLeagueTeamData>(mData, std::string("PurpleTeam"))->CreateJSON());
   }
 
+  if (DataExists(mData, std::string("Announcement"))) {
+    cJSON_AddItemToObject(newJson, "announce", RetrieveData<PtrLeagueEvent>(mData, std::string("Announcement"))->CreateJSON());
+  }
+
+  if (DataExists(mData, std::string("MinibarEvents"))) {
+    MapPtrLeagueEvent eventMapping = RetrieveData<MapPtrLeagueEvent>(mData, std::string("MinibarEvents"));
+    cJSON* eventMappingJson = cJSON_CreateArray();
+    for (auto& e : eventMapping) {
+      cJSON_AddItemToArray(eventMappingJson, e.second->CreateJSON());
+    }
+    cJSON_AddItemToObject(newJson, "events", eventMappingJson);
+  }
+
   char* retChar = cJSON_PrintUnformatted(newJson);
   cJSON_Delete(newJson);
   std::string newRet(retChar);
