@@ -57,6 +57,8 @@ protected:
   virtual cv::Rect GetMinibarSection(uint idx) = 0;
   virtual cv::Rect GetMinibarOriginalResolution() = 0;
   virtual cv::Rect GetMinibarObjectiveIconOriginalResolution() = 0;
+  virtual int GetMinibarBackgroundAllyChannel() = 0;
+  virtual int GetMinibarBackgroundEnemeyChannel() = 0;
 
   virtual PtrLeagueEvent GetAnnouncementEvent();
   virtual cv::Rect GetAnnouncementSection()= 0 ;

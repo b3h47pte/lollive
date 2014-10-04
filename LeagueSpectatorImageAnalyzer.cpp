@@ -285,7 +285,6 @@ cv::Rect LeagueSpectatorImageAnalyzer::GetTeamTowerKillSection(ELeagueTeams team
  */
 std::string LeagueSpectatorImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagueTeams team, bool* isDead, bool* isLowOnHealth, int* championLevel) {
   cv::Mat filterImage = FilterImage_Section(mImage, GetPlayerChampionSection(idx, team));
-
   // Champion Hint. This will force us to choose a certain champion and save us a lot of computation. THIS HINT BETTER BE RIGHT.
   std::string hintKey = CreateLeagueChampionHint(idx, team);
   std::string championHint = mHints[hintKey];

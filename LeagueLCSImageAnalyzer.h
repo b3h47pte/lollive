@@ -42,6 +42,10 @@ protected:
   // THE SPECTATOR BOX IS DIFFERENT TOO. WHY.
   virtual cv::Rect GetPlayerKDASection(uint idx, ELeagueTeams team);
   virtual cv::Rect GetPlayerCSSection(uint idx, ELeagueTeams team);
+
+  // Events
+  virtual int GetMinibarBackgroundAllyChannel() { return GetMinibarBGAllyChannel(); }
+  virtual int GetMinibarBackgroundEnemeyChannel() { return GetMinibarBGEnemyChannel(); }
 private:
   // Config File Constants
   DECLARE_CONFIG_VARIABLE(RefImageXSize, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
@@ -131,6 +135,8 @@ private:
 
   DECLARE_CONFIG_VARIABLE(BanPercentYAdjust, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
   DECLARE_CONFIG_VARIABLE(BanPercentHeightAdjust, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(MinibarBGAllyChannel, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0)
+  DECLARE_CONFIG_VARIABLE(MinibarBGEnemyChannel, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0)
 };
 
 #endif

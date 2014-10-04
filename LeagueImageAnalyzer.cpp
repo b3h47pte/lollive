@@ -379,10 +379,9 @@ std::shared_ptr<MapPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
     // What's the background color?
     cv::Vec3b bgColor = filterImage.at<cv::Vec3b>(cv::Point((int)(filterImage.cols*GetBackgroundColorXPercentage()), GetBackgroundColorY()));
     cv::Point killIconLocation;
-
     // Determine which team performed this action based on the background color
     ELeagueTeams instigatorTeam = ELT_UNKNOWN;
-    if (bgColor[1] > bgColor[2]) {
+    if (bgColor[GetMinibarBackgroundAllyChannel()] > bgColor[GetMinibarBackgroundEnemeyChannel()]) {
       // Green = Blue Team
       instigatorTeam = ELT_BLUE;
     } else {
@@ -437,31 +436,30 @@ std::shared_ptr<MapPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
       if (maxVal < GetObjectiveIconSobelThreshold()) {
         continue;
       }
+    }
 
-      // If we find the match, then we want to remember what we killed, which will determine the event ID as long as any
-      // 'AdditionalInfo'
-      switch (j) {
-      case 0: // Dragon
-        newEvent->EventId = ELEI_DRAGON;
-        break;
-      case 3: // Baron
-        newEvent->EventId = ELEI_BARON;
-        break;
-      case 1: // Purple Outer Turret
-      case 2: // Blue Outer Turret 
-      case 4: // Purple Inner
-      case 5: // Blue Inner
-      case 6: // Purple Inhib Turret
-      case 7: // Blue Inhib Turret
-      case 8: // Purple Nexus Turret
-      case 9: // Blue Nexus Turret
-        newEvent->EventId = ELEI_TURRET;
-        newEvent->AdditionalInfo = targetObjective[j];
-        break;
-      default: // Champion Kill
-        newEvent->EventId = ELEI_CHAMP;
-        break;
-      }
+    // If we find the match, then we want to remember what we killed, which will determine the event ID as long as any
+    // 'AdditionalInfo'
+    switch (j) {
+    case 0: // Dragon
+      newEvent->EventId = ELEI_DRAGON;
+      break;
+    case 3: // Baron
+      newEvent->EventId = ELEI_BARON;
+      break;
+    case 1: // Purple Outer Turret
+    case 2: // Blue Outer Turret 
+    case 4: // Purple Inner
+    case 5: // Blue Inner
+    case 6: // Purple Inhib Turret
+    case 7: // Blue Inhib Turret
+    case 8: // Purple Nexus Turret
+    case 9: // Blue Nexus Turret
+      newEvent->EventId = ELEI_TURRET;
+      newEvent->AdditionalInfo = targetObjective[j];
+      break;
+    default: // Champion Kill
+      newEvent->EventId = ELEI_CHAMP;
       break;
     }
 
@@ -513,6 +511,11 @@ std::shared_ptr<MapPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
     }
 
     newEvent->Print();
+
+    if (newEvent->EventId == ELEI_UNKNOWN) {
+      continue;
+    }
+
     (*RetArray)[newEvent->GetIdentifier()] = newEvent;
   }
   return RetArray;
