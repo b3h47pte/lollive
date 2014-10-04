@@ -75,7 +75,15 @@ bool LeagueImageAnalyzer::Analyze() {
 
   // Get Events. 
   PtrLeagueEvent announcementEvent = GetAnnouncementEvent();
+  std::shared_ptr<GenericData<PtrLeagueEvent>> annouceEventProp(new GenericData<PtrLeagueEvent>(announcementEvent));
+
   std::shared_ptr<VectorPtrLeagueEvent> minibarEvents = GetMinibarEvents();
+  std::shared_ptr<GenericData<VectorPtrLeagueEvent>> minibarEventsProp(new GenericData<VectorPtrLeagueEvent>(*minibarEvents));
+
+  mDataMutex.lock();
+  (*mData)["Announcement"] = annouceEventProp;
+  (*mData)["MinibarEvents"] = minibarEventsProp;
+  mDataMutex.unlock();
 
   // At this point we know whether or not this was a valid frame..if so get the map position
   if (IsValidFrame()) {
