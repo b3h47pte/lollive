@@ -684,11 +684,11 @@ cv::Rect LeagueSpectatorImageAnalyzer::GetAnnouncementSection() {
 }
 
 cv::Rect LeagueSpectatorImageAnalyzer::GetMinibarOriginalResolution() {
-  cv::Rect newRect = cv::Rect(0,0,GetLargeRefImageX(),GetLargeRefImageY());
+  cv::Rect newRect = cv::Rect(0,0,(int)GetLargeRefImageX(),(int)GetLargeRefImageY());
   return newRect;
 }
 
 cv::Rect LeagueSpectatorImageAnalyzer::GetMinibarObjectiveIconOriginalResolution() {
-  cv::Rect newRect = cv::Rect(0, 0, GetMinibarObjectiveIconTargetX(), GetMinibarObjectiveIconTargetY());
+  cv::Rect newRect = cv::Rect(0, 0, (int)GetMinibarObjectiveIconTargetX(), (int)GetMinibarObjectiveIconTargetY());
   return newRect;
 }

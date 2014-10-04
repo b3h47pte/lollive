@@ -53,7 +53,7 @@ protected:
 
   // Event Analysis. Events are usually listed in league as a little colored bar that has some images on it.
   // However, inhibitor kills are only displayed as an announcement. 
-  virtual std::shared_ptr<VectorPtrLeagueEvent> GetMinibarEvents();
+  virtual std::shared_ptr<MapPtrLeagueEvent> GetMinibarEvents();
   virtual cv::Rect GetMinibarSection(uint idx) = 0;
   virtual cv::Rect GetMinibarOriginalResolution() = 0;
   virtual cv::Rect GetMinibarObjectiveIconOriginalResolution() = 0;

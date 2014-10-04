@@ -105,6 +105,36 @@ bool LeagueVideoAnalyzer::StoreData(std::shared_ptr<ImageAnalyzer> img) {
   PtrLeagueTeamData purpleOld = std::static_pointer_cast<GenericData<PtrLeagueTeamData>>((*mData)["PurpleTeam"])->value;
   purpleOld->Update(purpleNew, *oldTimeStamp, mDataHistory);
 
+  // Update Events
+  PtrLeagueEvent announceEventNew = std::static_pointer_cast<GenericData<PtrLeagueEvent>>((*newData)["Announcement"])->value;
+  PtrLeagueEvent announceEventOld = std::static_pointer_cast<GenericData<PtrLeagueEvent>>((*mData)["Announcement"])->value;
+  if (announceEventNew->GetIdentifier() == announceEventOld->GetIdentifier()) {
+    announceEventOld->Update(announceEventNew, *curTimeStamp);
+  } else {
+    announceEventOld->Copy(announceEventNew, *curTimeStamp);
+  }
+
+  MapPtrLeagueEvent* minibarEventsNew = &std::static_pointer_cast<GenericData<MapPtrLeagueEvent>>((*newData)["MinibarEvents"])->value;
+  MapPtrLeagueEvent* minibarEventsOld = &std::static_pointer_cast<GenericData<MapPtrLeagueEvent>>((*newData)["MinibarEvents"])->value;
+  // Iterate through the old events to see which ones to remove
+  for (auto& e : *minibarEventsOld) {
+    auto it = minibarEventsNew->find(e.first);
+    if (it == minibarEventsNew->end()) {
+      minibarEventsOld->erase(it);
+    }
+  }
+
+  for (auto& e : *minibarEventsNew) {
+    // Can't find the event? Add the event.
+    if (minibarEventsOld->find(e.first) == minibarEventsOld->end()) {
+      (*minibarEventsOld)[e.first] = e.second;
+    } 
+    // If we did find the event, then we should update
+    else {
+      (*minibarEventsOld)[e.first]->Update(e.second, *curTimeStamp);
+    }
+  }
+
   // Save this piece of data in our history. This allows us to fix our data retroactively.
   std::shared_ptr<GenericDataStore> copyData(new GenericDataStore(*newData));
   mDataHistory.push_back(copyData);

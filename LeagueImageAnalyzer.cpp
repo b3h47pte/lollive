@@ -77,8 +77,8 @@ bool LeagueImageAnalyzer::Analyze() {
   PtrLeagueEvent announcementEvent = GetAnnouncementEvent();
   std::shared_ptr<GenericData<PtrLeagueEvent>> annouceEventProp(new GenericData<PtrLeagueEvent>(announcementEvent));
 
-  std::shared_ptr<VectorPtrLeagueEvent> minibarEvents = GetMinibarEvents();
-  std::shared_ptr<GenericData<VectorPtrLeagueEvent>> minibarEventsProp(new GenericData<VectorPtrLeagueEvent>(*minibarEvents));
+  std::shared_ptr<MapPtrLeagueEvent> minibarEvents = GetMinibarEvents();
+  std::shared_ptr<GenericData<MapPtrLeagueEvent>> minibarEventsProp(new GenericData<MapPtrLeagueEvent>(*minibarEvents));
 
   mDataMutex.lock();
   (*mData)["Announcement"] = annouceEventProp;
@@ -360,8 +360,8 @@ PtrLeagueEvent LeagueImageAnalyzer::GetAnnouncementEvent() {
  * 
  * TODO: Need to adjust numbers to make sure they work for multiple resolutions.
  */
-std::shared_ptr<VectorPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
-  std::shared_ptr<VectorPtrLeagueEvent> RetArray(new VectorPtrLeagueEvent());
+std::shared_ptr<MapPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
+  std::shared_ptr<MapPtrLeagueEvent> RetArray(new MapPtrLeagueEvent());
   std::string killObjectives[ELKT_MAX];
   killObjectives[ELKT_KILL] = GetKillObjective();
   killObjectives[ELKT_MULTI] = GetKillStreakObjective();
@@ -513,7 +513,7 @@ std::shared_ptr<VectorPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
     }
 
     newEvent->Print();
-    RetArray->push_back(newEvent);
+    (*RetArray)[newEvent->GetIdentifier()] = newEvent;
   }
   return RetArray;
 }

@@ -32,6 +32,8 @@ enum ELeagueKillType {
  * analyzer to make sure it doesn't account for these events more than once. This structure will provide
  * identifying utility functions to make that easier.
  */
+typedef std::shared_ptr<struct LeagueEvent> PtrLeagueEvent;
+typedef std::map<std::size_t, PtrLeagueEvent> MapPtrLeagueEvent;
 struct LeagueEvent {
   LeagueEvent() : RelevantTeam(ELT_UNKNOWN), EventId(ELEI_UNKNOWN), AdditionalInfo(""), PlayerInstigator(""), Timestamp(-1) {
   }
@@ -56,11 +58,9 @@ struct LeagueEvent {
   ELeagueKillType KillType;
 
   // Gets a unique identifier for this event.
+  // Supporting players is not used since the only real identifying information is the team + event type.
   std::size_t GetIdentifier() const {
     std::string strIdent = std::to_string(RelevantTeam) + "-" + std::to_string(EventId) + "-" + AdditionalInfo + "-" + PlayerInstigator;
-    for (auto& player : SupportingPlayers) {
-      strIdent += ("-" + player);
-    }
     std::hash<std::string> hash;
     return hash(strIdent);
   }
@@ -76,10 +76,20 @@ struct LeagueEvent {
     for (auto& s : SupportingPlayers) {
       std::cout << s << " ";
     }
-    std::cout << std::endl << " - Kill Tyype: " << KillType << std::endl;
+    std::cout << std::endl << " - Kill Type: " << KillType << std::endl;
+  }
+
+  void Update(PtrLeagueEvent newEvent, int timestamp);
+
+  void Copy(PtrLeagueEvent newEvent, int timestamp) {
+    RelevantTeam = newEvent->RelevantTeam;
+    EventId = newEvent->EventId;
+    AdditionalInfo = newEvent->AdditionalInfo;
+    PlayerInstigator = newEvent->PlayerInstigator;
+    SupportingPlayers = newEvent->SupportingPlayers;
+    Timestamp = timestamp;
+    KillType = newEvent->KillType;
   }
 };
-typedef std::shared_ptr<struct LeagueEvent> PtrLeagueEvent;
-typedef std::vector<PtrLeagueEvent> VectorPtrLeagueEvent;
 
 #endif

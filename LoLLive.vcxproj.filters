@@ -263,6 +263,9 @@
     <ClCompile Include="LeagueEventDatabase.cpp">
       <Filter>VideoAnalyze\Data\LoL\Events</Filter>
     </ClCompile>
+    <ClCompile Include="LeagueEvent.cpp">
+      <Filter>VideoAnalyze\Data\LoL\Events</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="civetweb\md5.inl">
