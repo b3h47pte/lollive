@@ -682,3 +682,13 @@ cv::Rect LeagueSpectatorImageAnalyzer::GetAnnouncementSection() {
 
   return newRect;
 }
+
+cv::Rect LeagueSpectatorImageAnalyzer::GetMinibarOriginalResolution() {
+  cv::Rect newRect = cv::Rect(0,0,GetLargeRefImageX(),GetLargeRefImageY());
+  return newRect;
+}
+
+cv::Rect LeagueSpectatorImageAnalyzer::GetMinibarObjectiveIconOriginalResolution() {
+  cv::Rect newRect = cv::Rect(0, 0, GetMinibarObjectiveIconTargetX(), GetMinibarObjectiveIconTargetY());
+  return newRect;
+}

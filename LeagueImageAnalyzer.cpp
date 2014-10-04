@@ -369,7 +369,7 @@ std::shared_ptr<VectorPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
     cv::Mat filterImage = FilterImage_Section(mImage, eventSection);
 
     // What's the background color?
-    cv::Vec3b bgColor = filterImage.at<cv::Vec3b>(cv::Point(filterImage.cols - 5, 5));
+    cv::Vec3b bgColor = filterImage.at<cv::Vec3b>(cv::Point((int)(filterImage.cols*GetBackgroundColorXPercentage()), GetBackgroundColorY()));
     cv::Point killIconLocation;
 
     // Determine which team performed this action based on the background color
@@ -392,7 +392,7 @@ std::shared_ptr<VectorPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
       
       double maxVal = SobelTemplateMatching(killImg, filterImage, bgColor, killIconLocation);
 
-      if (maxVal >= 0.6) {
+      if (maxVal >= GetKillIconSobelThreshold()) {
         bFoundMatch = true;
         break;
       }
@@ -415,12 +415,18 @@ std::shared_ptr<VectorPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
       // DID WE FIND IT?
       cv::Mat targetImg = LeagueEventDatabase::Get()->GetObjectiveImage(targetObjective[j]);
       // Need to resize the image to become the appropriate resolution.
-      // TODO: Resize based on the current resolution.
-      cv::Mat useTargetImg = FilterImage_Resize(targetImg, 0.375, 0.375);
+      // We know what size the image is at the original resolution. We know what the current resolution is so we can figure out
+      // what we need the size of the objective image.
+      cv::Rect origMinibarResolution = GetMinibarOriginalResolution();
+      cv::Rect origIconResolution = GetMinibarObjectiveIconOriginalResolution();
+
+      cv::Mat useTargetImg = FilterImage_Resize(targetImg, 
+        filterImage.cols * origIconResolution.width / origMinibarResolution.width,
+        filterImage.rows * origIconResolution.height / origMinibarResolution.height);
 
       cv::Point objIconLocation;
       double maxVal = SobelTemplateMatching(useTargetImg, filterImage, bgColor, objIconLocation);
-      if (maxVal < 0.6) {
+      if (maxVal < GetObjectiveIconSobelThreshold()) {
         continue;
       }
 
@@ -457,11 +463,12 @@ std::shared_ptr<VectorPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
     cv::Mat hsvImg;
     cv::cvtColor(filterImage, hsvImg, cv::COLOR_BGR2HSV);
     cv::Mat edgeImg = FilterImage_Channel(hsvImg, 2);
-    cv::threshold(edgeImg, edgeImg, 11.0, 255.0, cv::THRESH_BINARY_INV);
+    cv::threshold(edgeImg, edgeImg, GetEventValueThreshold(), 255.0, cv::THRESH_BINARY_INV);
     cv::findContours(edgeImg, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
     for (size_t x = 0; x < contours.size(); ++x) {
       cv::Rect r = cv::boundingRect(contours[x]);
-      if (r.width <= 15 || r.height <= 15) continue;
+      if (r.width <= GetEventIconMinimumWidth() || r.height <= GetEventIconMinimumHeight()) continue;
+      if (abs(r.width - r.height) >= GetEventIconSquareThreshold()) continue;
       // Depending on which side of the sword we're on, we can know which team the champion is for.
       // And from that we can know which champions are available to us.
       ELeagueTeams currentTeam = instigatorTeam;
@@ -486,7 +493,7 @@ std::shared_ptr<VectorPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
       cv::Mat champImg = FilterImage_Section(filterImage, r);
       bool b1, b2;
       std::string champStr = FindMatchingChampion(champImg, possibleChamps, b1, b2);
-      if (r.width >= 40) {
+      if (r.width >= GetEventIconContourThreshold()){
         if (currentTeam == instigatorTeam) {
           newEvent->PlayerInstigator = champStr;
         } else {

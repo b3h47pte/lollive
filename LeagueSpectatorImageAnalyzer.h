@@ -69,6 +69,8 @@ protected:
   // Events are the same everywhere, so the only thing we have to change is where to grab the events from.
   virtual cv::Rect GetMinibarSection(uint idx);
   virtual cv::Rect GetAnnouncementSection();
+  virtual cv::Rect GetMinibarOriginalResolution();
+  virtual cv::Rect GetMinibarObjectiveIconOriginalResolution();
 private:
   // Config File
   DECLARE_CONFIG_VARIABLE(ValidFrameThreshold, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
@@ -184,6 +186,8 @@ private:
   DECLARE_CONFIG_VARIABLE(MinibarEventYIncr, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
   DECLARE_CONFIG_VARIABLE(MinibarEventWidth, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
   DECLARE_CONFIG_VARIABLE(MinibarEventHeight, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(MinibarObjectiveIconTargetX, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(MinibarObjectiveIconTargetY, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
 };
 
 #endif

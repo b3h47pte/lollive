@@ -55,6 +55,8 @@ protected:
   // However, inhibitor kills are only displayed as an announcement. 
   virtual std::shared_ptr<VectorPtrLeagueEvent> GetMinibarEvents();
   virtual cv::Rect GetMinibarSection(uint idx) = 0;
+  virtual cv::Rect GetMinibarOriginalResolution() = 0;
+  virtual cv::Rect GetMinibarObjectiveIconOriginalResolution() = 0;
 
   virtual PtrLeagueEvent GetAnnouncementEvent();
   virtual cv::Rect GetAnnouncementSection()= 0 ;
@@ -127,6 +129,16 @@ private:
   DECLARE_CONFIG_VARIABLE(KillObjective, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Objectives", "")
   DECLARE_CONFIG_VARIABLE(KillStreakObjective, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Objectives", "")
   DECLARE_CONFIG_VARIABLE(KillShutdownObjective, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Objectives", "")
+
+  DECLARE_CONFIG_VARIABLE(BackgroundColorXPercentage, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(BackgroundColorY, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0)
+  DECLARE_CONFIG_VARIABLE(KillIconSobelThreshold, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(ObjectiveIconSobelThreshold, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(EventValueThreshold, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(EventIconMinimumWidth, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0)
+  DECLARE_CONFIG_VARIABLE(EventIconMinimumHeight, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0)
+  DECLARE_CONFIG_VARIABLE(EventIconSquareThreshold, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(EventIconContourThreshold, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0.0)
 
   GENERATE_OBJECTIVE_CONFIG_STRINGS()
 };
