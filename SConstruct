@@ -1,6 +1,8 @@
+import copy 
 env = Environment(CC = 'gcc', 
 		CXX = 'g++',
-		CPPFLAGS = '-std=c++11 -Wall -Wno-unknown-pragmas',
+		CXXFLAGS = ['-std=c++11'],
+    CPPFLAGS = ['-Wall', '-Wno-unknown-pragmas'],
     CPPPATH = ['/usr/include/gstreamer-1.0/', 
              '/usr/include/glib-2.0',
             '/usr/lib64/glib-2.0/include',
@@ -11,11 +13,29 @@ env = Environment(CC = 'gcc',
             'opencv_core', 'opencv_highgui', 'opencv_imgproc', 'opencv_imgcodecs',
             'tesseract'],
     LIBPATH = ['/usr/lib64', '/usr/local/lib'])
+envDebug = env.Clone()
 
-cjson = env.Object(Glob("cjson/*.c"))
-civet = env.Object(Glob("civetweb/*.cpp"))
-civetc = env.Object(Glob("civetweb/*.c"))
-inih = env.Object(Glob("inih/*.cpp"))
-inihc = env.Object(Glob("inih/*.c"))
+# Environment specific parameters
+env.Append(CPPFLAGS = ['-O3'])
+envDebug.Append(CPPFLAGS = ['-g', '-O0'])
 
-env.Program("lolllive", Glob("*.cpp") + cjson + civet + inih + civetc + inihc)
+doDebug = ARGUMENTS.get('debug',0)
+
+if not int(doDebug):
+  env.VariantDir('build/release', '.', duplicate=0)
+  cjson = env.Object(Glob("build/release/cjson/*.c"))
+  civet = env.Object(Glob("build/release/civetweb/*.cpp"))
+  civetc = env.Object(Glob("build/release/civetweb/*.c"))
+  inih = env.Object(Glob("build/release/inih/*.cpp"))
+  inihc = env.Object(Glob("build/release/inih/*.c"))
+  main = env.Object(Glob("build/release/*.cpp"))
+  release = env.Program("lolllive", main + cjson + civet + inih + civetc + inihc)
+else:
+  envDebug.VariantDir("build/debug", '.', duplicate=0)
+  cjson = envDebug.Object(Glob("build/debug/cjson/*.c"))
+  civet = envDebug.Object(Glob("build/debug/civetweb/*.cpp"))
+  civetc = envDebug.Object(Glob("build/debug/civetweb/*.c"))
+  inih = envDebug.Object(Glob("build/debug/inih/*.cpp"))
+  inihc = envDebug.Object(Glob("build/debug/inih/*.c"))
+  main = env.Object(Glob("build/debug/*.cpp"))
+  debug = envDebug.Program("lolllive_debug", main + cjson + civet + inih + civetc + inihc)
