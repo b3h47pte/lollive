@@ -47,9 +47,8 @@ std::shared_ptr<const LeagueChampionDatabase> LeagueChampionDatabase::Get() {
  */
 void LeagueChampionDatabase::LoadChampionDatabase(std::string& dir, std::string& fileName) {
   // Read in the XML file
-  char* envDir = getenv("LLLDB_DIR");
-  if (envDir == NULL) envDir = "";
-  std::string loc = std::string(envDir) + dir + fileName;
+  std::string envDir(getenv("LLLDB_DIR"));
+  std::string loc = envDir + dir + fileName;
   rapidxml::file<> xmlFile(loc.c_str());
   rapidxml::xml_document<> xmlDoc;
   xmlDoc.parse<0>(xmlFile.data());
@@ -78,7 +77,7 @@ void LeagueChampionDatabase::LoadChampionDatabase(std::string& dir, std::string&
     PtrLeagueChampionData data(new LeagueChampionData);
     data->longName = championNode->first_node("name")->value();
     data->shortName = championNode->first_node("shortname")->value();
-    data->image = cv::imread(std::string(envDir) + dir + imageDir + data->shortName + mImagePostfix, cv::IMREAD_UNCHANGED);
+    data->image = cv::imread(envDir + dir + imageDir + data->shortName + mImagePostfix, cv::IMREAD_UNCHANGED);
     mData[data->shortName] = data;
     championNode = championNode->next_sibling("champion");
   }

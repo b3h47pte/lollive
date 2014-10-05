@@ -21,12 +21,12 @@ public:
 
 typedef std::map<std::string, std::shared_ptr<Data> > GenericDataStore;
 
-inline bool DataExists(std::shared_ptr<GenericDataStore> inStore, std::string& key) {
+inline bool DataExists(std::shared_ptr<GenericDataStore> inStore, const std::string& key) {
   return (inStore->find(key) != inStore->end());
 }
 
 template<typename T>
-inline T RetrieveData(std::shared_ptr<GenericDataStore> inStore, std::string& key) {
+inline T RetrieveData(std::shared_ptr<GenericDataStore> inStore, const std::string& key) {
   return std::static_pointer_cast<GenericData<T>>((*inStore)[key])->value;
 }
 
@@ -49,7 +49,7 @@ inline bool IsValid<std::string>(std::string t) {
 // Gets recent values from the data history
 // fnc is a function that returns the relevant value from a GenericDataStore.
 template<typename T>
-inline std::vector<T> GetRecentValues(std::function<T(std::shared_ptr<GenericDataStore>)> fnc, std::vector<std::shared_ptr<GenericDataStore>>& inHistory, int numToRetrieve) {
+inline std::vector<T> GetRecentValues(std::function<T(std::shared_ptr<GenericDataStore>)> fnc, const std::vector<std::shared_ptr<GenericDataStore>>& inHistory, int numToRetrieve) {
   // Store values we have from most recent to least recent
   std::vector<T> recentValues;
 

@@ -1,10 +1,16 @@
 #include "VideoFetcher.h"
 #include <stdio.h>
 #include <assert.h>
-#include <string>
-
-
+#ifdef _WIN32
 #include <windows.h>
+#include <string>
+#define popen _popen
+#define pclose _pclose
+#else
+#include <sys/stat.h>
+#include <string.h>
+#endif
+
 
 // TODO: Need to print out some sort of error
 #define CHECK_FALSE_SETFLAG_JUMP(x,flag,label) \
@@ -33,12 +39,21 @@ void VideoFetcher::BeginFetch() {
   // If create directory fails with an already exist error, then we want to slap an id onto it.
   // Increment the id every time it fails.
   mImagePath = "Images/" + mID;
-  std::wstring stemp = std::wstring(mImagePath.begin(), mImagePath.end());
   int suffixId = 0;
+#ifdef _WIN32
+  std::wstring stemp = std::wstring(mImagePath.begin(), mImagePath.end());
   while (!CreateDirectoryW(stemp.c_str(), NULL)) {
+#else
+  std::string stemp = std::string(mImagePath.begin(), mImagePath.end());
+  while (mkdir(stemp.c_str(), 0755) ) {
+#endif
     ++suffixId;
     mImagePath = "Images/" + mID + std::to_string(suffixId);
+#ifdef _WIN32
     stemp = std::wstring(mImagePath.begin(), mImagePath.end());
+#else
+    stemp = std::string(mImagePath.begin(), mImagePath.end());
+#endif
   }
 
   std::string streamUrl = GetStreamURL();
@@ -53,7 +68,7 @@ void VideoFetcher::BeginFetch() {
 std::string VideoFetcher::GetStreamURL() {
   // TODO: Support more options than Twitch.tv (since I only know this works for twitch)
   std::string lsCommand = "livestreamer " + mURL + " best --stream-url";
-  FILE* ls = _popen(lsCommand.c_str(), "r");
+  FILE* ls = popen(lsCommand.c_str(), "r");
   assert(ls != NULL);
 
   char buffer[300];
@@ -63,7 +78,7 @@ std::string VideoFetcher::GetStreamURL() {
       streamUrl += buffer;
     }
   }
-  _pclose(ls);
+  pclose(ls);
   streamUrl = "http://media-cdn.twitch.tv/store136.media93/archives/2014-9-1/live_user_riotgames_1409605956.flv";
   return streamUrl;
 }
@@ -82,6 +97,10 @@ bool VideoFetcher::BeginStreamPlayback(std::string& streamUrl) {
   GstBus* bus = NULL;
   bool retFlag = true;
   std::string outputLocation = "";
+  GstMessage* msg = NULL;
+  bool bComplete = false;
+  GError *err = NULL;
+  gchar *debug_info;
   
   // Initialize gst
   gst_init(NULL, NULL);
@@ -146,15 +165,10 @@ bool VideoFetcher::BeginStreamPlayback(std::string& streamUrl) {
 
   // Listen to any messages we might get
   bus = gst_element_get_bus(pipeline);
-  GstMessage* msg = NULL;
 
-  bool bComplete = false;
   while (!bComplete) {
     msg = gst_bus_timed_pop_filtered(bus, GST_CLOCK_TIME_NONE, GstMessageType(GST_MESSAGE_ERROR | GST_MESSAGE_EOS | GST_MESSAGE_ELEMENT));
     if (!msg) continue;
-
-    GError *err = NULL;
-    gchar *debug_info;
 
     switch (GST_MESSAGE_TYPE(msg)) {
     case GST_MESSAGE_ERROR:
@@ -186,8 +200,6 @@ bool VideoFetcher::BeginStreamPlayback(std::string& streamUrl) {
     }
     gst_message_unref(msg);
   }
-
-
 cleanup:
   gst_element_set_state(pipeline, GST_STATE_NULL);
   if (bus) gst_object_unref(bus);
@@ -199,24 +211,24 @@ cleanup:
 void VideoFetcher::SourcePadAddedHandler(GstElement* src, GstPad* pad, GstElement** sink) {
   GstPad* sinkPad = gst_element_get_static_pad(*sink, "sink");
   GstCaps* padCapabilities = NULL;
+  GstPadLinkReturn ret;
+  GstStructure* padStruct = NULL;
   // Nothing to do if this sink pad is already linked.
-  if (gst_pad_is_linked(sinkPad)) {
-    goto cleanup;
-  }
+  if (!gst_pad_is_linked(sinkPad)) {
+    // We want the pad that is outputting video. So we check the pad's capabilities.
+    padCapabilities = gst_pad_query_caps(pad, NULL);
+    padStruct = gst_caps_get_structure(padCapabilities, 0);
+    const gchar* newPadType = gst_structure_get_name(padStruct);
+    if (!g_str_has_prefix(newPadType, "video/x-raw")) {
+      // Not a video ignore.
+      goto cleanup;
+    }
 
-  // We want the pad that is outputting video. So we check the pad's capabilities.
-  padCapabilities = gst_pad_query_caps(pad, NULL);
-  GstStructure* padStruct = gst_caps_get_structure(padCapabilities, 0);
-  const gchar* newPadType = gst_structure_get_name(padStruct);
-  if (!g_str_has_prefix(newPadType, "video/x-raw")) {
-    // Not a video ignore.
-    goto cleanup;
-  }
-
-  // Link the source to the sink
-  GstPadLinkReturn ret = gst_pad_link(pad, sinkPad);
-  if (GST_PAD_LINK_FAILED(ret)) {
-    goto cleanup;
+    // Link the source to the sink
+    ret = gst_pad_link(pad, sinkPad);
+    if (GST_PAD_LINK_FAILED(ret)) {
+      goto cleanup;
+    }
   }
 
 cleanup:

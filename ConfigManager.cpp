@@ -30,7 +30,7 @@ ConfigManager::~ConfigManager() {
  */
 std::string ConfigManager::GenerateFilePath(std::string& fileName) {
   char* envDir = getenv("LLLDB_DIR");
-  if (envDir == NULL) envDir = "";
+  if (envDir == NULL) envDir = (char*)"";
   return std::string(envDir) + CONFIG_FILE_DIRECTORY + fileName;
 }
 

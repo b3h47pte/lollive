@@ -31,7 +31,7 @@ void ImageAnalyzer::ShowImageNoPause(cv::Mat& image, const char* name) {
   cv::imshow(name, image);
 }
 
-std::string ImageAnalyzer::GetTextFromImage(cv::Mat& inImage, std::string& language, std::string& whitelist, tesseract::PageSegMode mode, std::vector<std::string>* keys, std::vector<std::string>* values, bool useUserWords) {
+std::string ImageAnalyzer::GetTextFromImage(cv::Mat& inImage, std::string& language, std::string whitelist, tesseract::PageSegMode mode, std::vector<std::string>* keys, std::vector<std::string>* values, bool useUserWords) {
   // Get the actual text.
   tesseract::TessBaseAPI tessApi;
   char const* baseDir = getenv("TESSDATA_DIR");
@@ -109,7 +109,7 @@ cv::MatND ImageAnalyzer::CreateVHistogram(cv::Mat inImage, int value_bins) {
 
 // Generic Function to analyze a part of an image. 
 // Will take an image and cut out a section. From that section, we will use ONE channel. Then we will resize the image.
-cv::Mat ImageAnalyzer::FilterImage_Section_Channel_BasicThreshold_Resize(cv::Mat inImage, cv::Rect& section, int channel, double threshold, double resX, double resY) {
+cv::Mat ImageAnalyzer::FilterImage_Section_Channel_BasicThreshold_Resize(cv::Mat inImage, const cv::Rect& section, int channel, double threshold, double resX, double resY) {
   cv::Mat newMat = FilterImage_Section(inImage, section);
   newMat = FilterImage_Channel(newMat, channel);
   newMat = FilterImage_BasicThreshold(newMat, threshold);
@@ -117,7 +117,7 @@ cv::Mat ImageAnalyzer::FilterImage_Section_Channel_BasicThreshold_Resize(cv::Mat
   return newMat;
 }
 
-cv::Mat ImageAnalyzer::FilterImage_Section_Grayscale_BasicThreshold_Resize(cv::Mat inImage, cv::Rect& section, double threshold, double resX, double resY) {
+cv::Mat ImageAnalyzer::FilterImage_Section_Grayscale_BasicThreshold_Resize(cv::Mat inImage, const cv::Rect& section, double threshold, double resX, double resY) {
   cv::Mat newMat = FilterImage_Section(inImage, section);
   newMat = FilterImage_Grayscale(newMat);
   newMat = FilterImage_BasicThreshold(newMat, threshold);
@@ -126,7 +126,7 @@ cv::Mat ImageAnalyzer::FilterImage_Section_Grayscale_BasicThreshold_Resize(cv::M
 }
 
 // Basic OpenCV operations on images.
-cv::Mat ImageAnalyzer::FilterImage_Section(cv::Mat inImage, cv::Rect& section) {
+cv::Mat ImageAnalyzer::FilterImage_Section(cv::Mat inImage, const cv::Rect& section) {
   return inImage(section);
 }
 
@@ -186,7 +186,8 @@ void ImageAnalyzer::SplitImage(cv::Mat& inImage, int x_dim, int y_dim, cv::Mat**
         x_width -= (x_width * x_dim - inImage.cols);
       }
 
-      res[y * y_dim + x] = FilterImage_Section(inImage, cv::Rect(x_pos, y_pos, x_width, y_width));
+      cv::Rect rect(x_pos, y_pos, x_width, y_width);
+      res[y * y_dim + x] = FilterImage_Section(inImage, rect);
       x_pos += x_width;
     }
     y_pos += y_width;

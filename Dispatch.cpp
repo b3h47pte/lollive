@@ -26,7 +26,7 @@ Dispatch::~Dispatch() {
  * 
  * Otherwise, return JSON describing the game's state.
  */
-std::string Dispatch::GetJSONResponse(std::string& game, std::string& mode, std::string& url, bool bIsDebug) {
+std::string Dispatch::GetJSONResponse(const std::string& game, const std::string& mode, const std::string& url, bool bIsDebug) {
   bool bJustMade = false;
   std::shared_ptr<DispatchObject> dispatchObj;
   mMappingMutex.lock();

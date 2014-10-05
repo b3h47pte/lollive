@@ -61,7 +61,7 @@ protected:
   std::shared_ptr<GenericDataStore> mData;
 
   // Utility Function to get text.
-  std::string GetTextFromImage(cv::Mat& inImage, std::string& language, std::string& whitelist = std::string(""), tesseract::PageSegMode mode = tesseract::PSM_SINGLE_WORD, std::vector<std::string>* keys = NULL, std::vector<std::string>* values = NULL, bool useUserWords = false);
+  std::string GetTextFromImage(cv::Mat& inImage, std::string& language, std::string whitelist = std::string(""), tesseract::PageSegMode mode = tesseract::PSM_SINGLE_WORD, std::vector<std::string>* keys = NULL, std::vector<std::string>* values = NULL, bool useUserWords = false);
 
   // Debug Function to show an image
   void ShowImage(cv::Mat& image);
@@ -75,10 +75,10 @@ protected:
   static std::string LeagueIdent;
 
   // Generic Functions to analyze a part of an image.
-  cv::Mat FilterImage_Section_Grayscale_BasicThreshold_Resize(cv::Mat inImage, cv::Rect& section, double threshold, double resX, double resY);
-  cv::Mat FilterImage_Section_Channel_BasicThreshold_Resize(cv::Mat inImage, cv::Rect& section, int channel, double threshold, double resX, double resY);
+  cv::Mat FilterImage_Section_Grayscale_BasicThreshold_Resize(cv::Mat inImage, const cv::Rect& section, double threshold, double resX, double resY);
+  cv::Mat FilterImage_Section_Channel_BasicThreshold_Resize(cv::Mat inImage, const cv::Rect& section, int channel, double threshold, double resX, double resY);
 
-  cv::Mat FilterImage_Section(cv::Mat inImage, cv::Rect& section);
+  cv::Mat FilterImage_Section(cv::Mat inImage, const cv::Rect& section);
   cv::Mat FilterImage_Channel(cv::Mat inImage, int channel); 
   cv::Mat FilterImage_2Channel(cv::Mat inImage, int channel1, int channel2, double fillValue);
   cv::Mat FilterImage_BasicThreshold(cv::Mat inImage, double threshold);

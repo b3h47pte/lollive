@@ -288,7 +288,8 @@ std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::
  * TODO: Use an image pyramid to speed this up. Also use multiple indicators to increase accuracy.
  */
 std::string LeagueImageAnalyzer::AnalyzePlayerItem(uint playerIdx, ELeagueTeams team, uint itemIdx) {
-  cv::Mat itemImage = FilterImage_Section(mImage, GetPlayerItemSection(playerIdx, team, itemIdx));
+  cv::Rect section = GetPlayerItemSection(playerIdx, team, itemIdx);
+  cv::Mat itemImage = FilterImage_Section(mImage, section);
   cv::Mat baseImage = ItemDatabase->GetDatabaseImage().clone();
 
   // Resize the base image so that each individual cell matches the size of the item image.
@@ -326,7 +327,8 @@ std::string LeagueImageAnalyzer::AnalyzePlayerItem(uint playerIdx, ELeagueTeams 
 PtrLeagueEvent LeagueImageAnalyzer::GetAnnouncementEvent() {
   cv::Mat filterImage, mask;
   cv::cvtColor(mImage, filterImage, cv::COLOR_BGR2HSV);
-  filterImage = FilterImage_Section(filterImage, GetAnnouncementSection());
+  cv::Rect section = GetAnnouncementSection();
+  filterImage = FilterImage_Section(filterImage, section);
   cv::inRange(filterImage, cv::Scalar(GetAnnouncementLowH(), GetAnnouncementLowS(), GetAnnouncementLowV()), 
     cv::Scalar(GetAnnouncementHighH(), GetAnnouncementHighS(), GetAnnouncementHighV()), filterImage);
   std::string result = GetTextFromImage(filterImage, EnglishIdent, std::string("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvxywz!"), tesseract::PSM_SINGLE_BLOCK);
@@ -484,9 +486,11 @@ std::shared_ptr<MapPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
       std::vector<std::string> possibleChamps;
       PtrLeagueTeamData team = NULL;
       if (currentTeam == ELT_BLUE) {
-        team = RetrieveData<PtrLeagueTeamData>(mData, std::string("BlueTeam"));
+        std::string blueTeam("BlueTeam");
+        team = RetrieveData<PtrLeagueTeamData>(mData, blueTeam);
       } else {
-        team = RetrieveData<PtrLeagueTeamData>(mData, std::string("PurpleTeam"));
+        std::string purpleTeam("PurpleTeam");
+        team = RetrieveData<PtrLeagueTeamData>(mData, purpleTeam);
       }
       for (int j = 0; j < 5; ++j) {
         possibleChamps.push_back(team->players[j]->champion);

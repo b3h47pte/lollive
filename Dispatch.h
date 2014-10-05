@@ -30,7 +30,7 @@ public:
   ~Dispatch();
 
   // Get's the JSON response for the specified request.
-  std::string GetJSONResponse(std::string& game, std::string& mode, std::string& url, bool bIsDebug);
+  std::string GetJSONResponse(const std::string& game, const std::string& mode, const std::string& url, bool bIsDebug);
 
   friend class WebFrontend;
 protected:

@@ -28,27 +28,6 @@ public:
     return defaultValue;
   }
 
-  template<> 
-  inline double GetFromINI<double>(const std::string& fileName, const std::string& section, const std::string& name, const double defaultValue) {
-    return GetDoubleFromINI(fileName, section, name, defaultValue);
-  }
-
-  template<>
-  inline bool GetFromINI<bool>(const std::string& fileName, const std::string& section, const std::string& name, const bool defaultValue) {
-    return GetBoolFromINI(fileName, section, name, defaultValue);
-  }
-
-  template<>
-  inline int GetFromINI<int>(const std::string& fileName, const std::string& section, const std::string& name, const int defaultValue) {
-    return GetIntFromINI(fileName, section, name, defaultValue);
-  }
-
-  template<>
-  inline std::string GetFromINI<std::string>(const std::string& fileName, const std::string& section, const std::string& name, const std::string defaultValue) {
-    return GetStringFromINI(fileName, section, name, defaultValue);
-  }
-
-
 
   // Accessor functions to get certain values in the config file. These are simple wraps over the INIReader class.
   // This config file must have been loaded already
@@ -71,6 +50,26 @@ private:
   // Mapping from the config file identifier [filename] to the INIReader which manges it
   std::map<std::string, std::shared_ptr<INIReader>> mINIMapping;
 };
+template<> 
+inline double ConfigManager::GetFromINI<double>(const std::string& fileName, const std::string& section, const std::string& name, const double defaultValue) {
+return GetDoubleFromINI(fileName, section, name, defaultValue);
+}
+
+template<>
+inline bool ConfigManager::GetFromINI<bool>(const std::string& fileName, const std::string& section, const std::string& name, const bool defaultValue) {
+return GetBoolFromINI(fileName, section, name, defaultValue);
+}
+
+template<>
+inline int ConfigManager::GetFromINI<int>(const std::string& fileName, const std::string& section, const std::string& name, const int defaultValue) {
+return GetIntFromINI(fileName, section, name, defaultValue);
+}
+
+template<>
+inline std::string ConfigManager::GetFromINI<std::string>(const std::string& fileName, const std::string& section, const std::string& name, const std::string defaultValue) {
+return GetStringFromINI(fileName, section, name, defaultValue);
+}
+
 
 // Need to easily be able to define variables as being stored in the config file and then easily retrieve them
 // Obviously the best way to do this would be to access them like variables, but the easier alternative is to just use functions
