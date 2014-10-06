@@ -44,7 +44,7 @@ protected:
   virtual bool StoreData(std::shared_ptr<class ImageAnalyzer> img) = 0;
 
   // Frame count. We aren't allowed to call StoreData until this frame count matches the input image's frame count.
-  int mFrameCount;
+  size_t mFrameCount;
 
   std::mutex mDataMutex;
   std::unique_lock<std::mutex> mDataLock;
