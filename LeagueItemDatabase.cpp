@@ -24,8 +24,7 @@ LeagueItemDatabase::LeagueItemDatabase() {
 
   // Load in database image (table of all the items)
   std::string imgName = ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, ItemDataSection, DatabaseImageFilenameName, std::string(""));
-  char* envDir = getenv("LLLDB_DIR");
-  if (envDir == NULL) envDir = "";
+  std::string envDir(getenv("LLLDB_DIR"));
   mDatabaseImage = cv::imread(std::string(envDir) + dir + imgName, cv::IMREAD_COLOR);
   if (mDatabaseImage.data == NULL) {
     mDatabaseImage = CreateDatabaseImage(dir);
@@ -53,8 +52,7 @@ LeagueItemDatabase::~LeagueItemDatabase() {
  */
 void LeagueItemDatabase::LoadItemDatabase(std::string& dir, std::string& fileName) {
   // Read in the XML file
-  char* envDir = getenv("LLLDB_DIR");
-  if (envDir == NULL) envDir = "";
+  std::string envDir(getenv("LLLDB_DIR"));
   std::string loc = std::string(envDir) + dir + fileName;
   rapidxml::file<> xmlFile(loc.c_str());
   rapidxml::xml_document<> xmlDoc;
@@ -112,8 +110,7 @@ cv::Mat LeagueItemDatabase::CreateDatabaseImage(std::string& dir) {
     int xIdx = (int)(count % x_imgs);
 
     // Load the image
-    char* envDir = getenv("LLLDB_DIR");
-    if (envDir == NULL) envDir = "";
+    std::string envDir(getenv("LLLDB_DIR"));
     std::string fileName = std::string(envDir) + dir + + "Images/" + CreateLeagueItemFileName(pair.second->itemCount, pair.second->itemID, pair.second->itemName);
     cv::Mat itemImage = cv::imread(fileName, cv::IMREAD_COLOR);
     

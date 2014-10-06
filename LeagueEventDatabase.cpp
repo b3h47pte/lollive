@@ -32,8 +32,7 @@ std::shared_ptr<const LeagueEventDatabase> LeagueEventDatabase::Get() {
 
 void LeagueEventDatabase::LoadEventDatabase(std::string& dir, std::string& fileName) {
   // Read in the XML file
-  char* envDir = getenv("LLLDB_DIR");
-  if (envDir == NULL) envDir = "";
+  std::string envDir(getenv("LLLDB_DIR"));
   std::string loc = std::string(envDir) + dir + fileName;
   rapidxml::file<> xmlFile(loc.c_str());
   rapidxml::xml_document<> xmlDoc;
