@@ -51,17 +51,27 @@ bool LeagueImageAnalyzer::Analyze() {
   // Team Data.
   // Thread the analysis to make it faster (not sure how this will be like when we start running more threads for different streams).
   PtrLeagueTeamData blueTeam;
+#ifdef NDEBUG
   std::thread btThread(std::bind([&]() {
+#endif
     blueTeam = AnalyzeTeamData(ELT_BLUE);
+#ifdef NDEBUG
   }));
+#endif
 
   PtrLeagueTeamData purpleTeam;
+#ifdef NDEBUG
   std::thread ptThread(std::bind([&]() {
+#endif
     purpleTeam = AnalyzeTeamData(ELT_PURPLE);
+#ifdef NDEBUG
   }));
+#endif
 
+#ifdef NDEBUG
   btThread.join();
   ptThread.join();
+#endif
 
   std::shared_ptr<GenericData<PtrLeagueTeamData>> blueTeamProp(new GenericData<PtrLeagueTeamData>(blueTeam));
   mDataMutex.lock();

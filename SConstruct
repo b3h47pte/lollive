@@ -29,7 +29,7 @@ if not int(doDebug):
   inih = env.Object(Glob("build/release/inih/*.cpp"))
   inihc = env.Object(Glob("build/release/inih/*.c"))
   main = env.Object(Glob("build/release/*.cpp"))
-  release = env.Program("lolllive", main + cjson + civet + inih + civetc + inihc)
+  release = env.Program("lollive", main + cjson + civet + inih + civetc + inihc)
 else:
   envDebug.VariantDir("build/debug", '.', duplicate=0)
   cjson = envDebug.Object(Glob("build/debug/cjson/*.c"))
@@ -37,5 +37,5 @@ else:
   civetc = envDebug.Object(Glob("build/debug/civetweb/*.c"))
   inih = envDebug.Object(Glob("build/debug/inih/*.cpp"))
   inihc = envDebug.Object(Glob("build/debug/inih/*.c"))
-  main = env.Object(Glob("build/debug/*.cpp"))
-  debug = envDebug.Program("lolllive_debug", main + cjson + civet + inih + civetc + inihc)
+  main = envDebug.Object(Glob("build/debug/*.cpp"))
+  debug = envDebug.Program("lollive_debug", main + cjson + civet + inih + civetc + inihc)

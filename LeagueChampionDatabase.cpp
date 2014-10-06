@@ -47,7 +47,8 @@ std::shared_ptr<const LeagueChampionDatabase> LeagueChampionDatabase::Get() {
  */
 void LeagueChampionDatabase::LoadChampionDatabase(std::string& dir, std::string& fileName) {
   // Read in the XML file
-  std::string envDir(getenv("LLLDB_DIR"));
+  char* llldb_dir = getenv("LLLDB_DIR");
+  std::string envDir = llldb_dir ? std::string(llldb_dir) : "";
   std::string loc = envDir + dir + fileName;
   rapidxml::file<> xmlFile(loc.c_str());
   rapidxml::xml_document<> xmlDoc;

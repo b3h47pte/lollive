@@ -215,7 +215,7 @@ double ImageAnalyzer::SobelTemplateMatching(cv::Mat templateImage, cv::Mat sourc
   // Perform a Sobel edge detection on the image
   cv::Sobel(templateImage, sobelKillImg, CV_8U, 1, 0);
   cv::convertScaleAbs(sobelKillImg, sobelKillImg);
-  
+
   // Do template matching to find where we have a match
   cv::Mat matchResult;
   cv::matchTemplate(sobelFilterImage, sobelKillImg, matchResult, cv::TM_CCOEFF_NORMED);
