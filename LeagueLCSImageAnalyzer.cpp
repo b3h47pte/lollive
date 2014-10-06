@@ -286,3 +286,24 @@ cv::Rect LeagueLCSImageAnalyzer::GetMinibarSupportingIconOriginalResolution() {
   cv::Rect newRect = cv::Rect(0, 0, (int)GetMinibarSupportingIconTargetX(), (int)GetMinibarSupportingIconTargetY());
   return newRect;
 }
+
+/*
+ * Get the item section.
+ */
+cv::Rect LeagueLCSImageAnalyzer::GetPlayerItemSection(uint playerIdx, ELeagueTeams team, uint itemIdx) {
+  double x = 0.0f;
+  double y = 0.0f;
+  if (team == ELT_BLUE) {
+    x = GetPlayerItemBlueX();
+  } else {
+    x = GetPlayerItemPurpleX();
+  }
+  x += itemIdx * GetPlayerItemXIncr();
+  y = GetPlayerItemY() + playerIdx * GetPlayerItemYIncr();
+  cv::Rect newRect = cv::Rect((int)(mImage.cols * (x / GetRefImageXSize())),
+    (int)(mImage.rows * (y / GetRefImageYSize())),
+    (int)(mImage.cols * (GetPlayerItemWidth() / GetRefImageXSize())),
+    (int)(mImage.rows * (GetPlayerItemHeight() / GetRefImageYSize())));
+
+  return newRect;
+}

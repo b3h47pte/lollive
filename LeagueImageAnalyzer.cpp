@@ -305,7 +305,6 @@ std::string LeagueImageAnalyzer::AnalyzePlayerItem(uint playerIdx, ELeagueTeams 
   // Resize the base image so that each individual cell matches the size of the item image.
   float factor = (float)itemImage.cols / LEAGUE_ITEM_SQUARE_SIZE;
   baseImage = FilterImage_Resize(baseImage, factor, factor);
-
   // Do template matching to find where we have a match
   cv::Mat matchResult;
   cv::matchTemplate(baseImage, itemImage, matchResult, cv::TM_SQDIFF_NORMED);

@@ -11,6 +11,9 @@ public:
   LeagueLCSImageAnalyzer(IMAGE_PATH_TYPE ImagePath);
   virtual ~LeagueLCSImageAnalyzer();
 protected:
+  // Items
+  virtual cv::Rect GetPlayerItemSection(uint playerIdx, ELeagueTeams team, uint itemIdx);
+
   // Need to determine when we are on the draft ban screen.
   // We do this by finding text on the screen. The most prominent text 
   // is the "BANS" text and the "VS" text.
@@ -117,6 +120,14 @@ private:
   DECLARE_CONFIG_VARIABLE(PlayerKDAPurpleXStart, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
   DECLARE_CONFIG_VARIABLE(PlayerKDAWidth, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
   DECLARE_CONFIG_VARIABLE(PlayerKDAHeight, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+
+  DECLARE_CONFIG_VARIABLE(PlayerItemBlueX, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerItemPurpleX, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerItemXIncr, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerItemY, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerItemYIncr, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerItemWidth, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(PlayerItemHeight, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
 
   DECLARE_CONFIG_VARIABLE(CSYStart, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
   DECLARE_CONFIG_VARIABLE(CSYIncrement, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
