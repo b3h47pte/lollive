@@ -46,6 +46,8 @@ protected:
   // Events
   virtual int GetMinibarBackgroundAllyChannel() { return GetMinibarBGAllyChannel(); }
   virtual int GetMinibarBackgroundEnemeyChannel() { return GetMinibarBGEnemyChannel(); }
+  virtual cv::Rect GetMinibarObjectiveIconOriginalResolution();
+  virtual cv::Rect GetMinibarSupportingIconOriginalResolution();
 private:
   // Config File Constants
   DECLARE_CONFIG_VARIABLE(RefImageXSize, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
@@ -137,6 +139,11 @@ private:
   DECLARE_CONFIG_VARIABLE(BanPercentHeightAdjust, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
   DECLARE_CONFIG_VARIABLE(MinibarBGAllyChannel, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0)
   DECLARE_CONFIG_VARIABLE(MinibarBGEnemyChannel, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0)
+  // Size of the image in 1080p
+  DECLARE_CONFIG_VARIABLE(MinibarObjectiveIconTargetX, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(MinibarObjectiveIconTargetY, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(MinibarSupportingIconTargetX, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(MinibarSupportingIconTargetY, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "LCSImageAnalyzer", 0.0)
 };
 
 #endif

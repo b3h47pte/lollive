@@ -79,7 +79,6 @@ std::string VideoFetcher::GetStreamURL() {
     }
   }
   pclose(ls);
-  streamUrl = "http://media-cdn.twitch.tv/store136.media93/archives/2014-9-1/live_user_riotgames_1409605956.flv";
   return streamUrl;
 }
 
@@ -125,7 +124,7 @@ bool VideoFetcher::BeginStreamPlayback(std::string& streamUrl) {
   CHECK_FALSE_SETFLAG_JUMP(filter, retFlag, cleanup);
 
   // Set the capabilities of the filter so that we get the framerate we desire.
-  filterCaps = gst_caps_new_simple("video/x-raw", "framerate", GST_TYPE_FRACTION, 1, 15, NULL);
+  filterCaps = gst_caps_new_simple("video/x-raw", "framerate", GST_TYPE_FRACTION, 1, 3, NULL);
 
   // Convert video frames into PNG images. 
   toPng = gst_element_factory_make("pngenc", "toPng");

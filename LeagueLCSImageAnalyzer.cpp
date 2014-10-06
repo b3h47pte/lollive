@@ -276,3 +276,13 @@ cv::Rect LeagueLCSImageAnalyzer::GetBansPercentageSection(cv::Rect banRect) {
   newRect.height = (int)(mImage.rows * GetBanPercentHeightAdjust() / GetRefImageYSize());
   return newRect;
 }
+
+cv::Rect LeagueLCSImageAnalyzer::GetMinibarObjectiveIconOriginalResolution() {
+  cv::Rect newRect = cv::Rect(0, 0, (int)GetMinibarObjectiveIconTargetX(), (int)GetMinibarObjectiveIconTargetY());
+  return newRect;
+}
+
+cv::Rect LeagueLCSImageAnalyzer::GetMinibarSupportingIconOriginalResolution() {
+  cv::Rect newRect = cv::Rect(0, 0, (int)GetMinibarSupportingIconTargetX(), (int)GetMinibarSupportingIconTargetY());
+  return newRect;
+}
