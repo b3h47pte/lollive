@@ -57,6 +57,7 @@ protected:
   virtual cv::Rect GetMinibarSection(uint idx) = 0;
   virtual cv::Rect GetMinibarOriginalResolution() = 0;
   virtual cv::Rect GetMinibarObjectiveIconOriginalResolution() = 0;
+  virtual cv::Rect GetMinibarSupportingIconOriginalResolution() = 0;
   virtual int GetMinibarBackgroundAllyChannel() = 0;
   virtual int GetMinibarBackgroundEnemeyChannel() = 0;
 
@@ -111,6 +112,7 @@ protected:
 
   // Utility Function to help us determine who the input champion is
   std::string FindMatchingChampion(cv::Mat filterImage, std::vector<std::string>& championHints, bool& isLowHealth, bool& isDead);
+  bool ReverseMatchChampion(cv::Mat containerImage, std::string champion, int targetSizeX, int targetSizeY, cv::Point& output);
 
 private:
   DECLARE_CONFIG_VARIABLE(ChampImgSplitDimX, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0)
@@ -136,11 +138,7 @@ private:
   DECLARE_CONFIG_VARIABLE(BackgroundColorY, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0)
   DECLARE_CONFIG_VARIABLE(KillIconSobelThreshold, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0.0)
   DECLARE_CONFIG_VARIABLE(ObjectiveIconSobelThreshold, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0.0)
-  DECLARE_CONFIG_VARIABLE(EventValueThreshold, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0.0)
-  DECLARE_CONFIG_VARIABLE(EventIconMinimumWidth, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0)
-  DECLARE_CONFIG_VARIABLE(EventIconMinimumHeight, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0)
-  DECLARE_CONFIG_VARIABLE(EventIconSquareThreshold, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0.0)
-  DECLARE_CONFIG_VARIABLE(EventIconContourThreshold, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(EventChampDetectThreshold, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0.0)
 
   GENERATE_OBJECTIVE_CONFIG_STRINGS()
 };

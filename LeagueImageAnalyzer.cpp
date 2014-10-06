@@ -420,23 +420,31 @@ std::shared_ptr<MapPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
     // Now figure out what we did the kill on. This should be a turret, baron, dragon, or a champion.
     // But we don't want to figure out what the champion is until we determine it's not anything else (that'd be expensive!).
     bFoundMatch = false;
+
+    cv::Rect origMinibarResolution = GetMinibarOriginalResolution();
+    cv::Rect origIconResolution = GetMinibarObjectiveIconOriginalResolution();
+
+    double minibarScaleX = 1.0;
+    double minibarScaleY = 1.0;
     for (j = 0; j < 10; ++j) {
       // DID WE FIND IT?
       cv::Mat targetImg = LeagueEventDatabase::Get()->GetObjectiveImage(targetObjective[j]);
       // Need to resize the image to become the appropriate resolution.
       // We know what size the image is at the original resolution. We know what the current resolution is so we can figure out
       // what we need the size of the objective image.
-      cv::Rect origMinibarResolution = GetMinibarOriginalResolution();
-      cv::Rect origIconResolution = GetMinibarObjectiveIconOriginalResolution();
+      minibarScaleX = ((double)filterImage.cols * origIconResolution.width / origMinibarResolution.width) / targetImg.cols;
+      minibarScaleY = ((double)filterImage.rows * origIconResolution.height / origMinibarResolution.height) / targetImg.rows;
 
       cv::Mat useTargetImg = FilterImage_Resize(targetImg, 
-        filterImage.cols * origIconResolution.width / origMinibarResolution.width,
-        filterImage.rows * origIconResolution.height / origMinibarResolution.height);
+        minibarScaleX, minibarScaleY);
 
+      
       cv::Point objIconLocation;
-      double maxVal = SobelTemplateMatching(useTargetImg, filterImage, bgColor, objIconLocation);
+      double maxVal = TemplateMatching(useTargetImg, filterImage, bgColor, objIconLocation);
       if (maxVal < GetObjectiveIconSobelThreshold()) {
         continue;
+      } else {
+        break;
       }
     }
 
@@ -465,52 +473,40 @@ std::shared_ptr<MapPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
       break;
     }
 
-    // Need to determine the champions involved in the event so we want to determine the contours in the image.
-    // Use the value channel in the HSV image so it's easier for us to pick out the black outline.
-    std::vector<std::vector<cv::Point> > contours;
-    cv::Mat hsvImg;
-    cv::cvtColor(filterImage, hsvImg, cv::COLOR_BGR2HSV);
-    cv::Mat edgeImg = FilterImage_Channel(hsvImg, 2);
-    cv::threshold(edgeImg, edgeImg, GetEventValueThreshold(), 255.0, cv::THRESH_BINARY_INV);
-    cv::findContours(edgeImg, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
-    for (size_t x = 0; x < contours.size(); ++x) {
-      cv::Rect r = cv::boundingRect(contours[x]);
-      if (r.width <= GetEventIconMinimumWidth() || r.height <= GetEventIconMinimumHeight()) continue;
-      if (abs(r.width - r.height) >= GetEventIconSquareThreshold()) continue;
-      // Depending on which side of the sword we're on, we can know which team the champion is for.
-      // And from that we can know which champions are available to us.
-      ELeagueTeams currentTeam = instigatorTeam;
-      if (r.x >= killIconLocation.x) {
-        currentTeam = GetOtherTeam(currentTeam);
-      }
-      std::vector<std::string> possibleChamps;
-      PtrLeagueTeamData team = NULL;
-      if (currentTeam == ELT_BLUE) {
-        std::string blueTeam("BlueTeam");
-        team = RetrieveData<PtrLeagueTeamData>(mData, blueTeam);
-      } else {
-        std::string purpleTeam("PurpleTeam");
-        team = RetrieveData<PtrLeagueTeamData>(mData, purpleTeam);
-      }
-      for (int j = 0; j < 5; ++j) {
-        possibleChamps.push_back(team->players[j]->champion);
-      }
+    // Now we need to find all relevant champions related to this event by doing a reverse search. Given the list of champions we think could exist
+    // and the size that we would expect them to exist at, we try to find it anywhere on the minibar.
+    std::vector<std::string> relevantChampions;
+    cv::Point outputRect;
+    PtrLeagueTeamData bt = RetrieveData<PtrLeagueTeamData>(mData, "BlueTeam");
+    PtrLeagueTeamData pt = RetrieveData<PtrLeagueTeamData>(mData, "PurpleTeam");
+    for (int i = 0; i < 5; ++i) {
+      relevantChampions.push_back(bt->players[i]->champion);
+      relevantChampions.push_back(pt->players[i]->champion);
+    }
 
-      if (team == NULL) {
-        continue;
-      }
+    // Get main champions
+    double iconScaleX = origMinibarResolution.width / filterImage.cols;
+    double iconScaleY = origMinibarResolution.height / filterImage.rows;
 
-      cv::Mat champImg = FilterImage_Section(filterImage, r);
-      bool b1, b2;
-      std::string champStr = FindMatchingChampion(champImg, possibleChamps, b1, b2);
-      if (r.width >= GetEventIconContourThreshold()){
-        if (currentTeam == instigatorTeam) {
-          newEvent->PlayerInstigator = champStr;
-        } else {
-          newEvent->AdditionalInfo = champStr;
+    for (int i = 0; i < 10; ++i) {
+      int targetX = (int)(GetMinibarObjectiveIconOriginalResolution().width * iconScaleX);
+      int targetY = (int)(GetMinibarObjectiveIconOriginalResolution().height * iconScaleY);
+      if (ReverseMatchChampion(filterImage, relevantChampions[i], targetX, targetY, outputRect)) {
+        // We know which team the champion is on based on which side of the 'kill' image it is.
+        if (outputRect.x < killIconLocation.x) { 
+          newEvent->PlayerInstigator = relevantChampions[i];
+        } else if (newEvent->EventId == ELEI_CHAMP) {
+          newEvent->AdditionalInfo = relevantChampions[i];
         }
-      } else {
-        newEvent->SupportingPlayers.push_back(champStr);
+      }
+    }
+
+    // Get supporting champions
+    for (int i = 0; i < 10; ++i) {
+      int targetX = (int)(GetMinibarSupportingIconOriginalResolution().width * iconScaleX);
+      int targetY = (int)(GetMinibarSupportingIconOriginalResolution().height * iconScaleY);
+      if (ReverseMatchChampion(filterImage, relevantChampions[i], targetX, targetY, outputRect)) {
+        newEvent->SupportingPlayers.push_back(relevantChampions[i]);
       }
     }
 
@@ -523,4 +519,16 @@ std::shared_ptr<MapPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
     (*RetArray)[newEvent->GetIdentifier()] = newEvent;
   }
   return RetArray;
+}
+
+bool LeagueImageAnalyzer::ReverseMatchChampion(cv::Mat containerImage, std::string champion, int targetSizeX, int targetSizeY, cv::Point& output) {
+  // Go through the image database and determine which champion we look like most.
+  const std::map<std::string, PtrLeagueChampionData>* db = ChampionDatabase->GetDatabase();
+  cv::Mat champImage = db->at(champion)->image;
+  champImage = FilterImage_Resize(champImage, (double)targetSizeX / champImage.cols, (double)targetSizeY / champImage.rows);
+  cv::GaussianBlur(champImage, champImage, cv::Size(3, 3), 0.0); // Blur the image since the input is probably blurry too.
+
+  // Now do a template match to see if it lines up anywhere.
+  double maxVal = TemplateMatching(champImage, containerImage, cv::Vec3b(), output);
+  return (maxVal > GetEventChampDetectThreshold());
 }

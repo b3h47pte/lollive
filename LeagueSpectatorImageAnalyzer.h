@@ -71,6 +71,7 @@ protected:
   virtual cv::Rect GetAnnouncementSection();
   virtual cv::Rect GetMinibarOriginalResolution();
   virtual cv::Rect GetMinibarObjectiveIconOriginalResolution();
+  virtual cv::Rect GetMinibarSupportingIconOriginalResolution();
 
   virtual int GetMinibarBackgroundAllyChannel() { return GetMinibarBGAllyChannel();  }
   virtual int GetMinibarBackgroundEnemeyChannel() { return GetMinibarBGEnemyChannel();  }
@@ -191,6 +192,8 @@ private:
   DECLARE_CONFIG_VARIABLE(MinibarEventHeight, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
   DECLARE_CONFIG_VARIABLE(MinibarObjectiveIconTargetX, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
   DECLARE_CONFIG_VARIABLE(MinibarObjectiveIconTargetY, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(MinibarSupportingIconTargetX, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
+  DECLARE_CONFIG_VARIABLE(MinibarSupportingIconTargetY, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0.0)
   DECLARE_CONFIG_VARIABLE(MinibarBGAllyChannel, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0)
   DECLARE_CONFIG_VARIABLE(MinibarBGEnemyChannel, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "SpectatorImageAnalyzer", 0)
 };
