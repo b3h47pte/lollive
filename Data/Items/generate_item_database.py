@@ -14,7 +14,7 @@ for itemObject in jsonInput["items"]:
   idEle = ET.SubElement(newItem, "id")
   idEle.text = itemObject["id"]
   pathEle = ET.SubElement(newItem, "path")
-  pathEle.text = itemObject["icon"].replace(".dds", ".png")
+  pathEle.text = itemObject["icon"].replace(".dds", ".png").replace(".DDS", ".png")
 
 xmlText = ET.tostring(database, 'utf-8')
 xmlTextParse = minidom.parseString(xmlText)
