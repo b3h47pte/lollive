@@ -4,14 +4,14 @@
 
 #include "common.h"
 #include "LeagueConstants.h"
+#include "opencv2/core.hpp"
 
 struct LeagueItemData {
-  int itemCount;
   std::string itemID;
-  std::string itemName;
+  cv::Mat itemImage;
 
   bool IsInvalid() {
-    return (itemCount == LEAGUE_INVALID_ITEM);
+    return (itemID == std::to_string(LEAGUE_INVALID_ITEM));
   }
 };
 typedef std::shared_ptr<LeagueItemData> PtrLeagueItemData;

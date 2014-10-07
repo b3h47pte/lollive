@@ -18,6 +18,8 @@ int main() {
   //vf->BeginFetch();
 
   //WebFrontend* wf = new WebFrontend();
+
+  //std::shared_ptr<const LeagueItemDatabase> db = LeagueItemDatabase::Get();
  
   LeagueLCSImageAnalyzer* img = new LeagueLCSImageAnalyzer(path1);
   img->Analyze();

@@ -72,20 +72,16 @@ void LeagueItemDatabase::LoadItemDatabase(std::string& dir, std::string& fileNam
   std::string imageDir = ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, ItemDataSection, ImageDirectoryName, std::string(""));
   while (itemNode) {
     PtrLeagueItemData itemData(new LeagueItemData);
-    itemData->itemCount = std::stoi(itemNode->first_node("count")->value(), NULL);
     itemData->itemID = itemNode->first_node("id")->value();
-    itemData->itemName = itemNode->first_node("name")->value();
-    itemNode = itemNode->next_sibling("item");
-
-    // If a conflict exists, choose the one with the higher item count.
-    if (mData.find(itemData->itemID) != mData.end()) {
-      PtrLeagueItemData oldItem = mData[itemData->itemID];
-      if (oldItem->itemCount > itemData->itemCount) {
-        continue;
-      }
+    itemData->itemImage = cv::imread(envDir + dir + imageDir + itemNode->first_node("path")->value(), cv::IMREAD_UNCHANGED);
+    // TODO: Remake item images to all be consistent.
+    if (itemData->itemImage.channels() == 4) {
+      cv::cvtColor(itemData->itemImage, itemData->itemImage, cv::COLOR_BGRA2BGR);
     }
-
+    // If a conflict exists, choose the one with the most recent.
     mData[itemData->itemID] = itemData;
+
+    itemNode = itemNode->next_sibling("item");
   }
 }
 
@@ -112,10 +108,7 @@ cv::Mat LeagueItemDatabase::CreateDatabaseImage(std::string& dir) {
     int xIdx = (int)(count % x_imgs);
 
     // Load the image
-    char* llldb_dir = getenv("LLLDB_DIR");
-    std::string envDir = llldb_dir ? std::string(llldb_dir) : "";
-    std::string fileName = std::string(envDir) + dir + + "Images/" + CreateLeagueItemFileName(pair.second->itemCount, pair.second->itemID, pair.second->itemName);
-    cv::Mat itemImage = cv::imread(fileName, cv::IMREAD_COLOR);
+    cv::Mat itemImage = pair.second->itemImage;
     
     // Copy it into the big image.
     cv::Rect section(xIdx * LEAGUE_ITEM_SQUARE_SIZE, yIdx * LEAGUE_ITEM_SQUARE_SIZE, LEAGUE_ITEM_SQUARE_SIZE, LEAGUE_ITEM_SQUARE_SIZE);
