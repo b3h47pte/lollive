@@ -2,17 +2,27 @@ import copy
 env = Environment(CC = 'gcc', 
 		CXX = 'g++',
 		CXXFLAGS = ['-std=c++11'],
-    CPPFLAGS = ['-Wall', '-Wno-unknown-pragmas'],
-    CPPPATH = ['/usr/include/gstreamer-1.0/', 
+    CPPFLAGS = ['-Wall', '-Wno-unknown-pragmas'])
+
+print env['PLATFORM']
+if env['PLATFORM'] == 'darwin':
+  env.Append(CPPPATH = ['/Library/Frameworks/GStreamer.framework/Versions/1.0/Headers'])
+  env.Append(LIBS = ['dl', 'gstreamer-1.0', 'gobject-2.0', 'glib-2.0',
+            'opencv_core', 'opencv_highgui', 'opencv_imgproc', 'opencv_imgcodecs',
+            'tesseract'])
+  env.Append(LIBPATH = ['/Library/Frameworks/GStreamer.framework/Versions/1.0/lib'])
+else:
+  env.Append(CPPPATH = ['/usr/include/gstreamer-1.0/', 
              '/usr/include/glib-2.0',
             '/usr/lib64/glib-2.0/include',
             '/usr/include/libxml2',
             '/usr/local/include',
-            '/usr/include'],
-    LIBS = ['dl', 'gstreamer-1.0', 'gobject-2.0', 'glib-2.0',
+            '/usr/include'])
+  env.Append(LIBS = ['dl', 'gstreamer-1.0', 'gobject-2.0', 'glib-2.0',
             'opencv_core', 'opencv_highgui', 'opencv_imgproc', 'opencv_imgcodecs',
-            'tesseract'],
-    LIBPATH = ['/usr/lib64', '/usr/local/lib'])
+            'tesseract'])
+  env.Append(LIBPATH = ['/usr/lib64', '/usr/local/lib'])
+
 envDebug = env.Clone()
 
 # Environment specific parameters
