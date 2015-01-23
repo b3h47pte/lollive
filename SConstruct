@@ -2,7 +2,7 @@ import copy
 env = Environment(CC = 'gcc', 
 		CXX = 'g++',
 		CXXFLAGS = ['-std=c++11'],
-    CPPFLAGS = ['-Wall', '-Wno-unknown-pragmas'])
+    CPPFLAGS = ['-Wall', '-Wno-unknown-pragmas', '-Wno-deprecated-register'])
 
 print env['PLATFORM']
 if env['PLATFORM'] == 'darwin':
@@ -39,7 +39,7 @@ if not int(doDebug):
   inih = env.Object(Glob("build/release/inih/*.cpp"))
   inihc = env.Object(Glob("build/release/inih/*.c"))
   main = env.Object(Glob("build/release/*.cpp"))
-  release = env.Program("lollive", main + cjson + civet + inih + civetc + inihc)
+  release = env.Program("build/release/lollive", main + cjson + civet + inih + civetc + inihc)
 else:
   envDebug.VariantDir("build/debug", '.', duplicate=0)
   cjson = envDebug.Object(Glob("build/debug/cjson/*.c"))
@@ -48,4 +48,4 @@ else:
   inih = envDebug.Object(Glob("build/debug/inih/*.cpp"))
   inihc = envDebug.Object(Glob("build/debug/inih/*.c"))
   main = envDebug.Object(Glob("build/debug/*.cpp"))
-  debug = envDebug.Program("lollive_debug", main + cjson + civet + inih + civetc + inihc)
+  debug = envDebug.Program("build/debug/lollive_debug", main + cjson + civet + inih + civetc + inihc)
