@@ -34,6 +34,14 @@ std::string ConfigManager::GenerateFilePath(std::string& fileName) {
   return std::string(envDir) + CONFIG_FILE_DIRECTORY + fileName;
 }
 
+template<typename T> T ConfigManager::
+GetGenericFromINI(const std::string& fileName, const std::string& section, const std::string& name, const std::string& defaultValue) {
+  if (mINIMapping.find(fileName) == mINIMapping.end()) {
+    return T(defaultValue);
+  }
+  return T(mINIMapping[fileName]->Get(section, name, defaultValue));
+}
+
 std::string ConfigManager::GetStringFromINI(const std::string& fileName, const std::string& section, const std::string& name, const std::string& defaultValue) {
   if (mINIMapping.find(fileName) == mINIMapping.end()) {
     return defaultValue;

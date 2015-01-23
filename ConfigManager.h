@@ -25,12 +25,14 @@ public:
   // Generic Accessor that make it easier for us to use macros to define variables that will be found in the config file
   template<typename T>
   inline T GetFromINI(const std::string& fileName, const std::string& section, const std::string& name, const T defaultValue) {
-    return defaultValue;
+    return GetGenericFromINI<T>(fileName, section, name, defaultValue); 
   }
-
 
   // Accessor functions to get certain values in the config file. These are simple wraps over the INIReader class.
   // This config file must have been loaded already
+  template <typename T>
+  T GetGenericFromINI(const std::string& fileName, const std::string& section, const std::string& name, const std::string& defaultValue);
+
   std::string GetStringFromINI(const std::string& fileName, const std::string& section, const std::string& name, const std::string& defaultValue);
   int GetIntFromINI(const std::string& fileName, const std::string& section, const std::string& name, const int defaultValue);
   bool GetBoolFromINI(const std::string& fileName, const std::string& section, const std::string& name, const bool defaultValue);
@@ -40,7 +42,6 @@ private:
 
   // Config File Directory
   static std::string CONFIG_FILE_DIRECTORY;
-
 
   // Utility Functions
   // Generate the full path from a filename. The filename should just be something along the lines of 'xxx.ini'
@@ -52,22 +53,22 @@ private:
 };
 template<> 
 inline double ConfigManager::GetFromINI<double>(const std::string& fileName, const std::string& section, const std::string& name, const double defaultValue) {
-return GetDoubleFromINI(fileName, section, name, defaultValue);
+  return GetDoubleFromINI(fileName, section, name, defaultValue);
 }
 
 template<>
 inline bool ConfigManager::GetFromINI<bool>(const std::string& fileName, const std::string& section, const std::string& name, const bool defaultValue) {
-return GetBoolFromINI(fileName, section, name, defaultValue);
+  return GetBoolFromINI(fileName, section, name, defaultValue);
 }
 
 template<>
 inline int ConfigManager::GetFromINI<int>(const std::string& fileName, const std::string& section, const std::string& name, const int defaultValue) {
-return GetIntFromINI(fileName, section, name, defaultValue);
+  return GetIntFromINI(fileName, section, name, defaultValue);
 }
 
 template<>
 inline std::string ConfigManager::GetFromINI<std::string>(const std::string& fileName, const std::string& section, const std::string& name, const std::string defaultValue) {
-return GetStringFromINI(fileName, section, name, defaultValue);
+  return GetStringFromINI(fileName, section, name, defaultValue);
 }
 
 
