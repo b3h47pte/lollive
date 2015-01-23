@@ -159,11 +159,15 @@ std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::
 
   int totalEle = x_dim * y_dim;
   cv::Mat* filterSubImages = new cv::MatND[x_dim * y_dim];
+  if(!filterSubImages) std::cout << "LEAGUEIMAGEANALYZER ERROR: Ran out of memory -- filterSubImages" << std::endl;
   cv::Mat* filterSubImagesNoRed = new cv::MatND[x_dim * y_dim];
-
+  if(!filterSubImagesNoRed) std::cout << "LEAGUEIMAGEANALYZER ERROR: Ran out of memory -- filterSubImagesNoRed" << std::endl;
   cv::MatND* filterSubHSHists = new cv::MatND[x_dim * y_dim]; // Hue and Saturation. Used to determine who the champion actually is.
+  if(!filterSubHSHists) std::cout << "LEAGUEIMAGEANALYZER ERROR: Ran out of memory -- filterSubHSHists" << std::endl;
   cv::MatND* filterSubHSHistNoRed = new cv::MatND[x_dim * y_dim]; // Hue and Saturation. Used to determine who the champion is when the champion is low on health.
+  if(!filterSubHSHistNoRed) std::cout << "LEAGUEIMAGEANALYZER ERROR: Ran out of memory -- filterSubHSHistNoRed" << std::endl;
   cv::MatND* filterSubVHists = new cv::MatND[x_dim * y_dim]; // Value (from HSV). Used to determine if the champion be dead.
+  if(!filterSubVHists) std::cout << "LEAGUEIMAGEANALYZER ERROR: Ran out of memory -- filterSubVHists" << std::endl;
   SplitImage(filterImage, x_dim, y_dim, &filterSubImages);
   int cc = 0;
   std::for_each(filterSubImages, filterSubImages + totalEle, [&](cv::Mat inImg) {
@@ -193,10 +197,15 @@ std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::
 
   cv::Mat baseImage;
   cv::Mat* baseSubImages = new cv::MatND[x_dim * y_dim];
+  if(!baseSubImages) std::cout << "LEAGUEIMAGEANALYZER ERROR: Ran out of memory -- baseSubImages" << std::endl;
   cv::Mat* baseSubImagesNoRed = new cv::MatND[x_dim * y_dim];
+  if(!baseSubImagesNoRed) std::cout << "LEAGUEIMAGEANALYZER ERROR: Ran out of memory -- baseSubImagesNoRed" << std::endl;
   cv::MatND* baseSubHSHists = new cv::MatND[x_dim * y_dim];
+  if(!baseSubHSHists) std::cout << "LEAGUEIMAGEANALYZER ERROR: Ran out of memory -- baseSubHSHists" << std::endl;
   cv::MatND* baseSubHSHistsNoRed = new cv::MatND[x_dim * y_dim];
+  if(!baseSubHSHistsNoRed) std::cout << "LEAGUEIMAGEANALYZER ERROR: Ran out of memory -- baseSubHSHistsNoRed" << std::endl;
   cv::MatND* baseSubVHists = new cv::MatND[x_dim * y_dim];
+  if(!baseSubVHists) std::cout << "LEAGUEIMAGEANALYZER ERROR: Ran out of memory -- baseSubVHists" << std::endl;
 
   for (auto& pair : *db) {
     if (championHints.size() != 0 && std::find(championHints.begin(), championHints.end(), pair.second->shortName) == championHints.end()) {
@@ -274,16 +283,16 @@ std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::
     championMatch = "";
   }
 
-  if (filterSubImages) delete[] filterSubImages;
-  if (filterSubImagesNoRed) delete[] filterSubImagesNoRed;
-  if (filterSubHSHists) delete[] filterSubHSHists;
-  if (filterSubHSHistNoRed) delete[] filterSubHSHistNoRed;
-  if (filterSubVHists) delete[] filterSubVHists;
-  if (baseSubImages) delete[] baseSubImages;
-  if (baseSubHSHists) delete[] baseSubHSHists;
-  if (baseSubVHists) delete[] baseSubVHists;
-  if (baseSubImagesNoRed) delete[] baseSubImagesNoRed;
-  if (baseSubHSHistsNoRed) delete[] baseSubHSHistsNoRed;
+  delete[] filterSubImages;
+  delete[] filterSubImagesNoRed;
+  delete[] filterSubHSHists;
+  delete[] filterSubHSHistNoRed;
+  delete[] filterSubVHists;
+  delete[] baseSubImages;
+  delete[] baseSubHSHists;
+  delete[] baseSubVHists;
+  delete[] baseSubImagesNoRed;
+  delete[] baseSubHSHistsNoRed;
 
   return championMatch;
 }

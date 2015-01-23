@@ -190,7 +190,6 @@ std::string LeagueVideoAnalyzer::ParseJSON() {
   char* retChar = cJSON_PrintUnformatted(newJson);
   cJSON_Delete(newJson);
   std::string newRet(retChar);
-  if (retChar)
-    delete[] retChar;
+  delete[] retChar;
   return newRet;
 }
