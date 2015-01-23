@@ -19,20 +19,24 @@ public:
   T value;
 };
 
-typedef std::map<std::string, std::shared_ptr<Data> > GenericDataStore;
+template<typename K>
+using TGenericDataStore = std::unordered_map<K, std::shared_ptr<Data>>;
+using GenericDataStore = TGenericDataStore<std::string>;
 
-inline bool DataExists(std::shared_ptr<GenericDataStore> inStore, const std::string& key) {
+
+template<typename K = std::string>
+inline bool DataExists(std::shared_ptr<TGenericDataStore<K>> inStore, const K& key) {
   return (inStore->find(key) != inStore->end());
 }
 
-template<typename T>
-inline T RetrieveData(std::shared_ptr<GenericDataStore> inStore, const std::string& key) {
+template<typename T,typename K = std::string>
+inline T RetrieveData(std::shared_ptr<TGenericDataStore<K>> inStore, const K& key) {
   return std::static_pointer_cast<GenericData<T>>((*inStore)[key])->value;
 }
 
-
 template<typename T>
 inline bool IsValid(T t) {
+  (void)t;
   return true;
 }
 

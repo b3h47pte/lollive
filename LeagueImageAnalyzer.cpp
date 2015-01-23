@@ -495,8 +495,8 @@ std::shared_ptr<MapPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
     // and the size that we would expect them to exist at, we try to find it anywhere on the minibar.
     std::vector<std::string> relevantChampions;
     cv::Point outputRect;
-    PtrLeagueTeamData bt = RetrieveData<PtrLeagueTeamData>(mData, "BlueTeam");
-    PtrLeagueTeamData pt = RetrieveData<PtrLeagueTeamData>(mData, "PurpleTeam");
+    PtrLeagueTeamData bt = RetrieveData<PtrLeagueTeamData>(mData, std::string("BlueTeam"));
+    PtrLeagueTeamData pt = RetrieveData<PtrLeagueTeamData>(mData, std::string("PurpleTeam"));
     for (int i = 0; i < 5; ++i) {
       relevantChampions.push_back(bt->players[i]->champion);
       relevantChampions.push_back(pt->players[i]->champion);

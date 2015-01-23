@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <memory>
 #include <map>
+#include <unordered_map>
 #include <vector>
 #include "ConfigManager.h"
 
