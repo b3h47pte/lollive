@@ -23,7 +23,7 @@
  */
 class VideoAnalyzer {
 public:
-  VideoAnalyzer();
+  VideoAnalyzer(const std::string& configPath, bool isRemoteConfigPath);
   virtual ~VideoAnalyzer();
 
   // Callback function to notify us about a new frame
@@ -34,7 +34,8 @@ public:
   virtual std::string ParseJSON() = 0;
 
 protected:
-  virtual std::shared_ptr<class ImageAnalyzer> CreateImageAnalyzer(std::string& path) = 0;
+  virtual std::shared_ptr<class ImageAnalyzer> CreateImageAnalyzer(std::string& path, const std::string& configPath) = 0;
+  virtual void LoadImagePropertyFile() = 0;
 
   // Must have mDataCV locked before calling this.
   virtual void PostCreateImageAnalyzer(std::shared_ptr<class ImageAnalyzer> img) = 0;
@@ -58,6 +59,12 @@ protected:
 
   // Cached data in JSON format. Updated whenever mData is updated.
   std::string mDataJSON;
+
+  // Image Properties (These are the various things that we look for on the image).
+  std::shared_ptr<std::unordered_map<std::string, T_EMPTY>> relevantProperties;
+
+private:
+  std::string configPath;
 };
 
 #endif

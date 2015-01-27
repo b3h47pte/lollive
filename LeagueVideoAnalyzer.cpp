@@ -4,8 +4,8 @@
 #include "LeagueTeamData.h"
 #include "cjson/cJSON.h"
 
-LeagueVideoAnalyzer::LeagueVideoAnalyzer() : continuousInvalidFrameCount(0), isMatchOver(false), isDraftPhase(false) {
-
+LeagueVideoAnalyzer::LeagueVideoAnalyzer(const std::string& configPath, bool isRemoteConfigPath) : 
+  VideoAnalyzer(configPath, isRemoteConfigPath), continuousInvalidFrameCount(0), isMatchOver(false), isDraftPhase(false) {
 }
 
 LeagueVideoAnalyzer::~LeagueVideoAnalyzer() {
@@ -192,4 +192,33 @@ std::string LeagueVideoAnalyzer::ParseJSON() {
   std::string newRet(retChar);
   delete[] retChar;
   return newRet;
+}
+
+std::shared_ptr<class ImageAnalyzer> LeagueVideoAnalyzer::CreateImageAnalyzer(std::string& path, const std::string& configPath) {
+  return std::shared_ptr<ImageAnalyzer>(new LeagueImageAnalyzer(path, configPath, relevantProperties));
+}
+
+/*
+ * Use the hint system to speed up the image analysis process by 
+ * telling the image analyzer who all the champions are.
+ */
+void LeagueVideoAnalyzer::PostCreateImageAnalyzer(std::shared_ptr<class ImageAnalyzer> img) {
+  if (!mData) {
+    return; 
+  }
+
+  std::string teams[] = { "BlueTeam", "PurpleTeam" };
+  for (auto& team : teams) {
+    PtrLeagueTeamData t = RetrieveData<PtrLeagueTeamData>(mData, team);
+    for (int i = 0; i < 5; ++i) {
+      PtrLeaguePlayerData p = t->players[i];
+      std::string hintKey = CreateLeagueChampionHint(i, t->team);
+      img->SetHint(hintKey, p->champion);
+    }
+  }
+}
+
+void LeagueVideoAnalyzer::
+LoadImagePropertyFile() {
+
 }

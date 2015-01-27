@@ -1,7 +1,6 @@
 #include "Dispatch.h"
 #include "VideoAnalyzer.h"
-#include "LeagueSpectatorVideoAnalyzer.h"
-#include "LeagueLCSVideoAnalyzer.h"
+#include "LeagueVideoAnalyzer.h"
 #include "VideoFetcher.h"
 #include "TestVideoFetch.h"
 #include <functional>
@@ -26,7 +25,7 @@ Dispatch::~Dispatch() {
  * 
  * Otherwise, return JSON describing the game's state.
  */
-std::string Dispatch::GetJSONResponse(const std::string& game, const std::string& mode, const std::string& url, bool bIsDebug) {
+std::string Dispatch::GetJSONResponse(const std::string& game, const std::string& configPath, const std::string& url, bool bIsDebug) {
   bool bJustMade = false;
   std::shared_ptr<DispatchObject> dispatchObj;
   mMappingMutex.lock();
@@ -37,7 +36,7 @@ std::string Dispatch::GetJSONResponse(const std::string& game, const std::string
     bJustMade = true;
     std::shared_ptr<DispatchObject> newObj(new DispatchObject);
     mMapping[url] = newObj;
-    std::thread newThread = std::thread(std::bind(&Dispatch::Thread_StartNewDispatch, this, newObj, game, mode, url, bIsDebug));
+    std::thread newThread = std::thread(std::bind(&Dispatch::Thread_StartNewDispatch, this, newObj, game, configPath, url, bIsDebug));
     newThread.detach();
   }
   mMappingMutex.unlock();
@@ -51,9 +50,9 @@ std::string Dispatch::GetJSONResponse(const std::string& game, const std::string
   return dispatchObj->mAnalyze->GetCurrentDataJSON();
 }
 
-void Dispatch::Thread_StartNewDispatch(std::shared_ptr<DispatchObject> newObj, std::string& game, std::string& mode, std::string& url, bool bIsDebug) {
-  newObj->mAnalyze = CreateAnalyzer(game, mode);
-  newObj->mFetch = CreateVideoFetcher(url, game, mode, std::bind(&VideoAnalyzer::NotifyNewFrame, newObj->mAnalyze,
+void Dispatch::Thread_StartNewDispatch(std::shared_ptr<DispatchObject> newObj, std::string& game, std::string& configPath, std::string& url, bool bIsDebug) {
+  newObj->mAnalyze = CreateAnalyzer(game, configPath, bIsDebug);
+  newObj->mFetch = CreateVideoFetcher(url, game, configPath, std::bind(&VideoAnalyzer::NotifyNewFrame, newObj->mAnalyze,
     std::placeholders::_1, std::placeholders::_2), bIsDebug); // This starts the process of analyzing the video so it must be made last.
 
   mMappingMutex.lock();
@@ -61,20 +60,14 @@ void Dispatch::Thread_StartNewDispatch(std::shared_ptr<DispatchObject> newObj, s
   mMappingMutex.unlock();
 }
 
-std::shared_ptr<class VideoAnalyzer> Dispatch::CreateAnalyzer(std::string& game, std::string& mode) {
+std::shared_ptr<class VideoAnalyzer> Dispatch::CreateAnalyzer(std::string& game, std::string& configPath, bool bIsDebug) {
   if (game == "league") {
-    if (mode == "lcs") {
-      return std::shared_ptr<VideoAnalyzer>(new LeagueLCSVideoAnalyzer);
-    } else if (mode == "spec") {
-      return std::shared_ptr<VideoAnalyzer>(new LeagueSpectatorVideoAnalyzer);
-    } else if (mode == "game") {
-      return NULL; // not yet implemented
-    }
+      return std::shared_ptr<VideoAnalyzer>(new LeagueVideoAnalyzer(configPath, !bIsDebug));
   }
   return NULL;
 }
 
-std::shared_ptr<class VideoFetcher> Dispatch::CreateVideoFetcher(std::string& url, std::string& game, std::string& mode, std::function<void(IMAGE_PATH_TYPE, IMAGE_FRAME_COUNT_TYPE)> cb, bool bIsDebug) {
+std::shared_ptr<class VideoFetcher> Dispatch::CreateVideoFetcher(std::string& url, std::string& game, std::string& configPath, std::function<void(IMAGE_PATH_TYPE, IMAGE_FRAME_COUNT_TYPE)> cb, bool bIsDebug) {
   // Get the current date since it'll be part of the ID.
   std::time_t curTime = std::time(NULL);
   struct std::tm* utcTime = std::gmtime(&curTime);
@@ -83,7 +76,7 @@ std::shared_ptr<class VideoFetcher> Dispatch::CreateVideoFetcher(std::string& ur
   std::string timeStr(buffer);
 
   // Create a unique ID for this game.
-  std::string id = timeStr + "-" + game + "-" + mode;
+  std::string id = timeStr + "-" + game;
   std::shared_ptr<VideoFetcher> newFetch;
   if (!bIsDebug) {
     newFetch = std::shared_ptr<VideoFetcher>(new VideoFetcher(id, url, cb));

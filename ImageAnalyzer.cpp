@@ -10,12 +10,27 @@
 std::string ImageAnalyzer::EnglishIdent = "eng";
 std::string ImageAnalyzer::LeagueIdent = "lol";
 
-ImageAnalyzer::ImageAnalyzer(IMAGE_PATH_TYPE ImagePath): bIsFinished(false), mImagePath(ImagePath), mData(new GenericDataStore) {
+ImageAnalyzer::ImageAnalyzer(IMAGE_PATH_TYPE ImagePath, const std::string& configPath, std::shared_ptr<std::unordered_map<std::string, T_EMPTY>> relevantProperties):
+  configFilename(configPath), relevantProperties(relevantProperties), bIsFinished(false), mImagePath(ImagePath), mData(new GenericDataStore) {
   // Load image immediately
   mImage = cv::imread(mImagePath, cv::IMREAD_UNCHANGED);
+
+  // Determine which properties actually exist
+  for(auto& kv : *relevantProperties) {
+    isPropertyUsed[kv.first] = ConfigManager::Get()->Exists(configFilename, "Default", kv.first);
+  }
 }
 
 ImageAnalyzer::~ImageAnalyzer() {
+}
+
+bool ImageAnalyzer::
+GetPropertyValue(const std::string& key, std::string& outValue) {
+  if(isPropertyUsed.find(key) == isPropertyUsed.end() || !isPropertyUsed[key]) {
+    return false;
+  }
+  outValue = ConfigManager::Get()->GetStringFromINI(configFilename, "Default", key, "");
+  return true;
 }
 
 void ImageAnalyzer::ShowImage(cv::Mat& image) {

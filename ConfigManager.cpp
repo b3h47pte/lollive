@@ -24,6 +24,29 @@ ConfigManager::~ConfigManager() {
 
 }
 
+bool ConfigManager::
+Exists(const std::string& fileName, const std::string& section, const std::string& name) {
+  if (mINIMapping.find(fileName) == mINIMapping.end()) {
+    return false;
+  }
+  return mINIMapping[fileName]->Exists(section, name);
+}
+
+void ConfigManager::
+LoadExternalConfig(const std::string& filename, bool isExternalFile) {
+  if(filename == CONFIG_GENERAL_FILENAME || filename == CONFIG_LEAGUE_FILENAME) {
+    std::cout << "ERROR: Load External Config has a filename conflict." << std::endl;
+    return;
+  }
+
+  if(mINIMapping.find(filename) != mINIMapping.end()) {
+    return;
+  }
+
+  std::shared_ptr<INIReader> reader = std::shared_ptr<INIReader>(new INIReader(filename));
+  mINIMapping[filename] = reader;
+}
+
 /*
  * Perform a string concatenation between the LLLDB_DIR environment variable, the config file directory and the 
  * filename.

@@ -18,6 +18,12 @@ int INIReader::ParseError()
     return _error;
 }
 
+bool INIReader::
+Exists(std::string section, std::string name) {
+  string key = MakeKey(section, name);
+  return (_values.find(key) != _values.end());
+}
+
 string INIReader::Get(string section, string name, string default_value)
 {
     string key = MakeKey(section, name);

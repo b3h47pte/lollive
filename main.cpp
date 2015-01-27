@@ -1,8 +1,9 @@
-#include "LeagueLCSImageAnalyzer.h"
+#include "common.h"
+#include "LeagueImageAnalyzer.h"
 #include "WebFrontend.h"
 #include "VideoFetcher.h"
 #include "LeagueItemDatabase.h"
-#include "common.h"
+#include "PropertyManager.h"
 
 void test(IMAGE_PATH_TYPE t, IMAGE_FRAME_COUNT_TYPE t1) {
 
@@ -21,7 +22,7 @@ int main() {
 
   //std::shared_ptr<const LeagueItemDatabase> db = LeagueItemDatabase::Get();
  
-  LeagueLCSImageAnalyzer* img = new LeagueLCSImageAnalyzer(path1);
+  LeagueImageAnalyzer* img = new LeagueImageAnalyzer(path1, "Config/League/lcs.ini", PropertyManager::Get()->GetProperties(EGI_League));
   img->Analyze();
   
 //  LeagueSpectatorImageAnalyzer* img = new LeagueSpectatorImageAnalyzer(path2);

@@ -30,7 +30,7 @@ public:
   ~Dispatch();
 
   // Get's the JSON response for the specified request.
-  std::string GetJSONResponse(const std::string& game, const std::string& mode, const std::string& url, bool bIsDebug);
+  std::string GetJSONResponse(const std::string& game, const std::string& configPath, const std::string& url, bool bIsDebug);
 
   friend class WebFrontend;
 protected:
@@ -44,13 +44,13 @@ private:
   std::map < std::string, std::shared_ptr<DispatchObject>> mMapping;
 
   // Helper function to create the right analyzer
-  std::shared_ptr<class VideoAnalyzer> CreateAnalyzer(std::string& game, std::string& mode);
+  std::shared_ptr<class VideoAnalyzer> CreateAnalyzer(std::string& game, std::string& configPath, bool bIsDebug);
 
   // Helper function to create the video fetcher. This also starts the process of pulling the video.
-  std::shared_ptr<class VideoFetcher> CreateVideoFetcher(std::string& url, std::string& game, std::string& mode, std::function<void(IMAGE_PATH_TYPE, IMAGE_FRAME_COUNT_TYPE)> cb, bool bIsDebug);
+  std::shared_ptr<class VideoFetcher> CreateVideoFetcher(std::string& url, std::string& game, std::string& configPath, std::function<void(IMAGE_PATH_TYPE, IMAGE_FRAME_COUNT_TYPE)> cb, bool bIsDebug);
 
   // Helper function to spin up a thread to begin the video analysis
-  void Thread_StartNewDispatch(std::shared_ptr<DispatchObject> newObj, std::string& game, std::string& mode, std::string& url, bool bIsDebug);
+  void Thread_StartNewDispatch(std::shared_ptr<DispatchObject> newObj, std::string& game, std::string& configPath, std::string& url, bool bIsDebug);
 
   // Config File Constants (Found in general.ini)
   const std::string DispatchSection = "Dispatch";

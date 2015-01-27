@@ -10,8 +10,10 @@
  */
 class LeagueVideoAnalyzer: public VideoAnalyzer {
 public:
-  LeagueVideoAnalyzer();
+  LeagueVideoAnalyzer(const std::string& configPath, bool isRemoteConfigPath);
   virtual ~LeagueVideoAnalyzer();
+
+  static std::string LEAGUE_PROPERTY_FILENAME;
 protected:
   // The generalized league video analyzer should be able to do some of the update itself
   // since some properties are common to all league games.
@@ -21,6 +23,11 @@ protected:
   virtual std::string ParseJSON();
 
 protected:
+  virtual std::shared_ptr<class ImageAnalyzer> CreateImageAnalyzer(std::string& path, const std::string& configPath);
+  virtual void PostCreateImageAnalyzer(std::shared_ptr<class ImageAnalyzer> img);
+
+  virtual void LoadImagePropertyFile();
+
   // Need to be able to determine when the match is over. I do this by checking for a sequence of invalid frames.
   // When the match is over, also determine who the winning team is.
   int continuousInvalidFrameCount;

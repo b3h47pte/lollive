@@ -22,11 +22,15 @@ public:
 
   static std::shared_ptr<ConfigManager> Get();
 
+  void LoadExternalConfig(const std::string& filename, bool isExternalFile);
+
   // Generic Accessor that make it easier for us to use macros to define variables that will be found in the config file
   template<typename T>
   inline T GetFromINI(const std::string& fileName, const std::string& section, const std::string& name, const T defaultValue) {
     return GetGenericFromINI<T>(fileName, section, name, defaultValue); 
   }
+
+  bool Exists(const std::string& fileName, const std::string& section, const std::string& name);
 
   // Accessor functions to get certain values in the config file. These are simple wraps over the INIReader class.
   // This config file must have been loaded already

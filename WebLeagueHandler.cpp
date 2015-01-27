@@ -23,9 +23,7 @@ bool WebLeagueHandler::handleGet(CivetServer *server, struct mg_connection *conn
 
   // Make sure we specified a valid mode
   if (inMode == "lcs") {
-
   } else if (inMode == "spec") {
-
   } else if (inMode == "game") {
     return false; // not yet implemented
   } else {
@@ -47,6 +45,5 @@ bool WebLeagueHandler::handleGet(CivetServer *server, struct mg_connection *conn
   mg_printf(conn, ds->GetJSONResponse(std::string("league"), inMode, inStream, false).c_str());
 #endif
   
-
   return true;
 }

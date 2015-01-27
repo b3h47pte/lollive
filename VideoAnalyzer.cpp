@@ -1,8 +1,11 @@
 #include "VideoAnalyzer.h"
 #include "ImageAnalyzer.h"
+#include "ConfigManager.h"
 
-VideoAnalyzer::VideoAnalyzer() :mFrameCount(0), mDataLock(mDataMutex), mData(NULL) {
-
+VideoAnalyzer::VideoAnalyzer(const std::string& configPath, bool isRemoteConfigPath) :
+  mFrameCount(0), mDataLock(mDataMutex), mData(NULL), configPath(configPath) {
+    ConfigManager::Get()->LoadExternalConfig(configPath, isRemoteConfigPath);
+    LoadImagePropertyFile();
 }
 
 VideoAnalyzer::~VideoAnalyzer() {
@@ -14,7 +17,7 @@ VideoAnalyzer::~VideoAnalyzer() {
  * Leave what happens to the data up to the subclasses.
  */
 void VideoAnalyzer::NotifyNewFrame(IMAGE_PATH_TYPE path, IMAGE_FRAME_COUNT_TYPE frame) {
-  std::shared_ptr<class ImageAnalyzer> imgAnalyzer = CreateImageAnalyzer(path);
+  std::shared_ptr<class ImageAnalyzer> imgAnalyzer = CreateImageAnalyzer(path, configPath);
   mDataCV.wait(mDataLock, [&]() {return mFrameCount == frame; });
   PostCreateImageAnalyzer(imgAnalyzer);
   try {
@@ -35,3 +38,4 @@ void VideoAnalyzer::NotifyNewFrame(IMAGE_PATH_TYPE path, IMAGE_FRAME_COUNT_TYPE 
   ++mFrameCount;
   mDataCV.notify_all();  
 }
+

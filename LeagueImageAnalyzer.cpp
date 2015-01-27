@@ -10,7 +10,8 @@
 #include "LeagueItemData.h"
 #include "LeagueEventDatabase.h"
 
-LeagueImageAnalyzer::LeagueImageAnalyzer(IMAGE_PATH_TYPE ImagePath): ImageAnalyzer(ImagePath) {
+LeagueImageAnalyzer::LeagueImageAnalyzer(IMAGE_PATH_TYPE ImagePath, const std::string& configPath, std::shared_ptr<std::unordered_map<std::string, T_EMPTY>> relevantProperties):
+  ImageAnalyzer(ImagePath, configPath, relevantProperties) {
   ChampionDatabase = LeagueChampionDatabase::Get();
   ItemDatabase = LeagueItemDatabase::Get();
 
@@ -401,7 +402,7 @@ std::shared_ptr<MapPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
     cv::Point killIconLocation;
     // Determine which team performed this action based on the background color
     ELeagueTeams instigatorTeam = ELT_UNKNOWN;
-    if (bgColor[GetMinibarBackgroundAllyChannel()] > bgColor[GetMinibarBackgroundEnemeyChannel()]) {
+    if (bgColor[GetMinibarBackgroundAllyChannel()] > bgColor[GetMinibarBackgroundEnemyChannel()]) {
       // Green = Blue Team
       instigatorTeam = ELT_BLUE;
     } else {

@@ -5,6 +5,7 @@
 #include "opencv2/core.hpp"
 #include "tesseract/baseapi.h"
 #include "Data.h"
+#include "ConfigManager.h"
 #include <mutex>
 
 /*
@@ -18,7 +19,7 @@
  */
 class ImageAnalyzer {
 public:
-  ImageAnalyzer(IMAGE_PATH_TYPE ImagePath);
+  ImageAnalyzer(IMAGE_PATH_TYPE ImagePath, const std::string& configPath, std::shared_ptr<std::unordered_map<std::string, T_EMPTY>> relevantProperties);
   virtual ~ImageAnalyzer();
 
   // Starts Analysis of the image. 
@@ -46,7 +47,25 @@ public:
   // Hint System. Only strings can be used here.
   void SetHint(std::string& key, std::string& value) { mHints[key] = value; }
 
+  // Game Identifier
+  virtual EGameId GetGameId() const = 0;
+
 protected:
+  std::string configFilename;
+  std::shared_ptr<std::unordered_map<std::string, T_EMPTY>> relevantProperties;
+  std::unordered_map<std::string, bool> isPropertyUsed;
+
+  bool GetPropertyValue(const std::string& key, std::string& outValue);
+
+  template<typename T>
+  void GetCastedPropertyValue(const std::string& key, T& outValue, std::function<T(const std::string&)> convert) {
+    std::string property;
+    bool found = GetPropertyValue(key, property);
+    if (found) {
+      outValue = convert(property);
+    }
+  }
+
   // Set to true when we are done analyzing the image
   bool bIsFinished;
 
