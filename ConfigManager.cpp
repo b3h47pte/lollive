@@ -1,4 +1,6 @@
 #include "ConfigManager.h"
+#include "URLFetch.h"
+#include <stdio.h>
 
 std::string ConfigManager::CONFIG_FILE_DIRECTORY = "Config/";
 // Some global constants for easy access to configurations
@@ -43,7 +45,19 @@ LoadExternalConfig(const std::string& filename, bool isExternalFile) {
     return;
   }
 
-  std::shared_ptr<INIReader> reader = std::shared_ptr<INIReader>(new INIReader(filename));
+  std::shared_ptr<INIReader> reader;
+  if(!isExternalFile) {
+    reader = std::shared_ptr<INIReader>(new INIReader(filename));
+  }
+  else {
+    // Download external file and use it for the INI Reader. -- This is a temporary file that gets deleted afterwards.
+    FILE* externalConfig = tmpfile();
+    std::string text;
+    DownloadTextFile(filename, text);
+    fprintf(externalConfig, text.c_str());
+    reader = std::shared_ptr<INIReader>(new INIReader(externalConfig));
+    fclose(externalConfig);
+  }
   mINIMapping[filename] = reader;
 }
 

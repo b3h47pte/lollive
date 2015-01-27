@@ -35,7 +35,7 @@ public:
 
 protected:
   virtual std::shared_ptr<class ImageAnalyzer> CreateImageAnalyzer(std::string& path, const std::string& configPath) = 0;
-  virtual void LoadImagePropertyFile() = 0;
+  virtual void LoadImagePropertyFile() {}
 
   // Must have mDataCV locked before calling this.
   virtual void PostCreateImageAnalyzer(std::shared_ptr<class ImageAnalyzer> img) = 0;

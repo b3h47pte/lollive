@@ -11,6 +11,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <stdio.h>
 
 // Read an INI file into easy-to-access name/value pairs. (Note that I've gone
 // for simplicity here rather than speed, but it should be pretty decent.)
@@ -20,6 +21,9 @@ public:
     // Construct INIReader and parse given filename. See ini.h for more info
     // about the parsing.
     INIReader(std::string filename);
+
+    // RBD - Construct INIReader with FILE*
+    INIReader(FILE* file);
 
     // Return the result of ini_parse(), i.e., 0 on success, line number of
     // first error on parse error, or -1 on file open error.

@@ -1,8 +1,10 @@
 import copy 
+import subprocess
+
 env = Environment(CC = 'gcc', 
 		CXX = 'g++',
 		CXXFLAGS = ['-std=c++11'],
-    CPPFLAGS = ['-Wall', '-Wno-unknown-pragmas', '-Wno-deprecated-register'])
+    CPPFLAGS = ['-Wall', '-Wno-unknown-pragmas', '-Wno-deprecated-register', '-Wno-format-security'])
 
 if env['PLATFORM'] == 'darwin':
   env.Append(CPPPATH = ['/Library/Frameworks/GStreamer.framework/Versions/1.0/Headers'])
@@ -22,11 +24,24 @@ else:
             'tesseract'])
   env.Append(LIBPATH = ['/usr/lib64', '/usr/local/lib'])
 
+# CURL Paramters
+curlCFlags = subprocess.check_output(["curl-config", "--cflags"])
+env.Append(CPPPATH = curlCFlags.split())
+
+curlLibFlags = subprocess.check_output(["curl-config", "--libs"])
+curlLibFlags = curlLibFlags.split()
+for lib in curlLibFlags:
+  if lib[1] == 'L':
+    env.Append(LIBPATH = [lib[2:]])
+  elif lib[1] == 'l':
+    env.Append(LIBS = [lib[2:]])
+
 envDebug = env.Clone()
 
 # Environment specific parameters
 env.Append(CPPFLAGS = ['-O3'])
 envDebug.Append(CPPFLAGS = ['-g', '-O0'])
+
 
 doDebug = ARGUMENTS.get('debug',0)
 

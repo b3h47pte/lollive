@@ -13,6 +13,11 @@ INIReader::INIReader(string filename)
     _error = ini_parse(filename.c_str(), ValueHandler, this);
 }
 
+INIReader::INIReader(FILE* file)
+{
+    _error = ini_parse_file(file, ValueHandler, this);
+}
+
 int INIReader::ParseError()
 {
     return _error;
