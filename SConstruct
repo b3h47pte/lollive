@@ -4,7 +4,6 @@ env = Environment(CC = 'gcc',
 		CXXFLAGS = ['-std=c++11'],
     CPPFLAGS = ['-Wall', '-Wno-unknown-pragmas', '-Wno-deprecated-register'])
 
-print env['PLATFORM']
 if env['PLATFORM'] == 'darwin':
   env.Append(CPPPATH = ['/Library/Frameworks/GStreamer.framework/Versions/1.0/Headers'])
   env.Append(LIBS = ['dl', 'gstreamer-1.0', 'gobject-2.0', 'glib-2.0',
