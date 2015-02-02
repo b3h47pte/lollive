@@ -7,7 +7,6 @@ def ParseCPPFlags(env, flagString):
 def ParseLibFlags(env, flagString):
   flagString = flagString.split()
   for lib in flagString:
-    print lib
     if lib[1] == 'L':
       env.Append(LIBPATH = [lib[2:]])
     elif lib[1] == 'l':
