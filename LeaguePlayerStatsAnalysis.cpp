@@ -84,7 +84,11 @@ GetPlayerChampLevelSection(ELeagueTeams team, uint idx) {
  */
 cv::Rect LeagueImageAnalyzer::GetPlayerChampionSection(uint idx, ELeagueTeams team) {
   MultiRectangle rect;
-  GetCastedPropertyValue<MultiRectangle>((team == ELT_BLUE) ? LEAGUE_PLAYER_CHAMP_IMAGE_BLUE : LEAGUE_PLAYER_CHAMP_IMAGE_RED , rect, CreateMultiRectFromString);
+  if (GetIsDraftBan()) {
+    GetCastedPropertyValue<MultiRectangle>((team == ELT_BLUE) ? LEAGUE_DRAFT_PICK_CHAMPIONS_BLUE : LEAGUE_DRAFT_PICK_CHAMPIONS_RED, rect, CreateMultiRectFromString);
+  } else {
+    GetCastedPropertyValue<MultiRectangle>((team == ELT_BLUE) ? LEAGUE_PLAYER_CHAMP_IMAGE_BLUE : LEAGUE_PLAYER_CHAMP_IMAGE_RED , rect, CreateMultiRectFromString);
+  }
   return rect.GetRectangle(idx);
 }
 
