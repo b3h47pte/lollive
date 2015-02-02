@@ -1,9 +1,10 @@
 #include "PropertyManager.h"
+#include "FileUtility.h"
 #include <iostream>
 #include <fstream>
 
 PropertyManager::PropertyManager() {
-  LoadProperties(EGI_League, PROPERTY_LEAGUE_FILENAME);
+  LoadProperties(EGI_League, PROPERTY_DIRECTORY + "/" + PROPERTY_LEAGUE_FILENAME);
 }
 
 PropertyManager::~PropertyManager() {
@@ -25,7 +26,7 @@ LoadProperties(EGameId id, const std::string& filename) {
     gameProperties[id] = std::shared_ptr<std::unordered_map<std::string, T_EMPTY>>(new std::unordered_map<std::string, T_EMPTY>);
   }
 
-  std::ifstream propertyFile(filename);
+  std::ifstream propertyFile(GetRelativeFilePath(filename));
   if(!propertyFile.is_open()) {
     std::cout << "ERROR: Unable to open properties file." << std::endl;
     return;

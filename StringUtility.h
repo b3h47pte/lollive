@@ -3,6 +3,7 @@
 #define _STRINGUTILITY_H
 
 #include "common.h"
+#include <algorithm>
 
 inline std::vector<std::string> SplitString(const std::string& input, char delimiter = ' ') {
   std::vector<std::string> sections;
@@ -14,6 +15,13 @@ inline std::vector<std::string> SplitString(const std::string& input, char delim
     previousPosition = position;
     position = input.find(delimiter, position + 1);
   }
+
+  std::string lastSection = input.substr(previousPosition);
+  std::remove_if(lastSection.begin(), lastSection.end(), [](char c) {return c == ' ';});
+  if (!lastSection.empty()) {
+    sections.push_back(lastSection);
+  }
+
   return sections;
 }
 

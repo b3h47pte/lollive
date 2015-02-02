@@ -1,47 +1,44 @@
 import copy 
 import subprocess
 
+def ParseCPPFlags(env, flagString):
+  env.Append(CPPPATH = flagString.split())
+
+def ParseLibFlags(env, flagString):
+  flagString = flagString.split()
+  for lib in flagString:
+    print lib
+    if lib[1] == 'L':
+      env.Append(LIBPATH = [lib[2:]])
+    elif lib[1] == 'l':
+      env.Append(LIBS = [lib[2:]])
+
 env = Environment(CC = 'gcc', 
 		CXX = 'g++',
 		CXXFLAGS = ['-std=c++11'],
     CPPFLAGS = ['-Wall', '-Wno-unknown-pragmas', '-Wno-deprecated-register', '-Wno-format-security'])
 
-if env['PLATFORM'] == 'darwin':
-  env.Append(CPPPATH = ['/Library/Frameworks/GStreamer.framework/Versions/1.0/Headers'])
-  env.Append(LIBS = ['dl', 'gstreamer-1.0', 'gobject-2.0', 'glib-2.0',
-            'opencv_core', 'opencv_highgui', 'opencv_imgproc', 'opencv_imgcodecs',
-            'tesseract'])
-  env.Append(LIBPATH = ['/Library/Frameworks/GStreamer.framework/Versions/1.0/lib'])
-else:
-  env.Append(CPPPATH = ['/usr/include/gstreamer-1.0/', 
-             '/usr/include/glib-2.0',
-            '/usr/lib64/glib-2.0/include',
-            '/usr/include/libxml2',
-            '/usr/local/include',
-            '/usr/include'])
-  env.Append(LIBS = ['dl', 'gstreamer-1.0', 'gobject-2.0', 'glib-2.0',
-            'opencv_core', 'opencv_highgui', 'opencv_imgproc', 'opencv_imgcodecs',
-            'tesseract'])
-  env.Append(LIBPATH = ['/usr/lib64', '/usr/local/lib'])
+env.Append(LIBS = ['dl', 'opencv_core', 'opencv_highgui', 'opencv_imgproc', 'opencv_imgcodecs', 'tesseract'])
 
 # CURL Paramters
 curlCFlags = subprocess.check_output(["curl-config", "--cflags"])
-env.Append(CPPPATH = curlCFlags.split())
+ParseCPPFlags(env, curlCFlags)
 
 curlLibFlags = subprocess.check_output(["curl-config", "--libs"])
-curlLibFlags = curlLibFlags.split()
-for lib in curlLibFlags:
-  if lib[1] == 'L':
-    env.Append(LIBPATH = [lib[2:]])
-  elif lib[1] == 'l':
-    env.Append(LIBS = [lib[2:]])
+ParseLibFlags(env, curlLibFlags)
+
+# GStreamer Parameters
+gstreamerCFlags = subprocess.check_output(["pkg-config", "--cflags", "gstreamer-1.0"])
+ParseCPPFlags(env, gstreamerCFlags)
+
+gstreamerLFlags = subprocess.check_output(["pkg-config", "--libs", "gstreamer-1.0"])
+ParseLibFlags(env, gstreamerLFlags)
 
 envDebug = env.Clone()
 
 # Environment specific parameters
 env.Append(CPPFLAGS = ['-O3'])
 envDebug.Append(CPPFLAGS = ['-g', '-O0'])
-
 
 doDebug = ARGUMENTS.get('debug',0)
 

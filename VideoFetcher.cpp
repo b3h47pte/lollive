@@ -42,9 +42,11 @@ void VideoFetcher::BeginFetch() {
   int suffixId = 0;
 #ifdef _WIN32
   std::wstring stemp = std::wstring(mImagePath.begin(), mImagePath.end());
+  CreateDirectoryW("Images");
   while (!CreateDirectoryW(stemp.c_str(), NULL)) {
 #else
   std::string stemp = std::string(mImagePath.begin(), mImagePath.end());
+  mkdir("Images", 0755);
   while (mkdir(stemp.c_str(), 0755) ) {
 #endif
     ++suffixId;
@@ -79,6 +81,9 @@ std::string VideoFetcher::GetStreamURL() {
     }
   }
   pclose(ls);
+
+  streamUrl.erase(std::remove(streamUrl.begin(), streamUrl.end(), '\r'));
+  streamUrl.erase(std::remove(streamUrl.begin(), streamUrl.end(), '\n'));
   return streamUrl;
 }
 
@@ -158,6 +163,7 @@ bool VideoFetcher::BeginStreamPlayback(std::string& streamUrl) {
   // Start playing the video
   if (gst_element_set_state(pipeline, GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE) {
     // TODO: ERROR
+    std::cout << "ERROR: Could not start playing the video." << std::endl;
     retFlag = false;
     goto cleanup;
   }
@@ -168,7 +174,6 @@ bool VideoFetcher::BeginStreamPlayback(std::string& streamUrl) {
   while (!bComplete) {
     msg = gst_bus_timed_pop_filtered(bus, GST_CLOCK_TIME_NONE, GstMessageType(GST_MESSAGE_ERROR | GST_MESSAGE_EOS | GST_MESSAGE_ELEMENT));
     if (!msg) continue;
-
     switch (GST_MESSAGE_TYPE(msg)) {
     case GST_MESSAGE_ERROR:
       gst_message_parse_error(msg, &err, &debug_info);
