@@ -18,6 +18,9 @@ ImageAnalyzer::ImageAnalyzer(IMAGE_PATH_TYPE ImagePath, const std::string& confi
   // Determine which properties actually exist
   for(auto& kv : *relevantProperties) {
     isPropertyUsed[kv.first] = ConfigManager::Get()->Exists(configFilename, "Default", kv.first);
+    if (!isPropertyUsed[kv.first]) {
+      std::cout << "WARNING: Unused property: " << kv.first << std::endl;
+    }
   }
 }
 
@@ -142,7 +145,14 @@ cv::Mat ImageAnalyzer::FilterImage_Section_Grayscale_BasicThreshold_Resize(cv::M
 
 // Basic OpenCV operations on images.
 cv::Mat ImageAnalyzer::FilterImage_Section(cv::Mat inImage, const cv::Rect& section) {
-  return inImage(section);
+  cv::Rect toUseSection = section;
+  if (section.x + section.width > inImage.cols) {
+    toUseSection.width = inImage.cols - section.x;
+  }
+  if (section.y + section.height > inImage.rows) {
+    toUseSection.height = inImage.rows - section.y;
+  }
+  return inImage(toUseSection);
 }
 
 cv::Mat ImageAnalyzer::FilterImage_Channel(cv::Mat inImage, int channel) {

@@ -35,6 +35,11 @@ public:
 
   virtual EGameId GetGameId() const { return EGI_League; }
 protected:
+  // Because we upscale to 1080p, we need to make sure all the labelled rectangles get transferred over too
+  virtual cv::Rect GetRealRectangle(cv::Rect rect);
+  int originalWidth;
+  int originalHeight;
+
   // See if the image is 1080p prior to scaling
   bool bIs1080p;
 

@@ -48,14 +48,14 @@ GetBansTextSection(ELeagueTeams team) {
   } else {
     GetCastedPropertyValue<cv::Rect>(LEAGUE_DRAFT_BANS_TEXT_RED, output, CreateRectFromString);
   }
-  return output;
+  return GetRealRectangle(output);
 }
 
 cv::Rect LeagueImageAnalyzer::
 GetVersusTextSection() {
   cv::Rect output;
   GetCastedPropertyValue<cv::Rect>(LEAGUE_DRAFT_VERSUS_TEXT, output, CreateRectFromString);
-  return output;
+  return GetRealRectangle(output);
 }
 
 /*
@@ -87,7 +87,7 @@ cv::Rect LeagueImageAnalyzer::
 GetBansSection(ELeagueTeams team, uint idx) {
   MultiRectangle rect;
   GetCastedPropertyValue<MultiRectangle>((team == ELT_BLUE) ? LEAGUE_DRAFT_BANS_CHAMPIONS_BLUE : LEAGUE_DRAFT_BANS_CHAMPIONS_RED, rect, CreateMultiRectFromString);
-  return rect.GetRectangle(idx);
+  return GetRealRectangle(rect.GetRectangle(idx));
 }
 
 /*
@@ -98,7 +98,7 @@ cv::Rect LeagueImageAnalyzer::
 GetBansPercentageSection(ELeagueTeams team, uint idx) {
   MultiRectangle rect;
   GetCastedPropertyValue<MultiRectangle>((team == ELT_BLUE) ? LEAGUE_DRAFT_BANS_PERCENT_BLUE : LEAGUE_DRAFT_BANS_PERCENT_RED, rect, CreateMultiRectFromString);
-  return rect.GetRectangle(idx);
+  return GetRealRectangle(rect.GetRectangle(idx));
 }
 
 

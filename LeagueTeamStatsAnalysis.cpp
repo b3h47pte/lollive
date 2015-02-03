@@ -31,7 +31,7 @@ int LeagueImageAnalyzer::AnalyzeTeamKills(ELeagueTeams team) {
 cv::Rect LeagueImageAnalyzer::GetTeamKillsSection(ELeagueTeams team) {
   cv::Rect rect;
   GetCastedPropertyValue<cv::Rect>((team == ELT_BLUE) ? LEAGUE_TEAM_KILLS_BLUE : LEAGUE_TEAM_KILLS_RED, rect, CreateRectFromString);
-  return rect;
+  return GetRealRectangle(rect);
 }
 
 /*
@@ -75,7 +75,7 @@ int LeagueImageAnalyzer::AnalyzeTeamGold(ELeagueTeams team) {
 cv::Rect LeagueImageAnalyzer::GetTeamGoldSection(ELeagueTeams team) {
   cv::Rect rect;
   GetCastedPropertyValue<cv::Rect>((team == ELT_BLUE) ? LEAGUE_TEAM_GOLD_BLUE : LEAGUE_TEAM_GOLD_RED, rect, CreateRectFromString);
-  return rect;
+  return GetRealRectangle(rect);
 }
 
 /*
@@ -109,7 +109,7 @@ int LeagueImageAnalyzer::AnalyzeTeamTowerKills(ELeagueTeams team) {
 cv::Rect LeagueImageAnalyzer::GetTeamTowerKillSection(ELeagueTeams team) {
   cv::Rect rect;
   GetCastedPropertyValue<cv::Rect>((team == ELT_BLUE) ? LEAGUE_TEAM_TOWERS_BLUE : LEAGUE_TEAM_TOWERS_RED, rect, CreateRectFromString);
-  return rect;
+  return GetRealRectangle(rect);
 }
 
 /*
@@ -131,7 +131,7 @@ int LeagueImageAnalyzer::GetTeamGamesWon(ELeagueTeams team) {
 cv::Rect LeagueImageAnalyzer::GetTeamGamesWonSection(ELeagueTeams team) {
   cv::Rect rect;
   GetCastedPropertyValue<cv::Rect>((team == ELT_BLUE) ? LEAGUE_TEAM_GAMES_BLUE : LEAGUE_TEAM_GAMES_RED, rect, CreateRectFromString);
-  return rect;
+  return GetRealRectangle(rect);
 }
 
 /*
@@ -150,5 +150,5 @@ std::string LeagueImageAnalyzer::GetTeamName(ELeagueTeams team) {
 cv::Rect LeagueImageAnalyzer::GetTeamNameSection(ELeagueTeams team) {
   cv::Rect rect;
   GetCastedPropertyValue<cv::Rect>((team == ELT_BLUE) ? LEAGUE_TEAM_NAME_BLUE : LEAGUE_TEAM_NAME_RED, rect, CreateRectFromString);
-  return rect;
+  return GetRealRectangle(rect);
 }

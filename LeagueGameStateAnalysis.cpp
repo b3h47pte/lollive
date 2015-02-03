@@ -111,7 +111,7 @@ cv::Rect LeagueImageAnalyzer::
 GetMatchTimeSection() {
   cv::Rect output;
   GetCastedPropertyValue<cv::Rect>(LEAGUE_GAMESTATE_MATCH_TIME, output, CreateRectFromString);
-  return output;
+  return GetRealRectangle(output);
 }
 
 /*
@@ -155,7 +155,7 @@ void LeagueImageAnalyzer::AnalyzeMapPosition(double& xPos, double& yPos) {
 cv::Rect LeagueImageAnalyzer::GetMapSection() {
   cv::Rect output;
   GetCastedPropertyValue<cv::Rect>(LEAGUE_GAMESTATE_MAP, output, CreateRectFromString);
-  return output;
+  return GetRealRectangle(output);
 }
 
 

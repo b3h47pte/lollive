@@ -135,6 +135,9 @@ void LeagueItemDatabase::LoadItemDatabaseImage() {
  */
 PtrLeagueItemData LeagueItemDatabase::GetItem(int x, int y) const {
   int idx = y * numImageDim + x;
+  if ((size_t)idx >= mLocationData.size()) {
+    return nullptr;
+  }
   std::string id = mLocationData[idx];
   return mData.at(id);
 }

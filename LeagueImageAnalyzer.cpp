@@ -15,6 +15,8 @@ LeagueImageAnalyzer::LeagueImageAnalyzer(IMAGE_PATH_TYPE ImagePath, const std::s
   ChampionDatabase = LeagueChampionDatabase::Get();
   ItemDatabase = LeagueItemDatabase::Get();
 
+  originalWidth = mImage.cols;
+  originalHeight = mImage.rows;
   bIs1080p = (mImage.cols == 1920 && mImage.rows == 1080);
 
   // Everything is much better in 1080p
@@ -23,6 +25,16 @@ LeagueImageAnalyzer::LeagueImageAnalyzer(IMAGE_PATH_TYPE ImagePath, const std::s
 
 LeagueImageAnalyzer::~LeagueImageAnalyzer() {
 
+}
+
+cv::Rect LeagueImageAnalyzer::
+GetRealRectangle(cv::Rect rect) {
+  if (bIs1080p) return rect;
+  rect.x = ((double)rect.x / originalWidth) * mImage.cols;
+  rect.y = ((double)rect.y / originalHeight) * mImage.rows;
+  rect.width  = ((double)rect.width / originalWidth) * mImage.cols;
+  rect.height  = ((double)rect.height / originalHeight) * mImage.rows;
+  return rect;
 }
 
 /*

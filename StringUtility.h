@@ -10,9 +10,9 @@ inline std::vector<std::string> SplitString(const std::string& input, char delim
   size_t previousPosition = 0;
   size_t position = input.find(delimiter);
   while (position != std::string::npos) {
-    std::string s = input.substr(previousPosition, position);
+    std::string s = input.substr(previousPosition, position - previousPosition);
     sections.push_back(s);
-    previousPosition = position;
+    previousPosition = position + 1;
     position = input.find(delimiter, position + 1);
   }
 

@@ -11,7 +11,7 @@
 // [x] [y] [width] [height]
 inline cv::Rect CreateRectFromString(const std::string& input) {
   std::vector<std::string> components = SplitString(input);
-  if(components.size() != 4) {
+  if(components.size() < 4) {
     std::cout << "ERROR: Invalid string to convert into rect: " << input << std::endl;
     return cv::Rect();
   }
@@ -30,7 +30,7 @@ inline cv::Rect CreateRectFromString(const std::string& input) {
 // Components: [initial rectangle] [x step] [y step] [rectangle count] [row size]
 inline MultiRectangle CreateMultiRectFromString(const std::string& input) {
   std::vector<std::string> components = SplitString(input);
-  if(components.size() != 8) {
+  if(components.size() < 8) {
     std::cout << "ERROR: Invalid string to convert into multi rect: " << input << std::endl;
     return MultiRectangle();
   }

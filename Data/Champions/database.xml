@@ -37,6 +37,10 @@
       <shortname>Ashe</shortname>
     </champion>
     <champion>
+      <name>Azir</name>
+      <shortname>Azir</shortname>
+    </champion>
+    <champion>
       <name>Blitzcrank</name>
       <shortname>Blitzcrank</shortname>
     </champion>
@@ -77,7 +81,7 @@
       <shortname>Draven</shortname>
     </champion>
     <champion>
-      <name>Dr. Mundo</name>
+      <name>DrMundo</name>
       <shortname>DrMundo</shortname>
     </champion>
     <champion>
@@ -145,7 +149,7 @@
       <shortname>Janna</shortname>
     </champion>
     <champion>
-      <name>Jarvan IV</name>
+      <name>JarvanIV</name>
       <shortname>JarvanIV</shortname>
     </champion>
     <champion>
@@ -159,6 +163,10 @@
     <champion>
       <name>Jinx</name>
       <shortname>Jinx</shortname>
+    </champion>
+    <champion>
+      <name>Kalista</name>
+      <shortname>Kalista</shortname>
     </champion>
     <champion>
       <name>Karma</name>
@@ -189,7 +197,7 @@
       <shortname>Khazix</shortname>
     </champion>
     <champion>
-      <name>Kog'Maw</name>
+      <name>KogMaw</name>
       <shortname>KogMaw</shortname>
     </champion>
     <champion>
@@ -197,7 +205,7 @@
       <shortname>Leblanc</shortname>
     </champion>
     <champion>
-      <name>Lee Sin</name>
+      <name>LeeSin</name>
       <shortname>LeeSin</shortname>
     </champion>
     <champion>
@@ -233,15 +241,15 @@
       <shortname>Maokai</shortname>
     </champion>
     <champion>
-      <name>Master Yi</name>
+      <name>MasterYi</name>
       <shortname>MasterYi</shortname>
     </champion>
     <champion>
-      <name>Miss Fortune</name>
+      <name>MissFortune</name>
       <shortname>MissFortune</shortname>
     </champion>
     <champion>
-      <name>Wukong</name>
+      <name>MonkeyKing</name>
       <shortname>MonkeyKing</shortname>
     </champion>
     <champion>
@@ -273,6 +281,10 @@
       <shortname>Nocturne</shortname>
     </champion>
     <champion>
+      <name>None</name>
+      <shortname>None</shortname>
+    </champion>
+    <champion>
       <name>Nunu</name>
       <shortname>Nunu</shortname>
     </champion>
@@ -299,6 +311,10 @@
     <champion>
       <name>Rammus</name>
       <shortname>Rammus</shortname>
+    </champion>
+    <champion>
+      <name>RekSai</name>
+      <shortname>RekSai</shortname>
     </champion>
     <champion>
       <name>Renekton</name>
@@ -397,7 +413,7 @@
       <shortname>Tryndamere</shortname>
     </champion>
     <champion>
-      <name>Twisted Fate</name>
+      <name>TwistedFate</name>
       <shortname>TwistedFate</shortname>
     </champion>
     <champion>
@@ -429,16 +445,24 @@
       <shortname>VelKoz</shortname>
     </champion>
     <champion>
-      <name>Viktor</name>
-      <shortname>Viktor</shortname>
-    </champion>
-    <champion>
       <name>Vi</name>
       <shortname>Vi</shortname>
     </champion>
     <champion>
+      <name>Viktor</name>
+      <shortname>Viktor</shortname>
+    </champion>
+    <champion>
       <name>Vladimir</name>
       <shortname>Vladimir</shortname>
+    </champion>
+    <champion>
+      <name>Voidgate</name>
+      <shortname>Voidgate</shortname>
+    </champion>
+    <champion>
+      <name>Voidspawn</name>
+      <shortname>Voidspawn</shortname>
     </champion>
     <champion>
       <name>Volibear</name>
@@ -453,7 +477,7 @@
       <shortname>Xerath</shortname>
     </champion>
     <champion>
-      <name>Xin Zhao</name>
+      <name>XinZhao</name>
       <shortname>XinZhao</shortname>
     </champion>
     <champion>
@@ -488,5 +512,6 @@
       <name>None</name>
       <shortname>None</shortname>
     </champion>
+
   </champions>
 </database>

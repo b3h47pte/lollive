@@ -45,7 +45,7 @@ std::string LeagueImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagueTeams te
   // Get the champion level. Since there's a possibility of the image being red, go to HSV and just use the 'value.' :)
   if (bIs1080p) {
     cv::Mat hsvFilter;
-    cv::cvtColor(filterImage, hsvFilter, cv::COLOR_BGR2HSV);
+    cv::cvtColor(mImage, hsvFilter, cv::COLOR_BGR2HSV);
     cv::Mat levelImage = FilterImage_Section_Channel_BasicThreshold_Resize(hsvFilter, 
       GetPlayerChampLevelSection(team, idx), 2, 
       GetPlayerChampLevelThreshold(),
@@ -76,7 +76,7 @@ cv::Rect LeagueImageAnalyzer::
 GetPlayerChampLevelSection(ELeagueTeams team, uint idx) {
   MultiRectangle rect;
   GetCastedPropertyValue<MultiRectangle>((team == ELT_BLUE) ? LEAGUE_PLAYER_CHAMP_LEVEL_BLUE : LEAGUE_PLAYER_CHAMP_LEVEL_RED , rect, CreateMultiRectFromString);
-  return rect.GetRectangle(idx);
+  return GetRealRectangle(rect.GetRectangle(idx));
 }
 
 /*
@@ -89,7 +89,7 @@ cv::Rect LeagueImageAnalyzer::GetPlayerChampionSection(uint idx, ELeagueTeams te
   } else {
     GetCastedPropertyValue<MultiRectangle>((team == ELT_BLUE) ? LEAGUE_PLAYER_CHAMP_IMAGE_BLUE : LEAGUE_PLAYER_CHAMP_IMAGE_RED , rect, CreateMultiRectFromString);
   }
-  return rect.GetRectangle(idx);
+  return GetRealRectangle(rect.GetRectangle(idx));
 }
 
 std::string LeagueImageAnalyzer::AnalyzePlayerName(uint idx, ELeagueTeams team) {
@@ -117,7 +117,7 @@ std::string LeagueImageAnalyzer::AnalyzePlayerName(uint idx, ELeagueTeams team) 
 cv::Rect LeagueImageAnalyzer::GetPlayerNameSection(uint idx, ELeagueTeams team) {
   MultiRectangle rect;
   GetCastedPropertyValue<MultiRectangle>((team == ELT_BLUE) ? LEAGUE_PLAYER_NAME_BLUE : LEAGUE_PLAYER_NAME_RED , rect, CreateMultiRectFromString);
-  return rect.GetRectangle(idx);
+  return GetRealRectangle(rect.GetRectangle(idx));
 }
 
 std::string LeagueImageAnalyzer::AnalyzePlayerScore(uint idx, ELeagueTeams team, int* kills, int* deaths, int* assists, int* cs) {
@@ -140,7 +140,6 @@ std::string LeagueImageAnalyzer::AnalyzePlayerScore(uint idx, ELeagueTeams team,
 
   cv::Mat filterImage = FilterImage_Section_Grayscale_BasicThreshold_Resize(mImage,
     GetPlayerKDASection(idx, team), GetPlayerKDAThreshold(), GetPlayerKDAResizeX(), GetPlayerKDAResizeY());
-
   std::string score = GetTextFromImage(filterImage, LeagueIdent, std::string("/0123456789"), tesseract::PSM_SINGLE_BLOCK);
   score = FixScore(score);
   
@@ -175,13 +174,13 @@ std::string LeagueImageAnalyzer::AnalyzePlayerScore(uint idx, ELeagueTeams team,
 cv::Rect LeagueImageAnalyzer::GetPlayerKDASection(uint idx, ELeagueTeams team) {
   MultiRectangle rect;
   GetCastedPropertyValue<MultiRectangle>((team == ELT_BLUE) ? LEAGUE_PLAYER_KDA_BLUE : LEAGUE_PLAYER_KDA_RED , rect, CreateMultiRectFromString);
-  return rect.GetRectangle(idx);
+  return GetRealRectangle(rect.GetRectangle(idx));
 }
 
 cv::Rect LeagueImageAnalyzer::GetPlayerCSSection(uint idx, ELeagueTeams team) {
   MultiRectangle rect;
   GetCastedPropertyValue<MultiRectangle>((team == ELT_BLUE) ? LEAGUE_PLAYER_CS_BLUE : LEAGUE_PLAYER_CS_RED , rect, CreateMultiRectFromString);
-  return rect.GetRectangle(idx);
+  return GetRealRectangle(rect.GetRectangle(idx));
 }
 
 // Basic Assumptions for Correcting the Score 
@@ -193,7 +192,7 @@ cv::Rect LeagueImageAnalyzer::GetPlayerCSSection(uint idx, ELeagueTeams team) {
 
 /*
  * Fixes the score. An invalid score resulting from our recursion will net us an empty string.
- * TODO: Return all possible results?
+ * TODO: Have some model that returns the most likely result.
  */
 std::string LeagueImageAnalyzer::FixScore(std::string inScore) {
   size_t bs1 = inScore.find('/');
