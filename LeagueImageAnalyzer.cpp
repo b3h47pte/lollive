@@ -390,8 +390,6 @@ PtrLeagueEvent LeagueImageAnalyzer::GetAnnouncementEvent() {
 /*
  * The rest of the live events [besides inhibitor kills] will get picked up here.
  * Assume that there is some max number of events at any given time.
- * 
- * TODO: Need to adjust numbers to make sure they work for multiple resolutions.
  */
 std::shared_ptr<MapPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
   std::shared_ptr<MapPtrLeagueEvent> RetArray(new MapPtrLeagueEvent());
@@ -469,7 +467,6 @@ std::shared_ptr<MapPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
       cv::Mat useTargetImg = FilterImage_Resize(targetImg, 
         minibarScaleX, minibarScaleY);
 
-      
       cv::Point objIconLocation;
       double maxVal = TemplateMatching(useTargetImg, filterImage, bgColor, objIconLocation);
       if (maxVal < GetObjectiveIconSobelThreshold()) {

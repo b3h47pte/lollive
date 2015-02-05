@@ -84,7 +84,8 @@ std::string VideoFetcher::GetStreamURL() {
 
   streamUrl.erase(std::remove(streamUrl.begin(), streamUrl.end(), '\r'));
   streamUrl.erase(std::remove(streamUrl.begin(), streamUrl.end(), '\n'));
-  return streamUrl;
+  return mURL;
+//  return streamUrl;
 }
 
 /*

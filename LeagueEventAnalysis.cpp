@@ -20,11 +20,13 @@ cv::Rect LeagueImageAnalyzer::GetMinibarOriginalResolution() {
 }
 
 cv::Rect LeagueImageAnalyzer::GetMinibarObjectiveIconOriginalResolution() {
-  cv::Rect newRect = cv::Rect(0, 0, (int)GetMinibarObjectiveIconTargetX(), (int)GetMinibarObjectiveIconTargetY());
-  return GetRealRectangle(newRect);
+  cv::Rect output;
+  GetCastedPropertyValue<cv::Rect>(LEAGUE_EVENT_MINIBAR_MAIN_ICON, output, CreateRectFromString);
+  return GetRealRectangle(output);
 }
 
 cv::Rect LeagueImageAnalyzer::GetMinibarSupportingIconOriginalResolution() {
-  cv::Rect newRect = cv::Rect(0, 0, (int)GetMinibarSupportingIconTargetX(), (int)GetMinibarSupportingIconTargetY());
-  return GetRealRectangle(newRect);
+  cv::Rect output;
+  GetCastedPropertyValue<cv::Rect>(LEAGUE_EVENT_MINIBAR_SUPPORTING_ICON, output, CreateRectFromString);
+  return GetRealRectangle(output);
 }

@@ -78,7 +78,7 @@ void LeagueChampionDatabase::LoadChampionDatabase(std::string& dir, std::string&
     PtrLeagueChampionData data(new LeagueChampionData);
     data->longName = championNode->first_node("name")->value();
     data->shortName = championNode->first_node("shortname")->value();
-    data->image = cv::imread(envDir + dir + imageDir + data->shortName + mImagePostfix, cv::IMREAD_UNCHANGED);
+    data->image = cv::imread(envDir + dir + imageDir + data->shortName + mImagePostfix);
     mData[data->shortName] = data;
     championNode = championNode->next_sibling("champion");
   }
