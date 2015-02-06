@@ -295,7 +295,7 @@ std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::
   }
 
   if (championMatch == LEAGUE_NO_CHAMPION) {
-    championMatch = "";
+    championMatch = "None";
   }
 
   delete[] filterSubImages;

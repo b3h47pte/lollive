@@ -22,7 +22,7 @@ int main() {
   std::string path3 = "Images/fnc-vs-gmb/frame0.png";
   std::string path4 = "Images/2014-09-01-league-lcs2/frame29.png";
   std::string path5 = "Images/2014-09-01-league-lcs2/frame30.png";
-  std::string path6 = "Images/tip-vs-t8/frame364.png";
+  std::string path6 = "Images/tip-vs-t8/frame129.png";
 
 //  VideoFetcher* vf = new VideoFetcher("fnc-vs-gmb", "http://media-cdn.twitch.tv/store156.media103/archives/2015-1-30/live_user_riotgames_1422640803.flv", test);
 //  VideoFetcher* vf = new VideoFetcher("tsm-vs-tl", "twitch.tv/riotgames", test);
