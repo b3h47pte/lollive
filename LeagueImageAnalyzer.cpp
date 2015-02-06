@@ -109,6 +109,7 @@ bool LeagueImageAnalyzer::Analyze() {
   mDataMutex.unlock();
 
   // At this point we know whether or not this was a valid frame..if so get the map position
+  std::cout << "Is Valid Frame: " << IsValidFrame() << std::endl;
   if (IsValidFrame()) {
     // Camera Location
     AnalyzeMapPosition(mapLocX, mapLocY);
@@ -224,6 +225,7 @@ std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::
     if (championHints.size() != 0 && std::find(championHints.begin(), championHints.end(), pair.second->shortName) == championHints.end()) {
       continue;
     }
+
     // Make this image as close to the input image as possible
     baseImage = FilterImage_Resize(pair.second->image, (float)filterImage.cols / pair.second->image.cols, (float)filterImage.rows / pair.second->image.rows);
     cv::GaussianBlur(baseImage, baseImage, cv::Size(3, 3), 0.0); // Blur the image since the input is probably blurry too.

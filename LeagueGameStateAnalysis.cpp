@@ -27,25 +27,11 @@ bool LeagueImageAnalyzer::IsValidFrame() {
   CHECK_INVALID_INT_COUNT(bt->kills, validItems, totalItems);
   CHECK_INVALID_INT_COUNT(bt->gold, validItems, totalItems);
   CHECK_INVALID_INT_COUNT(bt->towerKills, validItems, totalItems);
-  for (int i = 0; i < 5; ++i) {
-    PtrLeaguePlayerData player = bt->players[i];
-    CHECK_INVALID_INT_COUNT(player->kills, validItems, totalItems);
-    CHECK_INVALID_INT_COUNT(player->deaths, validItems, totalItems);
-    CHECK_INVALID_INT_COUNT(player->assists, validItems, totalItems);
-    CHECK_INVALID_INT_COUNT(player->cs, validItems, totalItems);
-  }
 
   PtrLeagueTeamData pt = RetrieveData<PtrLeagueTeamData>(mData, std::string("PurpleTeam"));
   CHECK_INVALID_INT_COUNT(pt->kills, validItems, totalItems);
   CHECK_INVALID_INT_COUNT(pt->gold, validItems, totalItems);
   CHECK_INVALID_INT_COUNT(pt->towerKills, validItems, totalItems);
-  for (int i = 0; i < 5; ++i) {
-    PtrLeaguePlayerData player = pt->players[i];
-    CHECK_INVALID_INT_COUNT(player->kills, validItems, totalItems);
-    CHECK_INVALID_INT_COUNT(player->deaths, validItems, totalItems);
-    CHECK_INVALID_INT_COUNT(player->assists, validItems, totalItems);
-    CHECK_INVALID_INT_COUNT(player->cs, validItems, totalItems);
-  }
 
   double pass = (double)validItems / totalItems;
   // TODO: Configurable threshold
