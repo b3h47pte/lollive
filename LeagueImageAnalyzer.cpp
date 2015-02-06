@@ -163,7 +163,7 @@ PtrLeaguePlayerData LeagueImageAnalyzer::AnalyzePlayerData(uint idx, ELeagueTeam
  * Optionally, we may provide this function a list of 'hints.' When that is the case, we will only look at champions that are contained within the
  * hints.
  */
-std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::vector<std::string>& championHints, bool& isLowOnHealth, bool& isDead) {
+std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::vector<std::string>& championHints, bool& isLowOnHealth, bool& isDead, bool allowNone) {
   // Split the image into x_dim * y_dim parts (generally want to have ~25 solid pieces to compare).
   int x_dim = GetChampImgSplitDimX();
   int y_dim = GetChampImgSplitDimY();
@@ -223,6 +223,10 @@ std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::
 
   for (auto& pair : *db) {
     if (championHints.size() != 0 && std::find(championHints.begin(), championHints.end(), pair.second->shortName) == championHints.end()) {
+      continue;
+    }
+
+    if (!allowNone && pair.second->shortName == LEAGUE_NO_CHAMPION) {
       continue;
     }
 

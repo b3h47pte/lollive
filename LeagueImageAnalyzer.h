@@ -126,7 +126,7 @@ protected:
   std::shared_ptr<const LeagueItemDatabase> ItemDatabase;
 
   // Utility Function to help us determine who the input champion is
-  std::string FindMatchingChampion(cv::Mat filterImage, std::vector<std::string>& championHints, bool& isLowHealth, bool& isDead);
+  std::string FindMatchingChampion(cv::Mat filterImage, std::vector<std::string>& championHints, bool& isLowHealth, bool& isDead, bool allowNone = true);
   bool ReverseMatchChampion(cv::Mat containerImage, std::string champion, int targetSizeX, int targetSizeY, cv::Point& output);
 
   // Bans
