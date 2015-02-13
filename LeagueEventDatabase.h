@@ -14,10 +14,12 @@
   DECLARE_CONFIG_VARIABLE(PurpleInnerTurretObjective, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Objectives", "")\
   DECLARE_CONFIG_VARIABLE(PurpleInhibTurretObjective, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Objectives", "")\
   DECLARE_CONFIG_VARIABLE(PurpleNexusTurretObjective, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Objectives", "")\
+  DECLARE_CONFIG_VARIABLE(PurpleInhibitor, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Objectives", "")\
   DECLARE_CONFIG_VARIABLE(BlueOuterTurretObjective, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Objectives", "")\
   DECLARE_CONFIG_VARIABLE(BlueInnerTurretObjective, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Objectives", "")\
   DECLARE_CONFIG_VARIABLE(BlueInhibTurretObjective, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Objectives", "")\
   DECLARE_CONFIG_VARIABLE(BlueNexusTurretObjective, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Objectives", "")\
+  DECLARE_CONFIG_VARIABLE(BlueInhibitor, std::string, ConfigManager::CONFIG_LEAGUE_FILENAME, "Objectives", "")\
 
 /*
  * Holds common images for the events.

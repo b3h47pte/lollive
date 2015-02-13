@@ -1,6 +1,9 @@
 #include "LeagueImageAnalyzer.h"
 #include "MultiRectangle.h"
 #include "ConversionUtility.h"
+#include "opencv2/highgui.hpp"
+#include "opencv2/imgproc.hpp"
+#include "opencv2/superres.hpp"
 
 cv::Rect LeagueImageAnalyzer::GetMinibarSection(uint idx) {
   MultiRectangle rect;
@@ -77,9 +80,9 @@ std::shared_ptr<MapPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
   killObjectives[ELKT_KILL] = GetKillObjective();
   killObjectives[ELKT_MULTI] = GetKillStreakObjective();
   killObjectives[ELKT_SHUTDOWN] = GetKillShutdownObjective();
-  std::string targetObjective[10] = { GetDragonObjective(), GetPurpleOuterTurretObjective(), GetBlueOuterTurretObjective(), GetBaronObjective(),
+  std::string targetObjective[12] = { GetDragonObjective(), GetPurpleOuterTurretObjective(), GetBlueOuterTurretObjective(), GetBaronObjective(),
     GetPurpleInnerTurretObjective(), GetBlueInnerTurretObjective(), GetPurpleInhibTurretObjective(), GetBlueInhibTurretObjective(),
-    GetPurpleNexusTurretObjective(), GetBlueNexusTurretObjective() };
+    GetPurpleNexusTurretObjective(), GetBlueNexusTurretObjective(), GetPurpleInhibitor(), GetBlueInhibitor() };
 
   // Do the same event analysis for each event. 
   // Each subclass will tell us where to look for this minibar.
@@ -138,6 +141,7 @@ std::shared_ptr<MapPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
     for (j = 0; j < 10; ++j) {
       // DID WE FIND IT?
       cv::Mat targetImg = LeagueEventDatabase::Get()->GetObjectiveImage(targetObjective[j]);
+      ShowImage(targetImg);
       // Need to resize the image to become the appropriate resolution.
       // We know what size the image is at the original resolution. We know what the current resolution is so we can figure out
       // what we need the size of the objective image.
@@ -174,6 +178,11 @@ std::shared_ptr<MapPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
     case 8: // Purple Nexus Turret
     case 9: // Blue Nexus Turret
       newEvent->EventId = ELEI_TURRET;
+      newEvent->AdditionalInfo = targetObjective[j];
+      break;
+    case 10: // Purple Inhibitor
+    case 11: // Blue Inhibitor
+      newEvent->EventId = ELEI_INHIB;
       newEvent->AdditionalInfo = targetObjective[j];
       break;
     default: // Champion Kill
@@ -228,5 +237,3 @@ std::shared_ptr<MapPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
   }
   return RetArray;
 }
-
-

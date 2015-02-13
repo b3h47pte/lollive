@@ -7,39 +7,47 @@
     </objective>
     <objective>
       <id>baron</id>
-      <image>ChaosTurretWorm_Square.png</image>
+      <image>Baron_Square.png</image>
     </objective>
     <objective>
       <id>purpleOuterTurret</id>
-      <image>ChaosLaneTower_Icon.png</image>
+      <image>Turret_Red_Square.png</image>
     </objective>
     <objective>
       <id>purpleInnerTurret</id>
-      <image>ChaosLaneTower_Icon_C.png</image>
+      <image>Turret_Red_Square.png</image>
     </objective>
     <objective>
       <id>purpleInhibTurret</id>
-      <image>ChaosGateTower_Icon.png</image>
+      <image>Turret_Red_Square.png</image>
     </objective>
     <objective>
       <id>purpleNexusTurret</id>
-      <image>ChaosHqTower_Icon.png</image>
+      <image>Turret_Red_Square.png</image>
+    </objective>
+    <objective>
+      <id>purpleInhibitor</id>
+      <image>Inhibitor_Red_Square.png</image>
     </objective>
     <objective>
       <id>blueOuterTurret</id>
-      <image>OrderLaneTower_Icon.png</image>
+      <image>Turret_Blue_Square.png</image>
     </objective>
     <objective>
       <id>blueInnerTurret</id>
-      <image>OrderLaneTower_Icon_C.png</image>
+      <image>Turret_Blue_Square.png</image>
     </objective>
     <objective>
       <id>blueInhibTurret</id>
-      <image>OrderGateTower_Icon.png</image>
+      <image>Turret_Blue_Square.png</image>
     </objective>
     <objective>
       <id>blueNexusTurret</id>
-      <image>OrderHqTower_Icon.png</image>
+      <image>Turret_Blue_Square.png</image>
+    </objective>
+    <objective>
+      <id>blueInhibitor</id>
+      <image>Inhibitor_Blue_Square.png</image>
     </objective>
     <objective>
       <id>kill</id>
