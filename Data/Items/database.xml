@@ -14,6 +14,10 @@
       <path>2052_Poro_Snack.png</path>
     </item>
     <item>
+      <id>2054</id>
+      <path>2052_Poro_Snack.png</path>
+    </item>
+    <item>
       <id>3166</id>
       <path>3166_Bonetooth_Necklace_Y_1.png</path>
     </item>
@@ -158,6 +162,10 @@
       <path>3460_Asc_Trinket.png</path>
     </item>
     <item>
+      <id>3599</id>
+      <path>3599_KalistaPassiveItem.png</path>
+    </item>
+    <item>
       <id>2003</id>
       <path>2003_Health_Potion.png</path>
     </item>
@@ -186,12 +194,24 @@
       <path>1006_Rejuvenation_Bead.png</path>
     </item>
     <item>
-      <id>2039</id>
-      <path>2039_Potion_of_Brilliance.png</path>
-    </item>
-    <item>
       <id>2047</id>
       <path>2047_OraclesExtract.png</path>
+    </item>
+    <item>
+      <id>3361</id>
+      <path>3361_YellowTrinketPlus.png</path>
+    </item>
+    <item>
+      <id>3362</id>
+      <path>3362_VisionYellowTrinket.png</path>
+    </item>
+    <item>
+      <id>3363</id>
+      <path>3363_OracleRedTrinket.png</path>
+    </item>
+    <item>
+      <id>3364</id>
+      <path>3364_FarseerBlueTrinket.png</path>
     </item>
     <item>
       <id>1029</id>
@@ -202,16 +222,8 @@
       <path>1001_Boots_of_Speed.png</path>
     </item>
     <item>
-      <id>1039</id>
-      <path>1039_Butchers_Machete.png</path>
-    </item>
-    <item>
       <id>2041</id>
       <path>2041_Crystalline_Flask.png</path>
-    </item>
-    <item>
-      <id>2037</id>
-      <path>2037_Potion_of_Giant_Strength.png</path>
     </item>
     <item>
       <id>1036</id>
@@ -238,8 +250,8 @@
       <path>1028_RubyCrystal.png</path>
     </item>
     <item>
-      <id>1033</id>
-      <path>1033_Elementium_Threaded_Cloak.png</path>
+      <id>1039</id>
+      <path>1039_Butchers_Machete.png</path>
     </item>
     <item>
       <id>1051</id>
@@ -252,6 +264,22 @@
     <item>
       <id>1076</id>
       <path>165_Harmony_Ring.png</path>
+    </item>
+    <item>
+      <id>2137</id>
+      <path>2137_ElixirOfRuin.png</path>
+    </item>
+    <item>
+      <id>2138</id>
+      <path>2138_Elixir_of_Iron.png</path>
+    </item>
+    <item>
+      <id>2139</id>
+      <path>2139_Elixir_of_Sorcery.png</path>
+    </item>
+    <item>
+      <id>2140</id>
+      <path>2140_Elixir_of_Wrath.png</path>
     </item>
     <item>
       <id>1052</id>
@@ -278,32 +306,16 @@
       <path>1042_Dagger.png</path>
     </item>
     <item>
-      <id>3361</id>
-      <path>3361_YellowTrinketPlus.png</path>
+      <id>1033</id>
+      <path>1033_Elementium_Threaded_Cloak.png</path>
     </item>
     <item>
-      <id>3362</id>
-      <path>3362_VisionYellowTrinket.png</path>
+      <id>3114</id>
+      <path>3114_Forbidden_Idol.png</path>
     </item>
     <item>
-      <id>3363</id>
-      <path>3363_OracleRedTrinket.png</path>
-    </item>
-    <item>
-      <id>3364</id>
-      <path>3364_FarseerBlueTrinket.png</path>
-    </item>
-    <item>
-      <id>2040</id>
-      <path>2040_Ichor_of_Rage.png</path>
-    </item>
-    <item>
-      <id>2048</id>
-      <path>2048_IchorofIllumination.png</path>
-    </item>
-    <item>
-      <id>1080</id>
-      <path>1080_SoulEater.png</path>
+      <id>3801</id>
+      <path>3801_Crystalline_Bracer.png</path>
     </item>
     <item>
       <id>3070</id>
@@ -314,28 +326,12 @@
       <path>3073_Tear_of_the_Goddess_CS.png</path>
     </item>
     <item>
-      <id>3114</id>
-      <path>3114_Forbidden_Idol.png</path>
-    </item>
-    <item>
-      <id>3204</id>
-      <path>3204_QuillCoat_TT.png</path>
-    </item>
-    <item>
-      <id>3205</id>
-      <path>3205_QuillCoat.png</path>
+      <id>1018</id>
+      <path>1018_Cloak_of_Agility.png</path>
     </item>
     <item>
       <id>1031</id>
       <path>1031_Chain_Vest.png</path>
-    </item>
-    <item>
-      <id>1057</id>
-      <path>161_Elementium_Woven_Mantle.png</path>
-    </item>
-    <item>
-      <id>1018</id>
-      <path>1018_Cloak_of_Agility.png</path>
     </item>
     <item>
       <id>3106</id>
@@ -362,8 +358,32 @@
       <path>113_Tome_of_Minor_Necro_Compulsion.png</path>
     </item>
     <item>
+      <id>1057</id>
+      <path>161_Elementium_Woven_Mantle.png</path>
+    </item>
+    <item>
       <id>3067</id>
       <path>3067_Kindlegem.png</path>
+    </item>
+    <item>
+      <id>3113</id>
+      <path>3113_Aether_Wisp.png</path>
+    </item>
+    <item>
+      <id>3706</id>
+      <path>3706_Stalkers_Blade.png</path>
+    </item>
+    <item>
+      <id>3711</id>
+      <path>3711_Poachers_Knife.png</path>
+    </item>
+    <item>
+      <id>3713</id>
+      <path>3713_Rangers_Trailblazer.png</path>
+    </item>
+    <item>
+      <id>3715</id>
+      <path>3714_Skirmishers_Sabre.png</path>
     </item>
     <item>
       <id>1026</id>
@@ -386,10 +406,6 @@
       <path>1037_Broadsword.png</path>
     </item>
     <item>
-      <id>3028</id>
-      <path>3028_Harmony_Ring.png</path>
-    </item>
-    <item>
       <id>1043</id>
       <path>1043_Steel_Stiletto.png</path>
     </item>
@@ -406,12 +422,12 @@
       <path>3024_Glacial_Shroud.png</path>
     </item>
     <item>
-      <id>3113</id>
-      <path>3113_Aether_Wisp.png</path>
-    </item>
-    <item>
       <id>1011</id>
       <path>1011_Mighty_Waistband_of_the_Reaver.png</path>
+    </item>
+    <item>
+      <id>2053</id>
+      <path>2053_Raptor_Cloak.png</path>
     </item>
     <item>
       <id>3006</id>
@@ -422,12 +438,12 @@
       <path>3009_Boots_of_Teleportation.png</path>
     </item>
     <item>
-      <id>3047</id>
-      <path>3047_Phase_Striders.png</path>
+      <id>3028</id>
+      <path>3028_Harmony_Ring.png</path>
     </item>
     <item>
-      <id>3082</id>
-      <path>3082_Wardens_Mail.png</path>
+      <id>3047</id>
+      <path>3047_Phase_Striders.png</path>
     </item>
     <item>
       <id>3158</id>
@@ -442,16 +458,16 @@
       <path>2051_Guardians_Horn.png</path>
     </item>
     <item>
+      <id>3082</id>
+      <path>3082_Wardens_Mail.png</path>
+    </item>
+    <item>
       <id>3020</id>
       <path>3020_Flamewalkers.png</path>
     </item>
     <item>
       <id>3086</id>
       <path>3058_Sheen_and_Phage.png</path>
-    </item>
-    <item>
-      <id>3191</id>
-      <path>3191_Seekers_Armguard.png</path>
     </item>
     <item>
       <id>3010</id>
@@ -470,20 +486,24 @@
       <path>3122_Wicked_Hatchet.png</path>
     </item>
     <item>
-      <id>3141</id>
-      <path>3034_Kenyus_Kukri.png</path>
-    </item>
-    <item>
       <id>3145</id>
       <path>3145_Hextech_Revolver.png</path>
     </item>
     <item>
-      <id>3041</id>
-      <path>3041_Mejais_Soulstealer.png</path>
+      <id>3191</id>
+      <path>3191_Seekers_Armguard.png</path>
+    </item>
+    <item>
+      <id>3211</id>
+      <path>3211_SpectresCowl.png</path>
     </item>
     <item>
       <id>3101</id>
       <path>059_Sheen.png</path>
+    </item>
+    <item>
+      <id>3140</id>
+      <path>1008_Sash_of_Valor.png</path>
     </item>
     <item>
       <id>3270</id>
@@ -510,20 +530,24 @@
       <path>037_Big_Stick.png</path>
     </item>
     <item>
-      <id>3155</id>
-      <path>3155_Hexdrinker.png</path>
+      <id>3041</id>
+      <path>3041_Mejais_Soulstealer.png</path>
+    </item>
+    <item>
+      <id>3141</id>
+      <path>3034_Kenyus_Kukri.png</path>
     </item>
     <item>
       <id>3144</id>
       <path>3144_Bilgewater_Cutlass.png</path>
     </item>
     <item>
-      <id>3211</id>
-      <path>3211_SpectresCowl.png</path>
-    </item>
-    <item>
       <id>3271</id>
       <path>3004_Assault_Treads_B.png</path>
+    </item>
+    <item>
+      <id>3155</id>
+      <path>3155_Hexdrinker.png</path>
     </item>
     <item>
       <id>3250</id>
@@ -598,10 +622,6 @@
       <path>1038_BF_Sword.png</path>
     </item>
     <item>
-      <id>3140</id>
-      <path>1008_Sash_of_Valor.png</path>
-    </item>
-    <item>
       <id>3255</id>
       <path>3020_Flamewalkers_A.png</path>
     </item>
@@ -670,10 +690,6 @@
       <path>3154_WrigglesLantern.png</path>
     </item>
     <item>
-      <id>3160</id>
-      <path>3160_Feral_Flare.png</path>
-    </item>
-    <item>
       <id>3266</id>
       <path>3008_Boots_Of_Swiftness_B.png</path>
     </item>
@@ -686,44 +702,24 @@
       <path>3105_AegisOfTheLegion.png</path>
     </item>
     <item>
-      <id>3123</id>
-      <path>3069_Sword_of_Light_and_Shadow.png</path>
-    </item>
-    <item>
-      <id>3056</id>
-      <path>3056_Ohmwrecker.png</path>
-    </item>
-    <item>
       <id>3197</id>
       <path>3197_Hexcore3.png</path>
     </item>
     <item>
-      <id>3206</id>
-      <path>3206_SoulEaterWraith.png</path>
+      <id>3069</id>
+      <path>3069_Shurelyas_Firecrest.png</path>
     </item>
     <item>
-      <id>3207</id>
-      <path>3207_SoulEaterGolem.png</path>
+      <id>3075</id>
+      <path>3075_Thornmail.png</path>
     </item>
     <item>
-      <id>3208</id>
-      <path>3208_SoulEaterGolem_TT.png</path>
-    </item>
-    <item>
-      <id>3209</id>
-      <path>3209_SoulEaterLizard.png</path>
-    </item>
-    <item>
-      <id>3112</id>
-      <path>3112_Orb_of_Winter.png</path>
+      <id>3504</id>
+      <path>3504_ArdentCenser.png</path>
     </item>
     <item>
       <id>3187</id>
       <path>3187_HextechSweeper.png</path>
-    </item>
-    <item>
-      <id>3131</id>
-      <path>3084_Widowmaker.png</path>
     </item>
     <item>
       <id>3004</id>
@@ -742,28 +738,80 @@
       <path>3042_Muramana.png</path>
     </item>
     <item>
-      <id>3069</id>
-      <path>3069_Shurelyas_Firecrest.png</path>
-    </item>
-    <item>
-      <id>3075</id>
-      <path>3075_Thornmail.png</path>
-    </item>
-    <item>
       <id>3092</id>
       <path>3092_Kages_Last_Breath.png</path>
-    </item>
-    <item>
-      <id>3165</id>
-      <path>3165_Morellonomicon.png</path>
     </item>
     <item>
       <id>3401</id>
       <path>3401_MartyrsShroud.png</path>
     </item>
     <item>
-      <id>3504</id>
-      <path>3504_ArdentCenser.png</path>
+      <id>3112</id>
+      <path>3112_Orb_of_Winter.png</path>
+    </item>
+    <item>
+      <id>3707</id>
+      <path>3706_Stalkers_Blade1.png</path>
+    </item>
+    <item>
+      <id>3708</id>
+      <path>3706_Stalkers_Blade4.png</path>
+    </item>
+    <item>
+      <id>3709</id>
+      <path>3706_Stalkers_Blade3.png</path>
+    </item>
+    <item>
+      <id>3710</id>
+      <path>3706_Stalkers_Blade2.png</path>
+    </item>
+    <item>
+      <id>3714</id>
+      <path>3714_Skirmishers_Sabre1.png</path>
+    </item>
+    <item>
+      <id>3716</id>
+      <path>3714_Skirmishers_Sabre4.png</path>
+    </item>
+    <item>
+      <id>3717</id>
+      <path>3714_Skirmishers_Sabre3.png</path>
+    </item>
+    <item>
+      <id>3718</id>
+      <path>3714_Skirmishers_Sabre2.png</path>
+    </item>
+    <item>
+      <id>3719</id>
+      <path>3711_Poachers_Knife1.png</path>
+    </item>
+    <item>
+      <id>3720</id>
+      <path>3711_Poachers_Knife4.png</path>
+    </item>
+    <item>
+      <id>3721</id>
+      <path>3711_Poachers_Knife3.png</path>
+    </item>
+    <item>
+      <id>3722</id>
+      <path>3711_Poachers_Knife2.png</path>
+    </item>
+    <item>
+      <id>3723</id>
+      <path>3713_Rangers_Trailblazer1.png</path>
+    </item>
+    <item>
+      <id>3724</id>
+      <path>3713_Rangers_Trailblazer4.png</path>
+    </item>
+    <item>
+      <id>3725</id>
+      <path>3713_Rangers_Trailblazer3.png</path>
+    </item>
+    <item>
+      <id>3726</id>
+      <path>3713_Rangers_Trailblazer2.png</path>
     </item>
     <item>
       <id>3181</id>
@@ -778,32 +826,36 @@
       <path>073_Zettas_Mana-Stick.png</path>
     </item>
     <item>
-      <id>3005</id>
-      <path>3005_Atmas_Impaler.png</path>
-    </item>
-    <item>
       <id>3035</id>
       <path>3035_Last_Whisper.png</path>
     </item>
     <item>
-      <id>3023</id>
-      <path>3023_Wraith_Collar.png</path>
-    </item>
-    <item>
-      <id>3060</id>
-      <path>3060_Banner_of_Command.png</path>
-    </item>
-    <item>
-      <id>3085</id>
-      <path>3085_Runaans_Hurricane.png</path>
+      <id>3165</id>
+      <path>3165_Morellonomicon.png</path>
     </item>
     <item>
       <id>3290</id>
       <path>3290_Wraith_Collar_CS.png</path>
     </item>
     <item>
+      <id>3023</id>
+      <path>3023_Wraith_Collar.png</path>
+    </item>
+    <item>
+      <id>3085</id>
+      <path>3085_Runaans_Hurricane.png</path>
+    </item>
+    <item>
+      <id>3001</id>
+      <path>3001_Abyssal_Scepter.png</path>
+    </item>
+    <item>
       <id>3050</id>
       <path>3050_Rallying_Banner.png</path>
+    </item>
+    <item>
+      <id>3110</id>
+      <path>122_Frozen_Heart.png</path>
     </item>
     <item>
       <id>3222</id>
@@ -814,12 +866,12 @@
       <path>3084_Overlords_Bloodmail.png</path>
     </item>
     <item>
-      <id>3087</id>
-      <path>3087_Statikk_Shiv.png</path>
+      <id>3083</id>
+      <path>3083_Warmog_the_Living_Armor.png</path>
     </item>
     <item>
-      <id>3091</id>
-      <path>3091_Wits_End.png</path>
+      <id>3087</id>
+      <path>3087_Statikk_Shiv.png</path>
     </item>
     <item>
       <id>3152</id>
@@ -830,12 +882,20 @@
       <path>3180_OdynsVeil.png</path>
     </item>
     <item>
-      <id>3001</id>
-      <path>3001_Abyssal_Scepter.png</path>
+      <id>3800</id>
+      <path>3800_Righteous_Glory.png</path>
     </item>
     <item>
-      <id>3110</id>
-      <path>122_Frozen_Heart.png</path>
+      <id>3056</id>
+      <path>3056_Ohmwrecker.png</path>
+    </item>
+    <item>
+      <id>3068</id>
+      <path>3068_SunfireCape.png</path>
+    </item>
+    <item>
+      <id>3091</id>
+      <path>3091_Wits_End.png</path>
     </item>
     <item>
       <id>3124</id>
@@ -844,14 +904,6 @@
     <item>
       <id>3170</id>
       <path>3170_MoonflairSpellblade.png</path>
-    </item>
-    <item>
-      <id>3174</id>
-      <path>3174_AthenesUnholyGrail.png</path>
-    </item>
-    <item>
-      <id>3068</id>
-      <path>3068_SunfireCape.png</path>
     </item>
     <item>
       <id>3188</id>
@@ -874,16 +926,20 @@
       <path>3040_Seraphs_Embrace.png</path>
     </item>
     <item>
+      <id>3137</id>
+      <path>3137_Dervish_Blade.png</path>
+    </item>
+    <item>
       <id>3142</id>
       <path>3142_YomuuGhostblade.png</path>
     </item>
     <item>
-      <id>3184</id>
-      <path>3184_Entropy.png</path>
+      <id>3174</id>
+      <path>3174_AthenesUnholyGrail.png</path>
     </item>
     <item>
-      <id>3026</id>
-      <path>3026_Guardian_Angel.png</path>
+      <id>3184</id>
+      <path>3184_Entropy.png</path>
     </item>
     <item>
       <id>3065</id>
@@ -892,6 +948,10 @@
     <item>
       <id>3102</id>
       <path>066_Sindoran_Shielding_Amulet.png</path>
+    </item>
+    <item>
+      <id>3026</id>
+      <path>3026_Guardian_Angel.png</path>
     </item>
     <item>
       <id>3027</id>
@@ -910,8 +970,12 @@
       <path>3190_Crest_of_the_Iron_Solari.png</path>
     </item>
     <item>
-      <id>3083</id>
-      <path>3083_Warmog_the_Living_Armor.png</path>
+      <id>3512</id>
+      <path>3512_Zzrot_Portal.png</path>
+    </item>
+    <item>
+      <id>3143</id>
+      <path>3143_Randuins_Omen.png</path>
     </item>
     <item>
       <id>3172</id>
@@ -934,6 +998,10 @@
       <path>3115_Nashors_Tooth.png</path>
     </item>
     <item>
+      <id>3060</id>
+      <path>3060_Banner_of_Command.png</path>
+    </item>
+    <item>
       <id>3071</id>
       <path>3071_The_Black_Cleaver.png</path>
     </item>
@@ -942,20 +1010,8 @@
       <path>126_Zeal_and_Sheen.png</path>
     </item>
     <item>
-      <id>3137</id>
-      <path>3137_Dervish_Blade.png</path>
-    </item>
-    <item>
-      <id>3143</id>
-      <path>3143_Randuins_Omen.png</path>
-    </item>
-    <item>
       <id>3198</id>
       <path>3198_Hexcore4.png</path>
-    </item>
-    <item>
-      <id>3128</id>
-      <path>3128_Deathfire_Grasp.png</path>
     </item>
     <item>
       <id>3153</id>
@@ -970,10 +1026,6 @@
       <path>3508_EssenceReaver.png</path>
     </item>
     <item>
-      <id>3157</id>
-      <path>3157_Zhonyas_Hourglass.png</path>
-    </item>
-    <item>
       <id>3022</id>
       <path>3022_Frozen_Mallet.png</path>
     </item>
@@ -984,6 +1036,10 @@
     <item>
       <id>3089</id>
       <path>3089_Banksys_wizard_Hat.png</path>
+    </item>
+    <item>
+      <id>3157</id>
+      <path>3157_Zhonyas_Hourglass.png</path>
     </item>
     <item>
       <id>3146</id>
@@ -998,6 +1054,10 @@
       <path>3090_Wooglets_Witchcap.png</path>
     </item>
     <item>
+      <id>3139</id>
+      <path>3139_Mercurial_Scimitar.png</path>
+    </item>
+    <item>
       <id>3078</id>
       <path>3078_Trinity_Force.png</path>
     </item>
@@ -1008,14 +1068,6 @@
     <item>
       <id>3104</id>
       <path>3104_Lord_Van_Damms_Pillager.png</path>
-    </item>
-    <item>
-      <id>3139</id>
-      <path>3139_Mercurial_Scimitar.png</path>
-    </item>
-    <item>
-      <id>9999</id>
-      <path>9999_Empty.png</path>
     </item>
   </items>
 </database>
