@@ -141,7 +141,6 @@ std::shared_ptr<MapPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
     for (j = 0; j < 10; ++j) {
       // DID WE FIND IT?
       cv::Mat targetImg = LeagueEventDatabase::Get()->GetObjectiveImage(targetObjective[j]);
-      ShowImage(targetImg);
       // Need to resize the image to become the appropriate resolution.
       // We know what size the image is at the original resolution. We know what the current resolution is so we can figure out
       // what we need the size of the objective image.
