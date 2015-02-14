@@ -3,6 +3,7 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/superres.hpp"
 #include <ctime>
+#include <math.h>
 #include <algorithm>
 #include <string>
 #include <thread>
@@ -324,12 +325,12 @@ std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::
  * base image to match the template's size.
  * 
  * TODO: Use an image pyramid to speed this up. Also use multiple indicators to increase accuracy.
+ * TODO: Use HSV while ignoring the V channel to better identify items on cooldown
  */
 std::string LeagueImageAnalyzer::AnalyzePlayerItem(uint playerIdx, ELeagueTeams team, uint itemIdx) {
   cv::Rect section = GetPlayerItemSection(playerIdx, team, itemIdx);
   cv::Mat itemImage = FilterImage_Section(mImage, section);
   cv::Mat baseImage = ItemDatabase->GetDatabaseImage().clone();
-
   // Resize the base image so that each individual cell matches the size of the item image.
   float factor = (float)itemImage.cols / LEAGUE_ITEM_SQUARE_SIZE;
   baseImage = FilterImage_Resize(baseImage, factor, factor);
@@ -347,8 +348,8 @@ std::string LeagueImageAnalyzer::AnalyzePlayerItem(uint playerIdx, ELeagueTeams 
   cv::minMaxLoc(matchResult, &minVal, &maxVal, &minPoint, &maxPoint, cv::Mat());
 
   // Convert the point to an actual index.
-  int y_idx = minPoint.y / itemImage.rows;
-  int x_idx = minPoint.x / itemImage.cols;
+  int y_idx = round((double)minPoint.y / itemImage.rows);
+  int x_idx = round((double)minPoint.x / itemImage.cols);
   PtrLeagueItemData item = ItemDatabase->GetItem(x_idx, y_idx);
   if (!item || item->IsInvalid()) {
     return "";

@@ -297,5 +297,5 @@ bool LeagueImageAnalyzer::IsValidScore(std::string& inScore) {
 cv::Rect LeagueImageAnalyzer::GetPlayerItemSection(uint playerIdx, ELeagueTeams team, uint itemIdx) {
   MultiRectangle rect;
   GetCastedPropertyValue<MultiRectangle>((team == ELT_BLUE) ? LEAGUE_PLAYER_ITEMS_BLUE : LEAGUE_PLAYER_ITEMS_RED , rect, CreateMultiRectFromString);
-  return rect.GetRectangle(playerIdx, itemIdx);
+  return GetRealRectangle(rect.GetRectangle(playerIdx, itemIdx));
 }
