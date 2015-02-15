@@ -17,7 +17,7 @@ void test(IMAGE_PATH_TYPE t, IMAGE_FRAME_COUNT_TYPE t1) {
 }
 
 int main() {
-  std::string path1 = "Images/c9-vs-gv/frame100.png";
+  std::string path1 = "Images/c9-vs-gv/frame0.png";
   std::string path2 = "Images/tl-vs-tsm/draft1.png";
   std::string path3 = "Images/fnc-vs-gmb/frame0.png";
   std::string path4 = "Images/2014-09-01-league-lcs2/frame29.png";
@@ -34,7 +34,7 @@ int main() {
 
   //std::shared_ptr<const LeagueItemDatabase> db = LeagueItemDatabase::Get();
   ConfigManager::Get()->LoadExternalConfig(GetRelativeFilePath("Config/League/lcs.ini"), false);
-  LeagueImageAnalyzer* img = new LeagueImageAnalyzer(path6, GetRelativeFilePath("Config/League/lcs.ini"), PropertyManager::Get()->GetProperties(EGI_League));
+  LeagueImageAnalyzer* img = new LeagueImageAnalyzer(path1, GetRelativeFilePath("Config/League/lcs.ini"), PropertyManager::Get()->GetProperties(EGI_League));
   img->Analyze();
   int exit; std::cin >> exit;
   return 0;

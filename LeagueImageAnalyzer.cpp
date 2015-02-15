@@ -54,6 +54,9 @@ bool LeagueImageAnalyzer::Analyze() {
   // Whether we're currently in the draft ban stage.
   bIsDraftBan = AnalyzeIsDraftBan();
 
+  // Whether we're currently showing a replay
+  bIsReplayFrame = AnalyzeIsReplayFrame();
+
   // Current match time.
   int time = AnalyzeMatchTime();
   std::shared_ptr<GenericData<int>> timeProp(new GenericData<int>(time));
@@ -111,6 +114,7 @@ bool LeagueImageAnalyzer::Analyze() {
 
   // At this point we know whether or not this was a valid frame..if so get the map position
   std::cout << "Is Valid Frame: " << IsValidFrame() << std::endl;
+  std::cout << "Is Replay Frame: " << GetIsReplayFrame() << std::endl;
   if (IsValidFrame()) {
     // Camera Location
     AnalyzeMapPosition(mapLocX, mapLocY);

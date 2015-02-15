@@ -39,6 +39,24 @@ bool LeagueImageAnalyzer::IsValidFrame() {
 }
 
 /*
+ * Find the word "REPLAY" in the proper section. If it is there, then we are currently looking
+ * at a replay.
+ */
+bool LeagueImageAnalyzer::AnalyzeIsReplayFrame() {
+  cv::Rect section = GetReplayTextSection();
+  cv::Mat replayTextImage = FilterImage_Section_Grayscale_BasicThreshold_Resize(mImage, section, 
+    GetReplayTextThreshold(), GetReplayTextResizeX(), GetReplayTextResizeY());
+  std::string result = GetTextFromImage(replayTextImage, LeagueIdent, std::string("REPLAY"));
+  return (result == "REPLAY"); 
+}
+
+cv::Rect LeagueImageAnalyzer::GetReplayTextSection() {
+  cv::Rect output;
+  GetCastedPropertyValue<cv::Rect>(LEAGUE_GAMESTATE_REPLAY, output, CreateRectFromString);
+  return GetRealRectangle(output);
+}
+
+/*
  * Grabs the match time from the header bar in the upper center part of the image. 
  * A value of 0 is returned if no value can be parsed.
  */

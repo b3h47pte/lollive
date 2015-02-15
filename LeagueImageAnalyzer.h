@@ -27,6 +27,7 @@ public:
   virtual bool Analyze();
 
   bool GetIsDraftBan() const { return bIsDraftBan; }
+  bool GetIsReplayFrame() const { return bIsReplayFrame; }
 
   void GetMapLocation(double& x, double& y) {
     x = mapLocX;
@@ -56,6 +57,11 @@ protected:
   virtual cv::Rect GetMatchTimeSection();
   // Checks whether or not we are currently either looking at the draft screen or the in-game screen.
   virtual bool IsValidFrame();
+
+  // Analyze whether or not we're looking at a replay
+  bool bIsReplayFrame;
+  virtual bool AnalyzeIsReplayFrame();
+  virtual cv::Rect GetReplayTextSection();
 
   // Camera Location Analysis. We represent the map as being a unit square.
   // So any position on the map is represented as a percentage.
@@ -189,6 +195,10 @@ private:
   DECLARE_CONFIG_VARIABLE(MapThreshold, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "GameState", 0.0)
   DECLARE_CONFIG_VARIABLE(MapResizeX, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "GameState", 0.0)
   DECLARE_CONFIG_VARIABLE(MapResizeY, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "GameState", 0.0)
+
+  DECLARE_CONFIG_VARIABLE(ReplayTextThreshold, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "GameState", 0.0)
+  DECLARE_CONFIG_VARIABLE(ReplayTextResizeX, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "GameState", 0.0)
+  DECLARE_CONFIG_VARIABLE(ReplayTextResizeY, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "GameState", 0.0)
 
   DECLARE_CONFIG_VARIABLE(TeamGoldThreshold, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "TeamStats", 0.0)
   DECLARE_CONFIG_VARIABLE(TeamGoldResizeX, double, ConfigManager::CONFIG_LEAGUE_FILENAME, "TeamStats", 0.0)
