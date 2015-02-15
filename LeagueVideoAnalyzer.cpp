@@ -23,6 +23,10 @@ bool LeagueVideoAnalyzer::StoreData(std::shared_ptr<ImageAnalyzer> img) {
   std::shared_ptr<GenericDataStore> newData = img->GetData();
   std::shared_ptr<LeagueImageAnalyzer> limg = std::static_pointer_cast<LeagueImageAnalyzer>(img);
 
+  if (limg->GetIsReplayFrame()) {
+    return false;
+  }
+
   isDraftPhase = false;
   if (!img->IsValidFrame()) {
     // There are a couple situations where the frame isn't valid
