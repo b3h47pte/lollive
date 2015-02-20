@@ -1,6 +1,7 @@
 #include "VideoFetcher.h"
 #include <stdio.h>
 #include <assert.h>
+#include <algorithm>
 #ifdef _WIN32
 #include <windows.h>
 #include <string>
@@ -42,7 +43,7 @@ void VideoFetcher::BeginFetch() {
   int suffixId = 0;
 #ifdef _WIN32
   std::wstring stemp = std::wstring(mImagePath.begin(), mImagePath.end());
-  CreateDirectoryW("Images");
+  CreateDirectoryW(L"Images", NULL);
   while (!CreateDirectoryW(stemp.c_str(), NULL)) {
 #else
   std::string stemp = std::string(mImagePath.begin(), mImagePath.end());

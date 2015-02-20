@@ -88,16 +88,16 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(OPENCV_DIR)\include;$(TESSERACT_DIR)\include;$(TESSERACT_DIR)\tesseract-ocr\api;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;CURL_STATICLIB;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(OPENCV_DIR)\include;$(TESSERACT_DIR)\include;$(TESSERACT_DIR)\tesseract-ocr\api;C:\Users\Michael\Documents\GitHub\curl\builds\libcurl-vc-x86-release-static-ipv6-sspi-winssl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OPENCV_DIR)\x86\vc12\lib;$(TESSERACT_DIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_ts300d.lib;opencv_world300d.lib;libtesseract302d.lib;liblept168d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OPENCV_DIR)\x86\vc12\lib;$(TESSERACT_DIR)\lib;C:\Users\Michael\Documents\GitHub\curl\builds\libcurl-vc-x86-release-static-ipv6-sspi-winssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_ts300d.lib;opencv_world300d.lib;libtesseract302d.lib;liblept168d.lib;libcurl_a.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -121,7 +121,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;CURL_STATICLIB;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(OPENCV_DIR)\include;$(TESSERACT_DIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -156,7 +156,9 @@
     <ClInclude Include="cjson\cJSON.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="ConfigManager.h" />
+    <ClInclude Include="ConversionUtility.h" />
     <ClInclude Include="Dispatch.h" />
+    <ClInclude Include="FileUtility.h" />
     <ClInclude Include="ImageAnalyzer.h" />
     <ClInclude Include="inih\ini.h" />
     <ClInclude Include="inih\INIReader.h" />
@@ -168,18 +170,17 @@
     <ClInclude Include="LeagueImageAnalyzer.h" />
     <ClInclude Include="LeagueItemData.h" />
     <ClInclude Include="LeagueItemDatabase.h" />
-    <ClInclude Include="LeagueLCSImageAnalyzer.h" />
-    <ClInclude Include="LeagueLCSVideoAnalyzer.h" />
     <ClInclude Include="LeaguePlayerData.h" />
-    <ClInclude Include="LeagueSpectatorImageAnalyzer.h" />
     <ClInclude Include="Data.h" />
-    <ClInclude Include="LeagueSpectatorVideoAnalyzer.h" />
     <ClInclude Include="LeagueTeamData.h" />
     <ClInclude Include="LeagueVideoAnalyzer.h" />
+    <ClInclude Include="MultiRectangle.h" />
+    <ClInclude Include="PropertyManager.h" />
     <ClInclude Include="rapidxml\rapidxml.hpp" />
     <ClInclude Include="rapidxml\rapidxml_iterators.hpp" />
     <ClInclude Include="rapidxml\rapidxml_print.hpp" />
     <ClInclude Include="rapidxml\rapidxml_utils.hpp" />
+    <ClInclude Include="StringUtility.h" />
     <ClInclude Include="TestVideoFetch.h" />
     <ClInclude Include="VideoAnalyzer.h" />
     <ClInclude Include="VideoFetcher.h" />
@@ -195,19 +196,22 @@
     <ClCompile Include="inih\ini.c" />
     <ClCompile Include="inih\INIReader.cpp" />
     <ClCompile Include="LeagueChampionDatabase.cpp" />
+    <ClCompile Include="LeagueDraftBanAnalysis.cpp" />
     <ClCompile Include="LeagueEvent.cpp" />
+    <ClCompile Include="LeagueEventAnalysis.cpp" />
     <ClCompile Include="LeagueEventDatabase.cpp" />
+    <ClCompile Include="LeagueGameStateAnalysis.cpp" />
     <ClCompile Include="LeagueImageAnalyzer.cpp" />
     <ClCompile Include="LeagueItemDatabase.cpp" />
-    <ClCompile Include="LeagueLCSImageAnalyzer.cpp" />
-    <ClCompile Include="LeagueLCSVideoAnalyzer.cpp" />
     <ClCompile Include="LeaguePlayerData.cpp" />
-    <ClCompile Include="LeagueSpectatorImageAnalyzer.cpp" />
-    <ClCompile Include="LeagueSpectatorVideoAnalyzer.cpp" />
+    <ClCompile Include="LeaguePlayerStatsAnalysis.cpp" />
     <ClCompile Include="LeagueTeamData.cpp" />
+    <ClCompile Include="LeagueTeamStatsAnalysis.cpp" />
     <ClCompile Include="LeagueVideoAnalyzer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ImageAnalyzer.cpp" />
+    <ClCompile Include="MultiRectangle.cpp" />
+    <ClCompile Include="PropertyManager.cpp" />
     <ClCompile Include="TestVideoFetch.cpp" />
     <ClCompile Include="VideoAnalyzer.cpp" />
     <ClCompile Include="VideoFetcher.cpp" />
