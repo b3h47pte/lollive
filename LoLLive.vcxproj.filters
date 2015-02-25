@@ -76,6 +76,9 @@
     <Filter Include="Core\Properties">
       <UniqueIdentifier>{b18a20fa-b326-4031-9218-2879de45995e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Parser">
+      <UniqueIdentifier>{fb289c90-c86a-4da0-bd88-b6133c2fd4e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VideoFetcher.h">
@@ -183,6 +186,9 @@
     <ClInclude Include="StringUtility.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="CommandParser.h">
+      <Filter>Core\Parser</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VideoFetcher.cpp">
@@ -271,6 +277,9 @@
     </ClCompile>
     <ClCompile Include="LeagueDraftBanAnalysis.cpp">
       <Filter>VideoAnalyze\Image\LoL</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandParser.cpp">
+      <Filter>Core\Parser</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

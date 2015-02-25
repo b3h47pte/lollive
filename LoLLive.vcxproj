@@ -154,6 +154,7 @@
     <ClInclude Include="civetweb\CivetServer.h" />
     <ClInclude Include="civetweb\civetweb.h" />
     <ClInclude Include="cjson\cJSON.h" />
+    <ClInclude Include="CommandParser.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="ConfigManager.h" />
     <ClInclude Include="ConversionUtility.h" />
@@ -191,6 +192,7 @@
     <ClCompile Include="civetweb\CivetServer.cpp" />
     <ClCompile Include="civetweb\civetweb.c" />
     <ClCompile Include="cjson\cJSON.c" />
+    <ClCompile Include="CommandParser.cpp" />
     <ClCompile Include="ConfigManager.cpp" />
     <ClCompile Include="Dispatch.cpp" />
     <ClCompile Include="inih\ini.c" />
