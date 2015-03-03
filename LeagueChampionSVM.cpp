@@ -28,8 +28,6 @@ void LeagueChampionSVM::CreateTrainingData() {
   // Resize a champion image at multiple resolutions and put that into the SVM'
   const int resolutionStep = 5;
   int resolutionLevels = (ldb->GetImageSizeX() * 2 / 3) / resolutionStep;
-  std::cout << "Champs: " << mapping->size() << std::endl;
-  std::cout << "Res levels: " << resolutionLevels << std::endl;
   InitializeTrainingDataset(mapping->size() * resolutionLevels, ldb->GetImageSizeX(), ldb->GetImageSizeY());
   int count = 0;
   int label = 0;

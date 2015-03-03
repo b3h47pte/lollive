@@ -31,10 +31,10 @@ LeagueImageAnalyzer::~LeagueImageAnalyzer() {
 cv::Rect LeagueImageAnalyzer::
 GetRealRectangle(cv::Rect rect) {
   if (bIs1080p) return rect;
-  rect.x = (int)((double)rect.x / originalWidth) * mImage.cols;
-  rect.y = (int)((double)rect.y / originalHeight) * mImage.rows;
-  rect.width  = (int)((double)rect.width / originalWidth) * mImage.cols;
-  rect.height  = (int)((double)rect.height / originalHeight) * mImage.rows;
+  rect.x = (int)((double)rect.x / originalWidth * mImage.cols);
+  rect.y = (int)((double)rect.y / originalHeight * mImage.rows);
+  rect.width  = (int)((double)rect.width / originalWidth * mImage.cols);
+  rect.height  = (int)((double)rect.height / originalHeight * mImage.rows);
   return rect;
 }
 
