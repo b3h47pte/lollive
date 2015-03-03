@@ -6,8 +6,7 @@ ImageSVM::ImageSVM(const std::string& datasetName, bool performTraining):
   svmParams.svmType = cv::ml::SVM::C_SVC;
   svmParams.kernelType = cv::ml::SVM::POLY;
   svmParams.gamma = 3;
-
-  Execute();
+  svmParams.degree = 1.0;
 }
 
 ImageSVM::~ImageSVM() {
@@ -24,34 +23,30 @@ void ImageSVM::Execute() {
 }
 
 void ImageSVM::InitializeTrainingDataset(int numImages, int xSize, int ySize) {
-  trainingImage.create(numImages, xSize * ySize, CV_32FC3);
+  trainingImage.create(numImages, xSize * ySize, CV_32F);
   trainingLabels.create(numImages, 1, CV_32S);
 
   imageX = xSize;
   imageY = ySize;
 }
 
-void ImageSVM::SetupImageTrainingData(int imageIndex, cv::Mat image, short label) {
-  int count = 0;
-  for (int i = 0; i < imageX; ++i) {
-    for (int j = 0; j < imageY; ++j) {
-      trainingImage.at<float>(imageIndex, count++) = image.at<unsigned char>(i, j);
-    }
-  }
-  trainingLabels.at<short>(imageIndex, 0) = label;
+void ImageSVM::SetupImageTrainingData(int imageIndex, cv::Mat image, int label) {
+  cv::Mat inputImage = image.reshape(0, 1);
+  trainingImage.row(imageIndex) = inputImage;
+  trainingLabels.row(imageIndex).col(0) = label;
 }
 
 void ImageSVM::PerformTraining() {
   cv::Ptr<cv::ml::TrainData> data = cv::ml::TrainData::create(trainingImage, cv::ml::ROW_SAMPLE, trainingLabels);
-  svm->trainAuto(data);
-  svm->save(GetRelativeFilePath("SVM/" + datasetName));
+  svm->train(data);
+  svm->save("SVM_" + datasetName);
 }
 
 void ImageSVM::LoadTraining() {
-  svm = cv::ml::SVM::load<cv::ml::SVM>(GetRelativeFilePath("SVM/" + datasetName));
+  svm = cv::ml::SVM::load<cv::ml::SVM>("SVM_" + datasetName);
 }
 
 std::string ImageSVM::PredictImage(const cv::Mat& inImage) {
-  short label = (short)svm->predict(inImage);
+  int label = (int)svm->predict(inImage);
   return ConvertLabelToString(label);
 }

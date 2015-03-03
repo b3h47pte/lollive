@@ -10,7 +10,7 @@ public:
   virtual ~LeagueChampionSVM();
 
 protected:
-  virtual std::string ConvertLabelToString(short label);
+  virtual std::string ConvertLabelToString(int label);
 private:
   void LoadTrainingData();
   void CreateTrainingData();

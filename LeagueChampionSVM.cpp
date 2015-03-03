@@ -25,22 +25,32 @@ void LeagueChampionSVM::CreateTrainingData() {
   const std::map<std::string, PtrLeagueChampionData>* mapping = ldb->GetDatabase();
 
   // Calculate the number of items we want to put into the training set.
-  // Resize a champion image at multiple resolutions and put that into the SVM
-  InitializeTrainingDataset(mapping->size(), ldb->GetImageSizeX(), ldb->GetImageSizeY());
+  // Resize a champion image at multiple resolutions and put that into the SVM'
+  const int resolutionStep = 5;
+  int resolutionLevels = (ldb->GetImageSizeX() * 2 / 3) / resolutionStep;
+  std::cout << "Champs: " << mapping->size() << std::endl;
+  std::cout << "Res levels: " << resolutionLevels << std::endl;
+  InitializeTrainingDataset(mapping->size() * resolutionLevels, ldb->GetImageSizeX(), ldb->GetImageSizeY());
   int count = 0;
+  int label = 0;
   for (auto data : *mapping) {
     cv::Mat originalImage = data.second->image;
-    for (int res = ldb->GetImageSizeX() / 2; res < ldb->GetImageSizeX(); res += 5) {
+    for (int res = ldb->GetImageSizeX() / 3; res < ldb->GetImageSizeX(); res += resolutionStep) {
       cv::Mat resizedImage;
       cv::Size newSize;
       cv::resize(originalImage, resizedImage, newSize, (double)res / originalImage.rows, (double)res / originalImage.cols);
-      SetupImageTrainingData(count, resizedImage, (short)count);
+
+      cv::Mat finalImage;
+      cv::Size finalSize;
+      cv::resize(resizedImage, finalImage, finalSize, ldb->GetImageSizeX() / res, ldb->GetImageSizeY() / res);
+      SetupImageTrainingData(count, finalImage, label);
+      ++count;
     }
-    ++count;
+    ++label;
   }
   PerformTraining();
 }
 
-std::string LeagueChampionSVM::ConvertLabelToString(short label) {
+std::string LeagueChampionSVM::ConvertLabelToString(int label) {
   return labelToChampion[label];
 }

@@ -10,6 +10,7 @@ class ImageSVM {
 public:
   ImageSVM(const std::string& datasetName, bool performTraining);
   virtual ~ImageSVM();
+  virtual void Execute();
 
   std::string PredictImage(const cv::Mat& inImage);
 
@@ -27,16 +28,15 @@ protected:
 
   // Training SVM
   void InitializeTrainingDataset(int numImages, int xSize, int ySize);
-  void SetupImageTrainingData(int imageIndex, cv::Mat image, short label);
+  void SetupImageTrainingData(int imageIndex, cv::Mat image, int label);
   void PerformTraining();
 
   // Loading SVM
   void LoadTraining();
 
-  virtual std::string ConvertLabelToString(short label) = 0;
+  virtual std::string ConvertLabelToString(int label) = 0;
 
 private:
-  void Execute();
   virtual void LoadTrainingData() = 0;
   virtual void CreateTrainingData() = 0;
 

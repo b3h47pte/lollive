@@ -21,7 +21,9 @@ void test(IMAGE_PATH_TYPE t, IMAGE_FRAME_COUNT_TYPE t1) {
 int main(int argc, char** argv) {
   CommandParser parser(argc, argv);
   if (parser.GetValue("train") == "league_champs") {
-    LeagueChampionSVM svm(true); (void)svm;
+    LeagueChampionSVM svm(true);
+    svm.Execute();
+    std::cout << "Finished Training League Champion SVM" << std::endl;
   } else {
     std::string path1 = "Images/c9-vs-gv/frame0.png";
     std::string path2 = "Images/tl-vs-tsm/draft1.png";
