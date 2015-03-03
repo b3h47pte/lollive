@@ -4,7 +4,7 @@
 
 #include <iostream>
 #if defined(_WIN32)
-
+#include <windows.h>
 #else
 #include <unistd.h>
 #endif
@@ -15,6 +15,7 @@ static std::string GetRelativeFilePath(const std::string& input) {
   char buffer[maxPathSize];
   char* cwd = NULL;
 #if defined(_WIN32)
+  GetCurrentDirectoryA(maxPathSize, buffer);
 #else
   cwd = getcwd(buffer, maxPathSize);
 #endif

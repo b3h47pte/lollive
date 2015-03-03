@@ -15,7 +15,7 @@ MultiRectangle::~MultiRectangle() {
 cv::Rect MultiRectangle::
 GetRectangle(int yIndex, int xIndex) const {
   cv::Rect newRect = initialRectangle;
-  newRect.x += xStep * xIndex;
-  newRect.y += yStep * yIndex;
+  newRect.x += (int)xStep * xIndex;
+  newRect.y += (int)yStep * yIndex;
   return newRect;
 }

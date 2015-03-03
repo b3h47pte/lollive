@@ -31,10 +31,10 @@ LeagueImageAnalyzer::~LeagueImageAnalyzer() {
 cv::Rect LeagueImageAnalyzer::
 GetRealRectangle(cv::Rect rect) {
   if (bIs1080p) return rect;
-  rect.x = ((double)rect.x / originalWidth) * mImage.cols;
-  rect.y = ((double)rect.y / originalHeight) * mImage.rows;
-  rect.width  = ((double)rect.width / originalWidth) * mImage.cols;
-  rect.height  = ((double)rect.height / originalHeight) * mImage.rows;
+  rect.x = (int)((double)rect.x / originalWidth) * mImage.cols;
+  rect.y = (int)((double)rect.y / originalHeight) * mImage.rows;
+  rect.width  = (int)((double)rect.width / originalWidth) * mImage.cols;
+  rect.height  = (int)((double)rect.height / originalHeight) * mImage.rows;
   return rect;
 }
 
@@ -352,8 +352,8 @@ std::string LeagueImageAnalyzer::AnalyzePlayerItem(uint playerIdx, ELeagueTeams 
   cv::minMaxLoc(matchResult, &minVal, &maxVal, &minPoint, &maxPoint, cv::Mat());
 
   // Convert the point to an actual index.
-  int y_idx = round((double)minPoint.y / itemImage.rows);
-  int x_idx = round((double)minPoint.x / itemImage.cols);
+  int y_idx = (int)round((double)minPoint.y / itemImage.rows);
+  int x_idx = (int)round((double)minPoint.x / itemImage.cols);
   PtrLeagueItemData item = ItemDatabase->GetItem(x_idx, y_idx);
   if (!item || item->IsInvalid()) {
     return "";

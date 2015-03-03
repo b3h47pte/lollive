@@ -16,7 +16,7 @@ inline cv::Rect CreateRectFromString(const std::string& input) {
     return cv::Rect();
   }
   try {
-    cv::Rect rect(std::stod(components[0]), std::stod(components[1]), std::stod(components[2]), std::stod(components[3]));
+    cv::Rect rect((int)std::stod(components[0]), (int)std::stod(components[1]), (int)std::stod(components[2]), (int)std::stod(components[3]));
     return rect;
   }
   catch (...) {

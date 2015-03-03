@@ -88,7 +88,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;CURL_STATICLIB;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(OPENCV_DIR)\include;$(TESSERACT_DIR)\include;$(TESSERACT_DIR)\tesseract-ocr\api;C:\Users\Michael\Documents\GitHub\curl\builds\libcurl-vc-x86-release-static-ipv6-sspi-winssl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
@@ -96,8 +96,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OPENCV_DIR)\x86\vc12\lib;$(TESSERACT_DIR)\lib;C:\Users\Michael\Documents\GitHub\curl\builds\libcurl-vc-x86-release-static-ipv6-sspi-winssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_ts300d.lib;opencv_world300d.lib;libtesseract302d.lib;liblept168d.lib;libcurl_a.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OPENCV_DIR)\x86\vc12\lib;$(TESSERACT_DIR)\lib;C:\Users\Michael\Documents\GitHub\curl\builds\libcurl-vc-x86-release-dll-ipv6-sspi-winssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_ts300d.lib;opencv_world300d.lib;libtesseract302d.lib;liblept168d.lib;libcurl.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -161,6 +161,7 @@
     <ClInclude Include="Dispatch.h" />
     <ClInclude Include="FileUtility.h" />
     <ClInclude Include="ImageAnalyzer.h" />
+    <ClInclude Include="ImageSVM.h" />
     <ClInclude Include="inih\ini.h" />
     <ClInclude Include="inih\INIReader.h" />
     <ClInclude Include="LeagueChampionData.h" />
@@ -169,6 +170,7 @@
     <ClInclude Include="LeagueEvent.h" />
     <ClInclude Include="LeagueEventDatabase.h" />
     <ClInclude Include="LeagueImageAnalyzer.h" />
+    <ClInclude Include="LeagueChampionSVM.h" />
     <ClInclude Include="LeagueItemData.h" />
     <ClInclude Include="LeagueItemDatabase.h" />
     <ClInclude Include="LeaguePlayerData.h" />
@@ -195,6 +197,7 @@
     <ClCompile Include="CommandParser.cpp" />
     <ClCompile Include="ConfigManager.cpp" />
     <ClCompile Include="Dispatch.cpp" />
+    <ClCompile Include="ImageSVM.cpp" />
     <ClCompile Include="inih\ini.c" />
     <ClCompile Include="inih\INIReader.cpp" />
     <ClCompile Include="LeagueChampionDatabase.cpp" />
@@ -204,6 +207,7 @@
     <ClCompile Include="LeagueEventDatabase.cpp" />
     <ClCompile Include="LeagueGameStateAnalysis.cpp" />
     <ClCompile Include="LeagueImageAnalyzer.cpp" />
+    <ClCompile Include="LeagueChampionSVM.cpp" />
     <ClCompile Include="LeagueItemDatabase.cpp" />
     <ClCompile Include="LeaguePlayerData.cpp" />
     <ClCompile Include="LeaguePlayerStatsAnalysis.cpp" />

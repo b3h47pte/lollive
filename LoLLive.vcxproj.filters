@@ -79,6 +79,12 @@
     <Filter Include="Core\Parser">
       <UniqueIdentifier>{fb289c90-c86a-4da0-bd88-b6133c2fd4e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Training">
+      <UniqueIdentifier>{4ae4c1d3-bdc6-43d0-84d5-65138d3a09b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Training\League">
+      <UniqueIdentifier>{d71e3314-b702-42f1-94a1-ee622c1a5820}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VideoFetcher.h">
@@ -189,6 +195,12 @@
     <ClInclude Include="CommandParser.h">
       <Filter>Core\Parser</Filter>
     </ClInclude>
+    <ClInclude Include="ImageSVM.h">
+      <Filter>Training</Filter>
+    </ClInclude>
+    <ClInclude Include="LeagueChampionSVM.h">
+      <Filter>Training\League</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VideoFetcher.cpp">
@@ -280,6 +292,12 @@
     </ClCompile>
     <ClCompile Include="CommandParser.cpp">
       <Filter>Core\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageSVM.cpp">
+      <Filter>Training</Filter>
+    </ClCompile>
+    <ClCompile Include="LeagueChampionSVM.cpp">
+      <Filter>Training\League</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
