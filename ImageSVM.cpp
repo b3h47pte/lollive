@@ -6,6 +6,8 @@ ImageSVM::ImageSVM(const std::string& datasetName, bool performTraining):
   svmParams.svmType = cv::ml::SVM::C_SVC;
   svmParams.kernelType = cv::ml::SVM::POLY;
   svmParams.gamma = 3;
+
+  Execute();
 }
 
 ImageSVM::~ImageSVM() {

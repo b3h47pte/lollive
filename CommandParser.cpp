@@ -10,6 +10,7 @@ void CommandParser::ReparseArguments() {
     if (key[0] != '-') {
       continue;
     }
+    key = key.erase(0, 1);
     mKeyValuePairs[key] = "";
     if (i + 1 >= argc) {
       continue;
