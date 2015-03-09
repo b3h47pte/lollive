@@ -54,8 +54,3 @@ void LeagueChampionSVM::CreateTrainingData() {
 std::string LeagueChampionSVM::ConvertLabelToString(int label) {
   return labelToChampion[label];
 }
-
-void LeagueChampionSVM::SetupSVMParameters() {
-  // Trained using Cross Validation using LibSVM with K-Fold = 20
-  svmParams.C = 0.5;
-}

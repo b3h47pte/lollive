@@ -4,7 +4,7 @@
 #include "common.h"
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
-#include "opencv2/ml.hpp"
+#include "linear.h"
 
 class ImageSVM {
 public:
@@ -23,13 +23,15 @@ protected:
   int imageY;
 
   // SVM
-  cv::ml::SVM::Params svmParams;
-  cv::Ptr<cv::ml::SVM> svm;
+  model* svm;
+  problem* currentProblem;
+  parameter* svmParams;
 
   // Training SVM
   void InitializeTrainingDataset(int numImages, int xSize, int ySize);
   void SetupImageTrainingData(int imageIndex, cv::Mat image, int label);
   void PerformTraining();
+  void SetupSVMParameters();
 
   // Loading SVM
   void LoadTraining();
@@ -39,7 +41,6 @@ protected:
 private:
   virtual void LoadTrainingData() = 0;
   virtual void CreateTrainingData() = 0;
-  virtual void SetupSVMParameters() = 0;
 
   std::string datasetName;
   bool isTraining;
