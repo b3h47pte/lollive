@@ -13,7 +13,7 @@ PtrLeaguePlayerData GetPlayerData(std::shared_ptr<GenericDataStore> data, ELeagu
  */
 void LeaguePlayerData::Update(PtrLeaguePlayerData inPlayer, int timeStamp, std::vector<std::shared_ptr<GenericDataStore>>& dataHistory) {
   // If we don't yet have a champion, update the champion
-  if (champion == "") {
+  if (champion == "" || champion == "None") {
     champion = inPlayer->champion;
   }
 
