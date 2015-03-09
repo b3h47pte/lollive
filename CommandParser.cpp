@@ -32,6 +32,6 @@ std::string CommandParser::GetValue(const std::string& key, const std::string& d
   }
 }
 
-bool CommandParser::GetBooleanValue(const std::string& key) const {
+bool CommandParser::Exists(const std::string& key) const {
   return (mKeyValuePairs.find(key) != mKeyValuePairs.end());
 }

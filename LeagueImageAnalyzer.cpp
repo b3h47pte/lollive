@@ -19,6 +19,9 @@ LeagueImageAnalyzer::LeagueImageAnalyzer(IMAGE_PATH_TYPE ImagePath, const std::s
   championSVM = std::shared_ptr<LeagueChampionSVM>(new LeagueChampionSVM(false));
   championSVM->Execute();
 
+  itemSVM = std::shared_ptr<LeagueItemSVM>(new LeagueItemSVM(false));
+  itemSVM->Execute();
+
   originalWidth = mImage.cols;
   originalHeight = mImage.rows;
   bIs1080p = (mImage.cols == 1920 && mImage.rows == 1080);
@@ -161,7 +164,7 @@ PtrLeaguePlayerData LeagueImageAnalyzer::AnalyzePlayerData(uint idx, ELeagueTeam
   newPlayer->name = AnalyzePlayerName(idx, team);
   AnalyzePlayerScore(idx, team, &newPlayer->kills, &newPlayer->deaths, &newPlayer->assists, &newPlayer->cs);
   for (uint i = 0; i < 7; ++i) {
-    newPlayer->items[i] = AnalyzePlayerItem(idx, team, i);
+    newPlayer->items[i] = AnalyzePlayerItem_SVM(idx, team, i);
   }
   return newPlayer;
 }
@@ -343,7 +346,7 @@ std::string LeagueImageAnalyzer::FindMatchingChampion_Histogram(cv::Mat filterIm
  * TODO: Use an image pyramid to speed this up. Also use multiple indicators to increase accuracy.
  * TODO: Use HSV while ignoring the V channel to better identify items on cooldown
  */
-std::string LeagueImageAnalyzer::AnalyzePlayerItem(uint playerIdx, ELeagueTeams team, uint itemIdx) {
+std::string LeagueImageAnalyzer::AnalyzePlayerItem_Template(uint playerIdx, ELeagueTeams team, uint itemIdx) {
   cv::Rect section = GetPlayerItemSection(playerIdx, team, itemIdx);
   cv::Mat itemImage = FilterImage_Section(mImage, section);
   cv::Mat baseImage = ItemDatabase->GetDatabaseImage().clone();
@@ -372,6 +375,14 @@ std::string LeagueImageAnalyzer::AnalyzePlayerItem(uint playerIdx, ELeagueTeams 
   }
 
   return item->itemID;
+}
+
+std::string LeagueImageAnalyzer::AnalyzePlayerItem_SVM(uint playerIdx, ELeagueTeams team, uint itemIdx) {
+  cv::Rect section = GetPlayerItemSection(playerIdx, team, itemIdx);
+  cv::Mat itemImage = FilterImage_Section(mImage, section);
+  cv::Mat scaledImage = FilterImage_Resize(itemImage, (double)LEAGUE_ITEM_SQUARE_SIZE / itemImage.rows, 
+    (double)LEAGUE_ITEM_SQUARE_SIZE / itemImage.cols);
+  return itemSVM->PredictImage(scaledImage);
 }
 
 bool LeagueImageAnalyzer::ReverseMatchChampion(cv::Mat containerImage, std::string champion, int targetSizeX, int targetSizeY, cv::Point& output) {

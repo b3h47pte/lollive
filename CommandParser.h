@@ -11,7 +11,7 @@ public:
   CommandParser(int argc, char** argv);
 
   std::string GetValue(const std::string& key, const std::string& defaultValue = "") const;
-  bool GetBooleanValue(const std::string& key) const;
+  bool Exists(const std::string& key) const;
 
 protected:
   void ReparseArguments();

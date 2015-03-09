@@ -18,6 +18,9 @@ public:
   
   cv::Mat GetDatabaseImage() const { return mDatabaseImage; }
 
+  // Retrieves a constant pointer to database
+  const std::map<std::string, PtrLeagueItemData>* GetDatabase() const { return &mData; }
+
   PtrLeagueItemData GetItem(int x, int y) const;
 
 private:

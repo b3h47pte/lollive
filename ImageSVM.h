@@ -39,6 +39,7 @@ protected:
 private:
   virtual void LoadTrainingData() = 0;
   virtual void CreateTrainingData() = 0;
+  virtual void SetupSVMParameters() = 0;
 
   std::string datasetName;
   bool isTraining;

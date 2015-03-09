@@ -9,6 +9,7 @@
 #include "FileUtility.h"
 #include "CommandParser.h"
 #include "LeagueChampionSVM.h"
+#include "LeagueItemSVM.h"
 
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
@@ -20,10 +21,17 @@ void test(IMAGE_PATH_TYPE t, IMAGE_FRAME_COUNT_TYPE t1) {
 
 int main(int argc, char** argv) {
   CommandParser parser(argc, argv);
-  if (parser.GetValue("train") == "league_champs") {
-    LeagueChampionSVM svm(true);
-    svm.Execute();
-    std::cout << "Finished Training League Champion SVM" << std::endl;
+  if (parser.Exists("train")) {
+    std::string trainingExample = parser.GetValue("train");
+    if (trainingExample == "league_champs") {
+      LeagueChampionSVM svm(true);
+      svm.Execute();
+      std::cout << "Finished Training League Champion SVM" << std::endl;
+    } else if (trainingExample == "league_items") {
+      LeagueItemSVM svm(true);
+      svm.Execute();
+      std::cout << "Finished Training League Item SVM" << std::endl;
+    }
   } else {
     std::string path1 = "Images/c9-vs-gv/frame20.png";
     std::string path2 = "Images/tl-vs-tsm/draft1.png";

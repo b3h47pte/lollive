@@ -201,6 +201,9 @@
     <ClInclude Include="LeagueChampionSVM.h">
       <Filter>Training\League</Filter>
     </ClInclude>
+    <ClInclude Include="LeagueItemSVM.h">
+      <Filter>Training\League</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VideoFetcher.cpp">
@@ -297,6 +300,9 @@
       <Filter>Training</Filter>
     </ClCompile>
     <ClCompile Include="LeagueChampionSVM.cpp">
+      <Filter>Training\League</Filter>
+    </ClCompile>
+    <ClCompile Include="LeagueItemSVM.cpp">
       <Filter>Training\League</Filter>
     </ClCompile>
   </ItemGroup>

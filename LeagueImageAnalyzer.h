@@ -10,6 +10,7 @@
 #include "LeagueItemDatabase.h"
 #include "LeagueEventDatabase.h"
 #include "LeagueChampionSVM.h"
+#include "LeagueItemSVM.h"
 
 /*
  * Base class for analyzing League of Legends screenshots. Eventually need to split it to analyze
@@ -128,7 +129,8 @@ protected:
   virtual bool IsValidScore(std::string &inScore);
 
   // Player Items -- Item index can be any number from 0-6 (6 items + 1 trinket).
-  virtual std::string AnalyzePlayerItem(uint playerIdx, ELeagueTeams team, uint itemIdx);
+  virtual std::string AnalyzePlayerItem_Template(uint playerIdx, ELeagueTeams team, uint itemIdx);
+  virtual std::string AnalyzePlayerItem_SVM(uint playerIdx, ELeagueTeams team, uint itemIdx);
   virtual cv::Rect GetPlayerItemSection(uint playerIdx, ELeagueTeams team, uint itemIdx);
   std::shared_ptr<const LeagueItemDatabase> ItemDatabase;
 
@@ -152,6 +154,7 @@ protected:
 
   // SVM
   std::shared_ptr<LeagueChampionSVM> championSVM;
+  std::shared_ptr<LeagueItemSVM> itemSVM;
 
 private:
   DECLARE_CONFIG_VARIABLE(ChampImgSplitDimX, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0)

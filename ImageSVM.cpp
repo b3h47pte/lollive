@@ -1,12 +1,17 @@
 #include "ImageSVM.h"
 #include "FileUtility.h"
 
+#define SAVE_LIBSVM_DATA 0
+#if SAVE_LIBSVM_DATA
+#include <fstream>
+#endif
+
 ImageSVM::ImageSVM(const std::string& datasetName, bool performTraining):
   datasetName(datasetName), isTraining(performTraining) {
   svmParams.svmType = cv::ml::SVM::C_SVC;
-  svmParams.kernelType = cv::ml::SVM::POLY;
-  svmParams.gamma = 3;
-  svmParams.degree = 1.0;
+  svmParams.kernelType = cv::ml::SVM::LINEAR;
+  svmParams.C = 10.0;
+
 }
 
 ImageSVM::~ImageSVM() {
@@ -14,6 +19,7 @@ ImageSVM::~ImageSVM() {
 }
 
 void ImageSVM::Execute() {
+  SetupSVMParameters();
   svm = cv::ml::SVM::create(svmParams);
   if (isTraining) {
     CreateTrainingData();
@@ -44,6 +50,21 @@ void ImageSVM::PerformTraining() {
   cv::Ptr<cv::ml::TrainData> data = cv::ml::TrainData::create(trainingImage, cv::ml::ROW_SAMPLE, trainingLabels);
   svm->train(data);
   svm->save("SVM_" + datasetName + ".xml");
+
+#if SAVE_LIBSVM_DATA
+  // Save data in LibSVM format so that I can do cross validation externally (OpenCV SVM sucks...)
+  std::ofstream libsvmFile;
+  libsvmFile.open("LIBSVM_" + datasetName + ".data");
+  for (int j = 0; j < trainingImage.rows; ++j) {
+    int label = trainingLabels.at<int>(j, 0);
+    libsvmFile << label;
+    for (int i = 0; i < trainingImage.cols; ++i)  {
+      libsvmFile << " " << (i + 1) << ":" << trainingImage.at<float>(j, i);
+    }
+    libsvmFile << std::endl;
+  }
+  libsvmFile.close();
+#endif
 }
 
 void ImageSVM::LoadTraining() {

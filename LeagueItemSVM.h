@@ -1,13 +1,13 @@
 #pragma once
-#ifndef _LEAGUECHAMPIONSVM_H
-#define _LEAGUECHAMPIONSVM_H
+#ifndef _LEAGUEITEMSVM_H
+#define _LEAGUEITEMSVM_H
 #include "common.h"
 #include "ImageSVM.h"
 
-class LeagueChampionSVM : public ImageSVM {
+class LeagueItemSVM : public ImageSVM {
 public:
-  LeagueChampionSVM(bool performTraining);
-  virtual ~LeagueChampionSVM();
+  LeagueItemSVM(bool performTraining);
+  virtual ~LeagueItemSVM();
 
 protected:
   virtual std::string ConvertLabelToString(int label);
@@ -16,7 +16,7 @@ private:
   void CreateTrainingData();
   void SetupSVMParameters();
 
-  std::vector<std::string> labelToChampion;
+  std::vector<std::string> labelToItem;
 };
 
 #endif
