@@ -66,7 +66,6 @@ void LeagueImageAnalyzer::
 GetBans(std::string* outArray, ELeagueTeams team) {
   // There are always at most three bans.
   std::vector<std::string> tmpHints;
-  bool tmpB1, tmpB2;
   for (uint i = 0; i < 3; ++i) {
     cv::Rect banSection = GetBansSection(team, i);
     cv::Rect banPercentSection = GetBansPercentageSection(team, i);
@@ -79,7 +78,7 @@ GetBans(std::string* outArray, ELeagueTeams team) {
       continue;
     }
     cv::Mat img = FilterImage_Section(mImage, banSection);
-    outArray[i] = FindMatchingChampion(img, tmpHints, tmpB1, tmpB2);
+    outArray[i] = FindMatchingChampion_SVM(img);
   }
 }
 

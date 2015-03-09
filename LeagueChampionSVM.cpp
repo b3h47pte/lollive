@@ -40,7 +40,8 @@ void LeagueChampionSVM::CreateTrainingData() {
 
       cv::Mat finalImage;
       cv::Size finalSize;
-      cv::resize(resizedImage, finalImage, finalSize, ldb->GetImageSizeX() / res, ldb->GetImageSizeY() / res);
+      cv::resize(resizedImage, finalImage, finalSize, (double)ldb->GetImageSizeX() / res, (double)ldb->GetImageSizeY() / res);
+
       SetupImageTrainingData(count, finalImage, label);
       ++count;
     }

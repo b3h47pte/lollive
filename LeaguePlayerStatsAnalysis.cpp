@@ -31,9 +31,9 @@ std::string LeagueImageAnalyzer::AnalyzePlayerChampion(uint idx, ELeagueTeams te
     allHints.push_back(championHint);
   }
 
-  bool tmpIsDead;
-  bool tmpIsLowOnHealth;
-  std::string championMatch = FindMatchingChampion(filterImage, allHints, tmpIsLowOnHealth, tmpIsDead, false);
+  bool tmpIsDead = false;
+  bool tmpIsLowOnHealth = false;
+  std::string championMatch = FindMatchingChampion_SVM(filterImage);
   if (isDead) {
     *isDead = tmpIsDead;
   }

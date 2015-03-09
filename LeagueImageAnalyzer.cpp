@@ -16,6 +16,9 @@ LeagueImageAnalyzer::LeagueImageAnalyzer(IMAGE_PATH_TYPE ImagePath, const std::s
   ChampionDatabase = LeagueChampionDatabase::Get();
   ItemDatabase = LeagueItemDatabase::Get();
 
+  championSVM = std::shared_ptr<LeagueChampionSVM>(new LeagueChampionSVM(false));
+  championSVM->Execute();
+
   originalWidth = mImage.cols;
   originalHeight = mImage.rows;
   bIs1080p = (mImage.cols == 1920 && mImage.rows == 1080);
@@ -164,11 +167,20 @@ PtrLeaguePlayerData LeagueImageAnalyzer::AnalyzePlayerData(uint idx, ELeagueTeam
 }
 
 /*
+ * Query the pre-trained SVM as to who the given champion is
+ */
+std::string LeagueImageAnalyzer::FindMatchingChampion_SVM(cv::Mat filterImage) {
+  cv::Mat scaledImage = FilterImage_Resize(filterImage, (double)LeagueChampionDatabase::Get()->GetImageSizeX() / filterImage.rows,
+    (double)LeagueChampionDatabase::Get()->GetImageSizeY() / filterImage.cols);
+  return championSVM->PredictImage(scaledImage);
+}
+
+/*
  * From the given image, we want to give the champion that is the best match as well as whether or not the champion is low on health or is dead.
  * Optionally, we may provide this function a list of 'hints.' When that is the case, we will only look at champions that are contained within the
  * hints.
  */
-std::string LeagueImageAnalyzer::FindMatchingChampion(cv::Mat filterImage, std::vector<std::string>& championHints, bool& isLowOnHealth, bool& isDead, bool allowNone) {
+std::string LeagueImageAnalyzer::FindMatchingChampion_Histogram(cv::Mat filterImage, std::vector<std::string>& championHints, bool& isLowOnHealth, bool& isDead, bool allowNone) {
   // Split the image into x_dim * y_dim parts (generally want to have ~25 solid pieces to compare).
   int x_dim = GetChampImgSplitDimX();
   int y_dim = GetChampImgSplitDimY();

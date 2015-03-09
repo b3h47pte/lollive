@@ -9,6 +9,7 @@
 #include "LeagueChampionDatabase.h"
 #include "LeagueItemDatabase.h"
 #include "LeagueEventDatabase.h"
+#include "LeagueChampionSVM.h"
 
 /*
  * Base class for analyzing League of Legends screenshots. Eventually need to split it to analyze
@@ -132,7 +133,8 @@ protected:
   std::shared_ptr<const LeagueItemDatabase> ItemDatabase;
 
   // Utility Function to help us determine who the input champion is
-  std::string FindMatchingChampion(cv::Mat filterImage, std::vector<std::string>& championHints, bool& isLowHealth, bool& isDead, bool allowNone = true);
+  std::string FindMatchingChampion_SVM(cv::Mat filterImage);
+  std::string FindMatchingChampion_Histogram(cv::Mat filterImage, std::vector<std::string>& championHints, bool& isLowHealth, bool& isDead, bool allowNone = true);
   bool ReverseMatchChampion(cv::Mat containerImage, std::string champion, int targetSizeX, int targetSizeY, cv::Point& output);
 
   // Bans
@@ -147,6 +149,9 @@ protected:
   // Team Series Score
   virtual int GetTeamGamesWon(ELeagueTeams team);
   virtual cv::Rect GetTeamGamesWonSection(ELeagueTeams team);
+
+  // SVM
+  std::shared_ptr<LeagueChampionSVM> championSVM;
 
 private:
   DECLARE_CONFIG_VARIABLE(ChampImgSplitDimX, int, ConfigManager::CONFIG_LEAGUE_FILENAME, "ImageAnalyzer", 0)

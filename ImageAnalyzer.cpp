@@ -39,7 +39,6 @@ GetPropertyValue(const std::string& key, std::string& outValue) {
 void ImageAnalyzer::ShowImage(cv::Mat& image) {
   cv::namedWindow("Window", cv::WINDOW_AUTOSIZE);
   cv::imshow("Window", image);
-  cv::imwrite("test.png", image);
   cv::waitKey(0);
   cv::destroyWindow("Window");
 }
