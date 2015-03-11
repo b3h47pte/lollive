@@ -14,7 +14,6 @@ protected:
 private:
   void LoadTrainingData();
   void CreateTrainingData();
-  void SetupSVMParameters();
 
   std::vector<std::string> labelToChampion;
 };
