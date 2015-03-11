@@ -22,7 +22,7 @@ protected:
   // SVM
   svm_problem problem;
   svm_parameter svmParams;
-  svm_model svm;
+  svm_model* svm;
 
   // Training SVM
   void InitializeTrainingDataset(int numImages, int xSize, int ySize);

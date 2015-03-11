@@ -20,8 +20,14 @@ ImageSVM::ImageSVM(const std::string& datasetName, bool performTraining):
 }
 
 ImageSVM::~ImageSVM() {
-  svm_free_model_content(&svm);
+  for (int i = 0; i < problem.l; ++i) {
+    delete problem.x[i];
+  }
+  delete problem.x;
+  delete problem.y;
+
   svm_destroy_param(&svmParams);
+  svm_free_and_destroy_model(&svm);
   delete orb;
 }
 
@@ -30,11 +36,20 @@ void ImageSVM::Execute() {
 
   if (isTraining) {
     CreateTrainingData();
+    SetupSVMParameters();
+
+    char* error = svm_check_parameter(&problem, &svmParams);
+    if (error != NULL) {
+      std::cout << "SVM TRAINING ERROR: " << error << std::endl;
+      return
+    }
+
+    svm = svm_train(&problem, &svmParams);
+    svm_save_model("SVM_" + datasetName + ".svm", svm);
+
   } else {
     LoadTrainingData();
   }
-
-  SetupSVMParameters();
 }
 
 void ImageSVM::InitializeTrainingDataset(int numImages, int xSize, int ySize) {
@@ -174,6 +189,7 @@ ImageSVM::GenerateSpatialPyramidData(cv::Mat image, std::vector<cv::KeyPoint>& p
 
 void ImageSVM::LoadTraining() {
   cv::imread("DICTIONARY_" + datasetName + ".png", cv::IMREAD_GRAYSCALE).convertTo(dictionary, CV_32F);
+  svm = svm_load_model("SVM_" + datasetName + ".svm");
 }
 
 std::string ImageSVM::PredictImage(const cv::Mat& inImage) {
