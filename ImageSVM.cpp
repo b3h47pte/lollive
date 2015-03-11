@@ -38,14 +38,14 @@ void ImageSVM::Execute() {
     CreateTrainingData();
     SetupSVMParameters();
 
-    char* error = svm_check_parameter(&problem, &svmParams);
+    const char* error = svm_check_parameter(&problem, &svmParams);
     if (error != NULL) {
       std::cout << "SVM TRAINING ERROR: " << error << std::endl;
-      return
+      return;
     }
 
     svm = svm_train(&problem, &svmParams);
-    svm_save_model("SVM_" + datasetName + ".svm", svm);
+    svm_save_model(("SVM_" + datasetName + ".svm").c_str(), svm);
 
   } else {
     LoadTrainingData();
@@ -189,7 +189,7 @@ ImageSVM::GenerateSpatialPyramidData(cv::Mat image, std::vector<cv::KeyPoint>& p
 
 void ImageSVM::LoadTraining() {
   cv::imread("DICTIONARY_" + datasetName + ".png", cv::IMREAD_GRAYSCALE).convertTo(dictionary, CV_32F);
-  svm = svm_load_model("SVM_" + datasetName + ".svm");
+  svm = svm_load_model(("SVM_" + datasetName + ".svm").c_str());
 }
 
 std::string ImageSVM::PredictImage(const cv::Mat& inImage) {
