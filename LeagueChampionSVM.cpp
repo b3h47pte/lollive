@@ -28,10 +28,11 @@ void LeagueChampionSVM::CreateTrainingData() {
   // Resize a champion image at multiple resolutions and put that into the SVM'
   const int resolutionStep = 5;
   int resolutionLevels = (int)((float)ldb->GetImageSizeX() * 2 / 3) / resolutionStep;
-  InitializeTrainingDataset(mapping->size() * resolutionLevels, ldb->GetImageSizeX(), ldb->GetImageSizeY());
+  InitializeTrainingDataset((mapping->size() - 1) * resolutionLevels, ldb->GetImageSizeX(), ldb->GetImageSizeY());
   int count = 0;
   int label = 0;
   for (auto data : *mapping) {
+    if (data.second->shortName == "None") continue;
     cv::Mat originalImage = data.second->image;
     for (int i = 0; i < resolutionLevels; ++i) {
       int res = ldb->GetImageSizeX() / 3 + i * resolutionStep;

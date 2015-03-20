@@ -97,7 +97,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(OPENCV_DIR)\x86\vc12\lib;$(TESSERACT_DIR)\lib;C:\Users\Michael\Documents\GitHub\curl\builds\libcurl-vc-x86-release-dll-ipv6-sspi-winssl\lib;C:\Users\Michael\Documents\GitHub\libsvm-3.20\windows;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_ts300d.lib;opencv_world300d.lib;libtesseract302d.lib;liblept168d.lib;libcurl.lib;%(AdditionalDependencies);libsvm.lib</AdditionalDependencies>
+      <AdditionalDependencies>opencv_ts300d.lib;opencv_world300d.lib;libtesseract302d.lib;liblept168d.lib;libcurl.lib;%(AdditionalDependencies);libsvmd.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -159,6 +159,7 @@
     <ClInclude Include="common.h" />
     <ClInclude Include="ConfigManager.h" />
     <ClInclude Include="ConversionUtility.h" />
+    <ClInclude Include="CvWrapper.h" />
     <ClInclude Include="Dispatch.h" />
     <ClInclude Include="FileUtility.h" />
     <ClInclude Include="ImageAnalyzer.h" />
@@ -198,6 +199,7 @@
     <ClCompile Include="cjson\cJSON.c" />
     <ClCompile Include="CommandParser.cpp" />
     <ClCompile Include="ConfigManager.cpp" />
+    <ClCompile Include="CvWrapper.cpp" />
     <ClCompile Include="Dispatch.cpp" />
     <ClCompile Include="ImageSVM.cpp" />
     <ClCompile Include="inih\ini.c" />

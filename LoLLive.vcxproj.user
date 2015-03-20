@@ -6,12 +6,12 @@
     <LocalDebuggerCommandArguments>test.ogg</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>-train league_champs</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-train league_items</LocalDebuggerCommandArguments>
     <LocalDebuggerWorkingDirectory>$(GSTREAMER_1_0_ROOT_X86)\bin</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LocalDebuggerCommandArguments>-train league_champs</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-train league_items</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(GSTREAMER_1_0_ROOT_X86)\bin</LocalDebuggerWorkingDirectory>
   </PropertyGroup>

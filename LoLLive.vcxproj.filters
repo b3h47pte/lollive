@@ -85,6 +85,9 @@
     <Filter Include="Training\League">
       <UniqueIdentifier>{d71e3314-b702-42f1-94a1-ee622c1a5820}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\OpenCV">
+      <UniqueIdentifier>{1de83253-1f4e-46d7-96a9-9270d398169b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VideoFetcher.h">
@@ -204,6 +207,9 @@
     <ClInclude Include="LeagueItemSVM.h">
       <Filter>Training\League</Filter>
     </ClInclude>
+    <ClInclude Include="CvWrapper.h">
+      <Filter>Core\OpenCV</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VideoFetcher.cpp">
@@ -304,6 +310,9 @@
     </ClCompile>
     <ClCompile Include="LeagueItemSVM.cpp">
       <Filter>Training\League</Filter>
+    </ClCompile>
+    <ClCompile Include="CvWrapper.cpp">
+      <Filter>Core\OpenCV</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

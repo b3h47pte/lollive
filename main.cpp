@@ -25,10 +25,12 @@ int main(int argc, char** argv) {
     std::string trainingExample = parser.GetValue("train");
     if (trainingExample == "league_champs") {
       LeagueChampionSVM svm(true);
+      svm.ParseOptions(parser);
       svm.Execute();
       std::cout << "Finished Training League Champion SVM" << std::endl;
     } else if (trainingExample == "league_items") {
       LeagueItemSVM svm(true);
+      svm.ParseOptions(parser);
       svm.Execute();
       std::cout << "Finished Training League Item SVM" << std::endl;
     }

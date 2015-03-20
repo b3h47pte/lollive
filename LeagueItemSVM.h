@@ -16,6 +16,7 @@ private:
   void CreateTrainingData();
 
   std::vector<std::string> labelToItem;
+  virtual void CreateOrb();
 };
 
 #endif

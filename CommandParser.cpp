@@ -1,4 +1,5 @@
 #include "CommandParser.h"
+#include <cstdlib>
 
 CommandParser::CommandParser(int argc, char** argv): argc(argc), argv(argv) {
   ReparseArguments();
@@ -27,6 +28,14 @@ void CommandParser::ReparseArguments() {
 std::string CommandParser::GetValue(const std::string& key, const std::string& defaultValue) const {
   try {
     return mKeyValuePairs.at(key);
+  } catch (...) {
+    return defaultValue;
+  }
+}
+
+int CommandParser::GetIntValue(const std::string& key, const int defaultValue = 0) const {
+  try {
+    return std::atoi(mKeyValuePairs.at(key));
   } catch (...) {
     return defaultValue;
   }

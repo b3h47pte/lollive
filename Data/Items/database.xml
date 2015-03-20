@@ -1069,5 +1069,9 @@
       <id>3104</id>
       <path>3104_Lord_Van_Damms_Pillager.png</path>
     </item>
+    <item>
+      <id>9999</id>
+      <path>9999_Empty.png</path>
+    </item>
   </items>
 </database>

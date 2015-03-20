@@ -12,8 +12,15 @@ public:
   ImageSVM(const std::string& datasetName, bool performTraining);
   virtual ~ImageSVM();
   virtual void Execute();
+  virtual void ParseOptions(class CommandParser* parser);
 
   std::string PredictImage(const cv::Mat& inImage);
+
+  enum TRAINER_IMAGE_TYPE {
+    TIT_GRAYSCALE,
+    TIT_RGB,
+    TIT_HSV
+  };
 
 protected:
   int imageX;
@@ -28,6 +35,8 @@ protected:
   void InitializeTrainingDataset(int numImages, int xSize, int ySize);
   void SetupImageTrainingData(int imageIndex, cv::Mat image, int label);
   void PerformTraining();
+  void BatchComputeImageFeatures(cv::Mat image, std::vector<cv::KeyPoint>& keypoints, cv::Mat& features);
+  void ComputeImageFeatures(cv::Mat image, std::vector<cv::KeyPoint>& keypoints, cv::Mat& features);
   virtual void SetupSVMParameters();
 
   // Spatial Pyramid
@@ -41,6 +50,11 @@ protected:
 
   virtual std::string ConvertLabelToString(int label) = 0;
 
+  int kClusters;
+  int maxSpatialPyramidLevel;
+  cv::Ptr<cv::ORB> orb;
+  TRAINER_IMAGE_TYPE imageType;
+
 private:
   virtual void LoadTrainingData() = 0;
   virtual void CreateTrainingData() = 0;
@@ -48,15 +62,12 @@ private:
   std::string datasetName;
   bool isTraining;
 
-  cv::Ptr<cv::ORB> orb;
-
   // Bag of Visual Words
   cv::Mat completeFeatureSet; // TRAINING ONLY
   std::vector<cv::Mat> completeImageSet; // TRAINING ONLY
   cv::Mat dictionary;
 
-  int kClusters;
-  int maxSpatialPyramidLevel;
+  virtual void CreateOrb();
 };
 
 #endif

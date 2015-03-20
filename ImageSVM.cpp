@@ -1,12 +1,14 @@
 #include "ImageSVM.h"
 #include "FileUtility.h"
+#include "CvWrapper.h"
+#include "CommandParser.h"
 
 #define REUSE_DICTIONARY_TRAINING 0
 
 void svmNullPrint(const char *s) {}
 
 ImageSVM::ImageSVM(const std::string& datasetName, bool performTraining):
-  datasetName(datasetName), isTraining(performTraining), kClusters(200), maxSpatialPyramidLevel(1) {
+  datasetName(datasetName), isTraining(performTraining), kClusters(300), maxSpatialPyramidLevel(1), imageType(TIT_GRAYSCALE) {
   svmParams.svm_type = C_SVC;
   svmParams.kernel_type = RBF;
   svmParams.eps = 0.001;
@@ -15,7 +17,36 @@ ImageSVM::ImageSVM(const std::string& datasetName, bool performTraining):
   svmParams.weight = NULL;
   svmParams.shrinking = 1;
   svmParams.probability = 0;
+}
 
+void ImageSVM::ParseOptions(CommandParser* parser) {
+  // SVM Type - C_SVC only
+  std::string parsedSvmType = parser->GetValue("svm_type", "svc");
+  std::transform(parsedSvmType.begin(), parsedSvmType.end(), parsedSvmType.begin(), ::toupper);
+  if (parsedSvmType == "SVC") {
+    svmParams.svm_type = C_SVC;
+  }
+
+  // Kernel Type -- RBF, LINEAR
+  std::string parsedKernelType = parser->GetValue("kernel_type", "rbf");
+  std::transform(parsedKernelType.begin(), parsedKernelType.end(), parsedKernelType.begin(), ::toupper);
+  if (parsedKernelType == "RBF") {
+    svmParams.kernel_type = RBF;
+  } else if (parsedKernelType == "LINEAR") {
+    svmParams.kernel_type = LINEAR;
+  }
+
+  // K (Number Clusters)
+  kClusters = parser->GetIntValue("clusters", 300);
+
+  // Max Spatial Pyramid Level
+  maxSpatialPyramidLevel = parser->GetIntValue("spatial", 1);
+
+  // Image Type
+  imageType = parser->GetIntValue("image", 0);
+}
+
+void ImageSVM::CreateOrb() {
   orb = cv::ORB::create();
 }
 
@@ -28,10 +59,10 @@ ImageSVM::~ImageSVM() {
 
   svm_destroy_param(&svmParams);
   svm_free_and_destroy_model(&svm);
-  delete orb;
 }
 
 void ImageSVM::Execute() {
+  CreateOrb();
   svm_set_print_string_function(&svmNullPrint);
 
   if (isTraining) {
@@ -64,14 +95,39 @@ void ImageSVM::InitializeTrainingDataset(int numImages, int xSize, int ySize) {
 void ImageSVM::SetupImageTrainingData(int imageIndex, cv::Mat image, int label) {
   problem.y[imageIndex] = (double)label;
 
-  cv::Mat grayImage;
-  cv::cvtColor(image, grayImage, cv::COLOR_BGR2GRAY);
-
   std::vector<cv::KeyPoint> keypoints;
   cv::Mat features;
-  orb->detectAndCompute(grayImage, cv::Mat(), keypoints, features);
+  BatchComputeImageFeatures(image, keypoints, features);
+
   completeFeatureSet.push_back(features);
-  completeImageSet.push_back(grayImage);
+  completeImageSet.push_back(image);
+}
+
+void ImageSVM::BatchComputeImageFeatures(cv::Mat image, std::vector<cv::KeyPoint>& keypoints, cv::Mat& features) {
+  if (imageType == TIT_GRAYSCALE) {
+    cv::Mat grayImage = CvWrapper::FilterImage_Grayscale(image);
+    ComputeImageFeatures(grayImage, keypoints, features);
+  } else {
+    cv::Mat channeledImage;
+    if (imageType == TIT_RGB) {
+      channeledImage = image;
+    } else if (imageType == TIT_HSV) {
+      cv::cvtColor(image, channeledImage, cv::COLOR_BGR2HSV);
+    }
+
+    for (int i = 0; i < 3; ++i) {
+      std::vector<cv::KeyPoint> channelKeypoints;
+      cv::Mat channelFeatures;
+      ComputeImageFeatures(CvWrapper::FilterImage_Channel(channeledImage, i), channelKeypoints, channelFeatures); 
+
+      keypoints.insert(keypoints.end(), channelKeypoints.begin(), channelKeypoints.end());
+      features.push_back(channelFeatures);
+    }
+  }
+}
+
+void ImageSVM::ComputeImageFeatures(cv::Mat image, std::vector<cv::KeyPoint>& keypoints, cv::Mat& features) {
+  orb->detectAndCompute(image, cv::Mat(), keypoints, features);
 }
 
 void ImageSVM::PerformTraining() {
@@ -81,6 +137,7 @@ void ImageSVM::PerformTraining() {
   // Create the bag of visual words dictionary using K-Means clustering on all the features
   cv::Mat floatFeatureSet;
   completeFeatureSet.convertTo(floatFeatureSet, CV_32F);
+  std::cout << "  Number Features: " << floatFeatureSet.rows << " " << floatFeatureSet.cols << std::endl;
 
   cv::Mat featureLabels;
   cv::TermCriteria criteria(cv::TermCriteria::COUNT + cv::TermCriteria::EPS, 10000, 0.0001);
@@ -105,7 +162,8 @@ void ImageSVM::PerformTraining() {
   for (size_t i = 0; i < completeImageSet.size(); ++i) {
     std::vector<cv::KeyPoint> keypoints;
     cv::Mat features;
-    orb->detectAndCompute(completeImageSet[i], cv::Mat(), keypoints, features);
+    
+    BatchComputeImageFeatures(completeImageSet[i], keypoints, features);
 
     cv::Mat floatFeatures;
     features.convertTo(floatFeatures, CV_32F);
@@ -134,8 +192,8 @@ int ImageSVM::TotalHistogramBinsLevel(int level) {
 
 void 
 ImageSVM::GenerateSpatialPyramidDataHierarchy(cv::Mat image, std::vector<cv::KeyPoint>& points, std::vector<cv::DMatch>& matches, int maxLevel, svm_node* nodes) {
-  int totalBins = TotalHistogramBins(maxSpatialPyramidLevel);
-  for (int level = 0; level <= maxSpatialPyramidLevel; ++level) {
+  int totalBins = TotalHistogramBins(maxLevel);
+  for (int level = 0; level <= maxLevel; ++level) {
     svm_node* problemXPointer = nodes + TotalHistogramBins(level - 1);
     GenerateSpatialPyramidData(image, points, matches, level, problemXPointer);
   }
@@ -208,8 +266,10 @@ void ImageSVM::SetupSVMParameters() {
   double maxAccuracy = 0.0;
   double bestC = 0.0;
   double bestG = 0.0;
+#ifdef NDEBUG
+#pragma omp parallel for num_threads(3)
+#endif
   for (int c = -5; c <= 15; c += 2) {
-#pragma omp parallel for
     for (int g = 3; g >= -15; g -= 2) {
       svm_parameter tempParam = svmParams;
       tempParam.C = pow(2, c);
@@ -227,8 +287,10 @@ void ImageSVM::SetupSVMParameters() {
 
       double accuracy = (double)accurateCount / problem.l;
       std::cout << "Cross Validation Step: " << accuracy << " " << c << " " << g << std::endl;
+#ifdef NDEBUG
 #pragma omp critical
-      if (accuracy > maxAccuracy) {
+#endif
+      if (accuracy > maxAccuracy + 1e-6) {
         maxAccuracy = accuracy;
         bestC = tempParam.C;
         bestG = tempParam.gamma;
