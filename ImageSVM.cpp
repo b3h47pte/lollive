@@ -51,14 +51,14 @@ void ImageSVM::CreateOrb() {
 }
 
 ImageSVM::~ImageSVM() {
+  svm_free_and_destroy_model(&svm);
+  svm_destroy_param(&svmParams);
+
   for (int i = 0; i < problem.l; ++i) {
     delete[] problem.x[i];
   }
   delete[] problem.x;
   delete[] problem.y;
-
-  svm_destroy_param(&svmParams);
-  svm_free_and_destroy_model(&svm);
 }
 
 void ImageSVM::Execute() {
