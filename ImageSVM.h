@@ -35,7 +35,7 @@ protected:
   void InitializeTrainingDataset(int numImages, int xSize, int ySize);
   void SetupImageTrainingData(int imageIndex, cv::Mat image, int label);
   void PerformTraining();
-  void BatchComputeImageFeatures(cv::Mat image, std::vector<cv::KeyPoint>& keypoints, cv::Mat& features);
+  void BatchComputeImageFeatures(cv::Mat image, std::vector<cv::KeyPoint>& keypoints, cv::Mat& features, int channel = -1);
   void ComputeImageFeatures(cv::Mat image, std::vector<cv::KeyPoint>& keypoints, cv::Mat& features);
   virtual void SetupSVMParameters();
 
@@ -49,6 +49,7 @@ protected:
   void LoadTraining();
 
   virtual std::string ConvertLabelToString(int label) = 0;
+  virtual void LoadLabelMapping() = 0;
 
   int kClusters;
   int maxSpatialPyramidLevel;
@@ -58,14 +59,16 @@ protected:
 private:
   virtual void LoadTrainingData() = 0;
   virtual void CreateTrainingData() = 0;
+  std::string CreateDictionaryName(int channel = 0);
+  int GetTotalChannels() const;
 
   std::string datasetName;
   bool isTraining;
 
   // Bag of Visual Words
-  cv::Mat completeFeatureSet; // TRAINING ONLY
+  std::vector<cv::Mat> completeFeatureSet; // TRAINING ONLY
   std::vector<cv::Mat> completeImageSet; // TRAINING ONLY
-  cv::Mat dictionary;
+  std::vector<cv::Mat> dictionary;
 
   virtual void CreateOrb();
 };

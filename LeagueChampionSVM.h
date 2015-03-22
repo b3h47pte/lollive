@@ -11,6 +11,7 @@ public:
 
 protected:
   virtual std::string ConvertLabelToString(int label);
+  virtual void LoadLabelMapping();
 private:
   void LoadTrainingData();
   void CreateTrainingData();

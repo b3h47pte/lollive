@@ -20,6 +20,7 @@ const std::string LEAGUE_NO_CHAMPION = "None";
 // Invalid Item Count/ID
 const int LEAGUE_INVALID_ITEM = 9999;
 const int LEAGUE_ITEM_SQUARE_SIZE = 64;
+const int LEAGUE_ITEM_DETECT_SQUARE_SIZE = 64;
 
 // Property Constants
 const std::string LEAGUE_DRAFT_BANS_TEXT_BLUE = "LEAGUE_DRAFT_BANS_TEXT_BLUE";

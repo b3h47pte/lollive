@@ -33,9 +33,9 @@ std::string CommandParser::GetValue(const std::string& key, const std::string& d
   }
 }
 
-int CommandParser::GetIntValue(const std::string& key, const int defaultValue = 0) const {
+int CommandParser::GetIntValue(const std::string& key, const int defaultValue) const {
   try {
-    return std::atoi(mKeyValuePairs.at(key));
+    return std::atoi(mKeyValuePairs.at(key).c_str());
   } catch (...) {
     return defaultValue;
   }

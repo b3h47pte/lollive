@@ -9,6 +9,8 @@
 struct LeagueItemData {
   std::string itemID;
   cv::Mat itemImage;
+  bool isEnchantment;
+  std::string baseItemID;
 
   bool IsInvalid() {
     return (itemID == std::to_string(LEAGUE_INVALID_ITEM));

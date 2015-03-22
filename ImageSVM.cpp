@@ -43,7 +43,7 @@ void ImageSVM::ParseOptions(CommandParser* parser) {
   maxSpatialPyramidLevel = parser->GetIntValue("spatial", 1);
 
   // Image Type
-  imageType = parser->GetIntValue("image", 0);
+  imageType = (TRAINER_IMAGE_TYPE)parser->GetIntValue("image", 0);
 }
 
 void ImageSVM::CreateOrb() {
@@ -52,19 +52,23 @@ void ImageSVM::CreateOrb() {
 
 ImageSVM::~ImageSVM() {
   for (int i = 0; i < problem.l; ++i) {
-    delete problem.x[i];
+    delete[] problem.x[i];
   }
-  delete problem.x;
-  delete problem.y;
+  delete[] problem.x;
+  delete[] problem.y;
 
   svm_destroy_param(&svmParams);
   svm_free_and_destroy_model(&svm);
 }
 
 void ImageSVM::Execute() {
+  dictionary.resize(GetTotalChannels());
+  completeFeatureSet.resize(GetTotalChannels());
+
   CreateOrb();
   svm_set_print_string_function(&svmNullPrint);
 
+  LoadLabelMapping();
   if (isTraining) {
     CreateTrainingData();
     SetupSVMParameters();
@@ -95,15 +99,17 @@ void ImageSVM::InitializeTrainingDataset(int numImages, int xSize, int ySize) {
 void ImageSVM::SetupImageTrainingData(int imageIndex, cv::Mat image, int label) {
   problem.y[imageIndex] = (double)label;
 
-  std::vector<cv::KeyPoint> keypoints;
-  cv::Mat features;
-  BatchComputeImageFeatures(image, keypoints, features);
+  for (int i = 0; i < GetTotalChannels(); ++i) {
+    std::vector<cv::KeyPoint> keypoints;
+    cv::Mat features;
+    BatchComputeImageFeatures(image, keypoints, features, i);
 
-  completeFeatureSet.push_back(features);
+    completeFeatureSet[i].push_back(features);
+  }
   completeImageSet.push_back(image);
 }
 
-void ImageSVM::BatchComputeImageFeatures(cv::Mat image, std::vector<cv::KeyPoint>& keypoints, cv::Mat& features) {
+void ImageSVM::BatchComputeImageFeatures(cv::Mat image, std::vector<cv::KeyPoint>& keypoints, cv::Mat& features, int channel) {
   if (imageType == TIT_GRAYSCALE) {
     cv::Mat grayImage = CvWrapper::FilterImage_Grayscale(image);
     ComputeImageFeatures(grayImage, keypoints, features);
@@ -116,6 +122,7 @@ void ImageSVM::BatchComputeImageFeatures(cv::Mat image, std::vector<cv::KeyPoint
     }
 
     for (int i = 0; i < 3; ++i) {
+      if (channel != -1 && i != channel) continue;
       std::vector<cv::KeyPoint> channelKeypoints;
       cv::Mat channelFeatures;
       ComputeImageFeatures(CvWrapper::FilterImage_Channel(channeledImage, i), channelKeypoints, channelFeatures); 
@@ -130,49 +137,71 @@ void ImageSVM::ComputeImageFeatures(cv::Mat image, std::vector<cv::KeyPoint>& ke
   orb->detectAndCompute(image, cv::Mat(), keypoints, features);
 }
 
+std::string ImageSVM::CreateDictionaryName(int channel) {
+  std::stringstream ss;
+  ss << "DICTIONARY_" << datasetName << "_" << channel << ".png";
+  std::cout << "CREATE DICTIONARY NAME: " << ss.str() << std::endl;
+  return ss.str();
+}
+
+int ImageSVM::GetTotalChannels() const {
+  return (imageType == TIT_GRAYSCALE) ? 1 : 3;
+}
+
 void ImageSVM::PerformTraining() {
-  cv::Mat featureClusters;
+  int totalChannels = GetTotalChannels();
+  for (int i = 0; i < totalChannels; ++i) {
 #if !REUSE_DICTIONARY_TRAINING
-  std::cout << "START KMEANS CLUSTERING" << std::endl;
-  // Create the bag of visual words dictionary using K-Means clustering on all the features
-  cv::Mat floatFeatureSet;
-  completeFeatureSet.convertTo(floatFeatureSet, CV_32F);
-  std::cout << "  Number Features: " << floatFeatureSet.rows << " " << floatFeatureSet.cols << std::endl;
+    std::cout << "START KMEANS CLUSTERING" << std::endl;
+    // Create the bag of visual words dictionary using K-Means clustering on all the features
+    cv::Mat floatFeatureSet;
+    completeFeatureSet[i].convertTo(floatFeatureSet, CV_32F);
+    std::cout << "  Number Features: " << floatFeatureSet.rows << " " << floatFeatureSet.cols << std::endl;
 
-  cv::Mat featureLabels;
-  cv::TermCriteria criteria(cv::TermCriteria::COUNT + cv::TermCriteria::EPS, 10000, 0.0001);
-  cv::kmeans(floatFeatureSet, kClusters, featureLabels, criteria, 5, cv::KMEANS_PP_CENTERS, featureClusters);
+    cv::Mat featureLabels;
+    cv::TermCriteria criteria(cv::TermCriteria::COUNT + cv::TermCriteria::EPS, 10000, 0.0001);
+    cv::kmeans(floatFeatureSet, kClusters, featureLabels, criteria, 5, cv::KMEANS_PP_CENTERS, dictionary[i]);
 
-  std::cout << "FINISH KMEANS CLUSTERING" << std::endl;
-  cv::imwrite("DICTIONARY_" + datasetName + ".png", featureClusters);
+    std::cout << "FINISH KMEANS CLUSTERING" << std::endl;
+    cv::imwrite(CreateDictionaryName(i), dictionary[i]);
 #else
-  cv::imread("DICTIONARY_" + datasetName + ".png", cv::IMREAD_GRAYSCALE).convertTo(featureClusters, CV_32F);
+    cv::imread(CreateDictionaryName(i), cv::IMREAD_GRAYSCALE).convertTo(dictionary[i], CV_32F);
 #endif 
+  }
 
   // Now go back through the images and calculate their feature vector histograms to by finding the closest match in the dictionary  
-  cv::FlannBasedMatcher matcher;
-  matcher.add(featureClusters);
-  matcher.train();
+  std::vector<cv::FlannBasedMatcher> matcher; 
+  matcher.resize(totalChannels);
+  for (int i = 0; i < totalChannels; ++i) {
+    matcher[i].add(dictionary[i]);
+    matcher[i].train();
+  }
 
   std::cout << "PERFORM NEAREST NEIGHBOR MATCH" << std::endl;
-  int totalBins = TotalHistogramBins(maxSpatialPyramidLevel);
+  int singleChannelBinCount = TotalHistogramBins(maxSpatialPyramidLevel);
+  int totalBins = singleChannelBinCount * totalChannels;
+
   std::cout << "  Total Features: " << totalBins << std::endl;
   std::cout << "  Total Samples: " << problem.l << std::endl;
 
   for (size_t i = 0; i < completeImageSet.size(); ++i) {
-    std::vector<cv::KeyPoint> keypoints;
-    cv::Mat features;
-    
-    BatchComputeImageFeatures(completeImageSet[i], keypoints, features);
-
-    cv::Mat floatFeatures;
-    features.convertTo(floatFeatures, CV_32F);
-
-    std::vector<cv::DMatch> matches;
-    matcher.match(floatFeatures, matches);
-    
     problem.x[i] = new svm_node[totalBins + 1];
-    GenerateSpatialPyramidDataHierarchy(completeImageSet[i], keypoints, matches, maxSpatialPyramidLevel, problem.x[i]);
+    
+    int totalChannels = (imageType == TIT_GRAYSCALE) ? 1 : 3;
+    for (int j = 0; j < totalChannels; ++j) {
+      std::vector<cv::KeyPoint> keypoints;
+      cv::Mat features;
+      BatchComputeImageFeatures(completeImageSet[i], keypoints, features, j);
+
+      cv::Mat floatFeatures;
+      features.convertTo(floatFeatures, CV_32F);
+
+      std::vector<cv::DMatch> matches;
+      matcher[j].match(floatFeatures, matches);
+
+      svm_node* problemPointer = problem.x[i] + j * singleChannelBinCount;
+      GenerateSpatialPyramidDataHierarchy(completeImageSet[i], keypoints, matches, maxSpatialPyramidLevel, problemPointer);
+    }
   }
 
   std::cout << "FINISH NEAREST NEIGHBOR AND DATA CREATION" << std::endl;  
@@ -246,7 +275,9 @@ ImageSVM::GenerateSpatialPyramidData(cv::Mat image, std::vector<cv::KeyPoint>& p
 }
 
 void ImageSVM::LoadTraining() {
-  cv::imread("DICTIONARY_" + datasetName + ".png", cv::IMREAD_GRAYSCALE).convertTo(dictionary, CV_32F);
+  for (int i = 0; i < GetTotalChannels(); ++i) {
+    cv::imread(CreateDictionaryName(i), cv::IMREAD_GRAYSCALE).convertTo(dictionary[i], CV_32F);
+  }
   svm = svm_load_model(("SVM_" + datasetName + ".svm").c_str());
 }
 
@@ -270,7 +301,7 @@ void ImageSVM::SetupSVMParameters() {
 #pragma omp parallel for num_threads(3)
 #endif
   for (int c = -5; c <= 15; c += 2) {
-    for (int g = 3; g >= -15; g -= 2) {
+    for (int g = 3; g >= 3; g -= 2) {
       svm_parameter tempParam = svmParams;
       tempParam.C = pow(2, c);
       tempParam.gamma = pow(2, g);
@@ -298,10 +329,8 @@ void ImageSVM::SetupSVMParameters() {
     }
   }
 
-  std::cout << "FINISH CROSS VALIDATION: " << std::endl;
+  std::cout << "FINISH CROSS VALIDATION: " << kClusters << " " << maxSpatialPyramidLevel << " " << svmParams.kernel_type << std::endl;
   std::cout << "  Accuracy: " << maxAccuracy << std::endl;
-  std::cout << "  Best C: " << bestC << std::endl;
-  std::cout << "  Best G: " << bestG << std::endl;
   svmParams.C = bestC;
   svmParams.gamma = bestG;
 }

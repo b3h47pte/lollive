@@ -19,6 +19,10 @@ public:
   static cv::Mat FilterImage_BasicThreshold(cv::Mat inImage, double threshold);
   static cv::Mat FilterImage_Resize(cv::Mat inImage, double resX, double resY);
   static cv::Mat FilterImage_Grayscale(cv::Mat inImage);
+
+  // Debug Function to show an image
+  static void ShowImage(cv::Mat& image);
+  static void ShowImageNoPause(cv::Mat& image, const char* name);
 private:
 };
 

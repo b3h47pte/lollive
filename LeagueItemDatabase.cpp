@@ -74,6 +74,13 @@ void LeagueItemDatabase::LoadItemDatabase(std::string& dir, std::string& fileNam
     PtrLeagueItemData itemData(new LeagueItemData);
     itemData->itemID = itemNode->first_node("id")->value();
     itemData->itemImage = cv::imread(envDir + dir + imageDir + itemNode->first_node("path")->value(), cv::IMREAD_UNCHANGED);
+
+    std::string isEnchantment = itemNode->first_node("alt")->value();
+    std::transform(isEnchantment.begin(), isEnchantment.end(), isEnchantment.begin(), ::toupper);
+    itemData->isEnchantment = (isEnchantment == "TRUE");
+
+    itemData->baseItemID = itemNode->first_node("base")->value();
+
     // TODO: Remake item images to all be consistent.
     if (itemData->itemImage.channels() == 4) {
       cv::cvtColor(itemData->itemImage, itemData->itemImage, cv::COLOR_BGRA2BGR);

@@ -12,12 +12,6 @@ LeagueChampionSVM::~LeagueChampionSVM() {
 
 void LeagueChampionSVM::LoadTrainingData() {
   LoadTraining();
-
-  std::shared_ptr<const LeagueChampionDatabase> ldb = LeagueChampionDatabase::Get();
-  const std::map<std::string, PtrLeagueChampionData>* mapping = ldb->GetDatabase();
-  for (auto data : *mapping) {
-    labelToChampion.push_back(data.first);
-  }
 }
 
 void LeagueChampionSVM::CreateTrainingData() {
@@ -54,4 +48,12 @@ void LeagueChampionSVM::CreateTrainingData() {
 
 std::string LeagueChampionSVM::ConvertLabelToString(int label) {
   return labelToChampion[label];
+}
+
+void LeagueChampionSVM::LoadLabelMapping() {
+  std::shared_ptr<const LeagueChampionDatabase> ldb = LeagueChampionDatabase::Get();
+  const std::map<std::string, PtrLeagueChampionData>* mapping = ldb->GetDatabase();
+  for (auto data : *mapping) {
+    labelToChampion.push_back(data.first);
+  }
 }
