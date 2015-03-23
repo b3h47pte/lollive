@@ -51,6 +51,8 @@ protected:
   virtual std::string ConvertLabelToString(int label) = 0;
   virtual void LoadLabelMapping() = 0;
 
+  void GenerateSVMDataForImage(svm_node* problemPointer, cv::Mat inImage, std::vector<cv::FlannBasedMatcher>& matcher);
+
   int kClusters;
   int maxSpatialPyramidLevel;
   cv::Ptr<cv::ORB> orb;
@@ -69,6 +71,7 @@ private:
   std::vector<cv::Mat> completeFeatureSet; // TRAINING ONLY
   std::vector<cv::Mat> completeImageSet; // TRAINING ONLY
   std::vector<cv::Mat> dictionary;
+  std::vector<cv::FlannBasedMatcher> matcher;
 
   virtual void CreateOrb();
 };

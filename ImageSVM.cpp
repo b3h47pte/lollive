@@ -86,7 +86,7 @@ void ImageSVM::Execute() {
     LoadTrainingData();
   }
 }
-
+ 
 void ImageSVM::InitializeTrainingDataset(int numImages, int xSize, int ySize) {
   imageX = xSize;
   imageY = ySize;
@@ -118,7 +118,7 @@ void ImageSVM::BatchComputeImageFeatures(cv::Mat image, std::vector<cv::KeyPoint
     if (imageType == TIT_RGB) {
       channeledImage = image;
     } else if (imageType == TIT_HSV) {
-      cv::cvtColor(image, channeledImage, cv::COLOR_BGR2HSV);
+      cv::cvtColor(image, channeledImage, cv::COLOR_BGR2HSV_FULL);
     }
 
     for (int i = 0; i < 3; ++i) {
@@ -170,7 +170,6 @@ void ImageSVM::PerformTraining() {
   }
 
   // Now go back through the images and calculate their feature vector histograms to by finding the closest match in the dictionary  
-  std::vector<cv::FlannBasedMatcher> matcher; 
   matcher.resize(totalChannels);
   for (int i = 0; i < totalChannels; ++i) {
     matcher[i].add(dictionary[i]);
@@ -186,22 +185,7 @@ void ImageSVM::PerformTraining() {
 
   for (size_t i = 0; i < completeImageSet.size(); ++i) {
     problem.x[i] = new svm_node[totalBins + 1];
-    
-    int totalChannels = (imageType == TIT_GRAYSCALE) ? 1 : 3;
-    for (int j = 0; j < totalChannels; ++j) {
-      std::vector<cv::KeyPoint> keypoints;
-      cv::Mat features;
-      BatchComputeImageFeatures(completeImageSet[i], keypoints, features, j);
-
-      cv::Mat floatFeatures;
-      features.convertTo(floatFeatures, CV_32F);
-
-      std::vector<cv::DMatch> matches;
-      matcher[j].match(floatFeatures, matches);
-
-      svm_node* problemPointer = problem.x[i] + j * singleChannelBinCount;
-      GenerateSpatialPyramidDataHierarchy(completeImageSet[i], keypoints, matches, maxSpatialPyramidLevel, problemPointer);
-    }
+    GenerateSVMDataForImage(problem.x[i], completeImageSet[i], matcher);
   }
 
   std::cout << "FINISH NEAREST NEIGHBOR AND DATA CREATION" << std::endl;  
@@ -242,6 +226,25 @@ ImageSVM::GenerateSpatialPyramidDataHierarchy(cv::Mat image, std::vector<cv::Key
 }
 
 void
+ImageSVM::GenerateSVMDataForImage(svm_node* inProblem, cv::Mat inImage, std::vector<cv::FlannBasedMatcher>& matcher) {
+  int totalChannels = (imageType == TIT_GRAYSCALE) ? 1 : 3;
+  for (int j = 0; j < totalChannels; ++j) {
+    svm_node* problemPointer = inProblem + j * TotalHistogramBins(maxSpatialPyramidLevel);
+    std::vector<cv::KeyPoint> keypoints;
+    cv::Mat features;
+    BatchComputeImageFeatures(inImage, keypoints, features, j);
+
+    cv::Mat floatFeatures;
+    features.convertTo(floatFeatures, CV_32F);
+
+    std::vector<cv::DMatch> matches;
+    matcher[j].match(floatFeatures, matches);
+
+    GenerateSpatialPyramidDataHierarchy(inImage, keypoints, matches, maxSpatialPyramidLevel, problemPointer);
+  }
+}
+
+void
 ImageSVM::GenerateSpatialPyramidData(cv::Mat image, std::vector<cv::KeyPoint>& points, std::vector<cv::DMatch>& matches, int level, svm_node* nodes) {
   int bins = TotalHistogramBinsLevel(level);
   int sideCount = (int)pow(2, level);
@@ -275,21 +278,34 @@ ImageSVM::GenerateSpatialPyramidData(cv::Mat image, std::vector<cv::KeyPoint>& p
 }
 
 void ImageSVM::LoadTraining() {
+  matcher.resize(GetTotalChannels());
+
   for (int i = 0; i < GetTotalChannels(); ++i) {
     cv::imread(CreateDictionaryName(i), cv::IMREAD_GRAYSCALE).convertTo(dictionary[i], CV_32F);
+    matcher[i].add(dictionary[i]);
+    matcher[i].train();
   }
   svm = svm_load_model(("SVM_" + datasetName + ".svm").c_str());
 }
 
 std::string ImageSVM::PredictImage(const cv::Mat& inImage) {
-  cv::Mat query;
-  cv::Mat imageGray;
-  cv::cvtColor(inImage, imageGray, cv::COLOR_BGR2GRAY);
+  cv::Mat newImage;
 
-  imageGray.reshape(1, 1).convertTo(query, CV_32F);
-  int label = 0;
+  switch (imageType) {
+  case TIT_GRAYSCALE:
+    cv::cvtColor(inImage, newImage, cv::COLOR_BGR2GRAY);
+    break;
+  case TIT_HSV:
+    cv::cvtColor(inImage, newImage, cv::COLOR_BGR2HSV_FULL);
+    break;
+  }
 
-  return ConvertLabelToString(label);
+  svm_node* queryNode = new svm_node[TotalHistogramBins(maxSpatialPyramidLevel)];
+  GenerateSVMDataForImage(queryNode, inImage, matcher);
+
+  double label = svm_predict(svm, queryNode);
+  delete queryNode;
+  return ConvertLabelToString((int)label);
 }
 
 void ImageSVM::SetupSVMParameters() {
