@@ -63,14 +63,14 @@ cv::Mat CvWrapper::FilterImage_Grayscale(cv::Mat inImage) {
   return newImage;
 }
 
-void CvWrapper::ShowImage(cv::Mat& image) {
+void CvWrapper::ShowImage(const cv::Mat& image) {
   cv::namedWindow("Window", cv::WINDOW_AUTOSIZE);
   cv::imshow("Window", image);
   cv::waitKey(0);
   cv::destroyWindow("Window");
 }
 
-void CvWrapper::ShowImageNoPause(cv::Mat& image, const char* name) {
+void CvWrapper::ShowImageNoPause(const cv::Mat& image, const char* name) {
   cv::namedWindow(name, cv::WINDOW_AUTOSIZE);
   cv::imshow(name, image);
 }

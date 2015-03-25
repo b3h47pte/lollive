@@ -3,7 +3,12 @@
 #include "CvWrapper.h"
 #include "CommandParser.h"
 
+#include <fstream>
+
 #define REUSE_DICTIONARY_TRAINING 0
+
+#define VERIFY_SVM_PARAM_EQ(x, y, var) if(x->var != y->var) { std::cout << "  PARAM UNEQ -- " << x->var << ": " << y->var << " " << #var << std::endl;}
+#define VERIFY_SVM_PARAM_APPROX_EQ(x, y, var) if(fabs(x->var - y->var) > 1e-6 || (isnan(x->var) ^ isnan(y->var))) { std::cout << "  PARAM UNEQ -- " << x->var << ": " << y->var << " " << #var << std::endl;}
 
 void svmNullPrint(const char *s) {}
 
@@ -17,6 +22,11 @@ ImageSVM::ImageSVM(const std::string& datasetName, bool performTraining):
   svmParams.weight = NULL;
   svmParams.shrinking = 1;
   svmParams.probability = 0;
+  svmParams.degree = 1;
+  svm = NULL;
+
+  problem.x = NULL;
+  problem.y = NULL;
 }
 
 void ImageSVM::ParseOptions(CommandParser* parser) {
@@ -51,25 +61,56 @@ void ImageSVM::CreateOrb() {
 }
 
 ImageSVM::~ImageSVM() {
-  svm_free_and_destroy_model(&svm);
+  if (svm) {
+    svm_free_and_destroy_model(&svm);
+  }
   svm_destroy_param(&svmParams);
 
-  for (int i = 0; i < problem.l; ++i) {
-    delete[] problem.x[i];
+  if (problem.x) {
+    for (int i = 0; i < problem.l; ++i) {
+      delete[] problem.x[i];
+    }
+    delete[] problem.x;
   }
-  delete[] problem.x;
-  delete[] problem.y;
+
+  if (problem.y) {
+    delete[] problem.y;
+  }
+}
+
+void ImageSVM::SaveAuxiliaryData() {
+  // Save K-Clusters, Max Spatial Pyramid Level, and Image Type
+  std::ofstream outFile(CreateAuxiliaryFilename());
+  outFile << kClusters << std::endl;
+  outFile << maxSpatialPyramidLevel << std::endl;
+  outFile << (int)imageType << std::endl;
+  outFile.close();
+}
+
+void ImageSVM::LoadAuxiliaryData() {
+  std::ifstream inFile(CreateAuxiliaryFilename());
+  inFile >> kClusters;
+  inFile >> maxSpatialPyramidLevel;
+
+  int tmpImageType = 0;
+  inFile >> tmpImageType;
+  imageType = (TRAINER_IMAGE_TYPE)tmpImageType;
+
+  inFile.close();
 }
 
 void ImageSVM::Execute() {
-  dictionary.resize(GetTotalChannels());
-  completeFeatureSet.resize(GetTotalChannels());
-
   CreateOrb();
+
+#ifdef NDEBUG
   svm_set_print_string_function(&svmNullPrint);
+#endif
 
   LoadLabelMapping();
   if (isTraining) {
+    dictionary.resize(GetTotalChannels());
+    completeFeatureSet.resize(GetTotalChannels());
+
     CreateTrainingData();
     SetupSVMParameters();
 
@@ -80,7 +121,45 @@ void ImageSVM::Execute() {
     }
 
     svm = svm_train(&problem, &svmParams);
-    svm_save_model(("SVM_" + datasetName + ".svm").c_str(), svm);
+    if (svm_save_model(CreateSVMName().c_str(), svm)) {
+      std::cout << "SVM SAVE MODEL ERROR" << std::endl;
+    }
+
+    SaveAuxiliaryData();
+
+    std::cout << "ORIGINAL MODEL VERIFICATION: " << std::endl;
+    PerformPostTrainingVerification();
+    std::cout << "LOAD FROM FILE MODEL VERIFICATION: " << std::endl;
+    svm_model* oldModel = svm;
+    svm = svm_load_model(CreateSVMName().c_str());
+    PerformPostTrainingVerification();
+
+    // Model Verification
+    VERIFY_SVM_PARAM_EQ(svm, oldModel, param.svm_type);
+    VERIFY_SVM_PARAM_EQ(svm, oldModel, param.kernel_type);
+    VERIFY_SVM_PARAM_EQ(svm, oldModel, nr_class);
+    VERIFY_SVM_PARAM_EQ(svm, oldModel, l);
+    if (svm->nr_class == oldModel->nr_class) {
+      for (int i = 0; i < svm->nr_class * (svm->nr_class - 1) / 2; ++i) {
+        VERIFY_SVM_PARAM_APPROX_EQ(svm, oldModel, rho[i]);
+      }
+
+      for (int i = 0; i < svm->nr_class; ++i) {
+        VERIFY_SVM_PARAM_EQ(svm, oldModel, label[i]);
+      }
+
+      for (int i = 0; i < svm->nr_class; ++i) {
+        VERIFY_SVM_PARAM_EQ(svm, oldModel, nSV[i]);
+      }
+
+      if (svm->l == oldModel->l) {
+        for (int i = 0; i < svm->l; ++i) {
+          for (int j = 0; j < svm->nr_class - 1; ++j) {
+            VERIFY_SVM_PARAM_APPROX_EQ(svm, oldModel, sv_coef[j][i]);
+          }
+        }
+      }
+    }
 
   } else {
     LoadTrainingData();
@@ -141,6 +220,18 @@ std::string ImageSVM::CreateDictionaryName(int channel) {
   std::stringstream ss;
   ss << "DICTIONARY_" << datasetName << "_" << channel << ".png";
   std::cout << "CREATE DICTIONARY NAME: " << ss.str() << std::endl;
+  return ss.str();
+}
+
+std::string ImageSVM::CreateSVMName() {
+  std::stringstream ss;
+  ss << "SVM_" << datasetName << ".svm";
+  return ss.str();
+}
+
+std::string ImageSVM::CreateAuxiliaryFilename() {
+  std::stringstream ss;
+  ss << "AUX_" << datasetName << ".txt";
   return ss.str();
 }
 
@@ -206,10 +297,12 @@ int ImageSVM::TotalHistogramBinsLevel(int level) {
 void 
 ImageSVM::GenerateSpatialPyramidDataHierarchy(cv::Mat image, std::vector<cv::KeyPoint>& points, std::vector<cv::DMatch>& matches, int maxLevel, svm_node* nodes) {
   int totalBins = TotalHistogramBins(maxLevel);
+  
   for (int level = 0; level <= maxLevel; ++level) {
     svm_node* problemXPointer = nodes + TotalHistogramBins(level - 1);
     GenerateSpatialPyramidData(image, points, matches, level, problemXPointer);
   }
+  
 
   // Fill in indices and do a final normalization pass
   double total = 0.0;
@@ -221,8 +314,9 @@ ImageSVM::GenerateSpatialPyramidDataHierarchy(cv::Mat image, std::vector<cv::Key
   for (int j = 0; j < totalBins; ++j) {
     nodes[j].value /= total;
   }
-
+  
   nodes[totalBins].index = -1;
+  
 }
 
 void
@@ -278,6 +372,10 @@ ImageSVM::GenerateSpatialPyramidData(cv::Mat image, std::vector<cv::KeyPoint>& p
 }
 
 void ImageSVM::LoadTraining() {
+  LoadAuxiliaryData();
+
+  dictionary.resize(GetTotalChannels());
+  completeFeatureSet.resize(GetTotalChannels());
   matcher.resize(GetTotalChannels());
 
   for (int i = 0; i < GetTotalChannels(); ++i) {
@@ -285,7 +383,7 @@ void ImageSVM::LoadTraining() {
     matcher[i].add(dictionary[i]);
     matcher[i].train();
   }
-  svm = svm_load_model(("SVM_" + datasetName + ".svm").c_str());
+  svm = svm_load_model(CreateSVMName().c_str());
 }
 
 std::string ImageSVM::PredictImage(const cv::Mat& inImage) {
@@ -300,11 +398,12 @@ std::string ImageSVM::PredictImage(const cv::Mat& inImage) {
     break;
   }
 
-  svm_node* queryNode = new svm_node[TotalHistogramBins(maxSpatialPyramidLevel)];
+  int totalNodes = TotalHistogramBins(maxSpatialPyramidLevel) * GetTotalChannels() + 1;
+  svm_node* queryNode = new svm_node[totalNodes];
   GenerateSVMDataForImage(queryNode, inImage, matcher);
-
+  
   double label = svm_predict(svm, queryNode);
-  delete queryNode;
+  delete[] queryNode;
   return ConvertLabelToString((int)label);
 }
 

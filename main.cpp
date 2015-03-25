@@ -50,7 +50,6 @@ int main(int argc, char** argv) {
     //
     //WebFrontend* wf = new WebFrontend();
 
-
     //std::shared_ptr<const LeagueItemDatabase> db = LeagueItemDatabase::Get();
     ConfigManager::Get()->LoadExternalConfig(GetRelativeFilePath("Config/League/lcs.ini"), false);
     LeagueImageAnalyzer* img = new LeagueImageAnalyzer(path6, GetRelativeFilePath("Config/League/lcs.ini"), PropertyManager::Get()->GetProperties(EGI_League));

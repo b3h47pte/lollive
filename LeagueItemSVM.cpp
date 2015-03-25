@@ -72,10 +72,31 @@ void LeagueItemSVM::LoadLabelMapping() {
   std::shared_ptr<const LeagueItemDatabase> ldb = LeagueItemDatabase::Get();
   const std::map<std::string, PtrLeagueItemData>* mapping = ldb->GetDatabase();
   for (auto data : *mapping) {
+    if (data.second->itemID == "9999") continue;
     labelToItem.push_back(data.first);
   }
 }
 
 void LeagueItemSVM::CreateOrb() {
   orb = cv::ORB::create(250, 1.2f, 8, 15, 0, 2, cv::ORB::HARRIS_SCORE, 15, 20);
+}
+
+void LeagueItemSVM::PerformPostTrainingVerification() {
+  std::shared_ptr<const LeagueItemDatabase> ldb = LeagueItemDatabase::Get();
+
+  int accurateCount = 0;
+  int totalCount = 0;
+  const std::map<std::string, PtrLeagueItemData>* mapping = ldb->GetDatabase();
+  for (auto data : *mapping) {
+    if (data.second->itemID == "9999") continue;
+    cv::Mat originalImage = data.second->itemImage;
+    std::string label = PredictImage(originalImage);
+    if (label == data.first) {
+      ++accurateCount;
+    } else {
+      std::cout << "ERROR: Got " << label << " instead of " << data.first << std::endl;
+    }
+    ++totalCount;
+  }
+  std::cout << "  LEAGUE ITEMS ACCURACY: " << (double)accurateCount / totalCount << std::endl;
 }

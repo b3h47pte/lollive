@@ -15,6 +15,7 @@ protected:
 private:
   void LoadTrainingData();
   void CreateTrainingData();
+  virtual void PerformPostTrainingVerification();
 
   std::vector<std::string> labelToChampion;
 };

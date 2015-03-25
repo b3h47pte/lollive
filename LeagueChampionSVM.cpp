@@ -54,6 +54,27 @@ void LeagueChampionSVM::LoadLabelMapping() {
   std::shared_ptr<const LeagueChampionDatabase> ldb = LeagueChampionDatabase::Get();
   const std::map<std::string, PtrLeagueChampionData>* mapping = ldb->GetDatabase();
   for (auto data : *mapping) {
+    if (data.second->shortName == "None") continue;
     labelToChampion.push_back(data.first);
   }
+}
+
+void LeagueChampionSVM::PerformPostTrainingVerification() {
+  std::shared_ptr<const LeagueChampionDatabase> ldb = LeagueChampionDatabase::Get();
+  const std::map<std::string, PtrLeagueChampionData>* mapping = ldb->GetDatabase();
+
+  int accurateCount = 0;
+  int totalCount = 0;
+  for (auto data : *mapping) {
+    if (data.second->shortName == "None") continue;
+    cv::Mat originalImage = data.second->image;
+    std::string label = PredictImage(originalImage);
+    if (label == data.first) {
+      ++accurateCount;
+    } else {
+      std::cout << "ERROR: Got " << label << " instead of " << data.first << std::endl;
+    }
+    ++totalCount;
+  }
+  std::cout << "  LEAGUE CHAMPIONS ACCURACY: " << (double)accurateCount / totalCount << std::endl;
 }

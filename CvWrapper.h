@@ -21,8 +21,8 @@ public:
   static cv::Mat FilterImage_Grayscale(cv::Mat inImage);
 
   // Debug Function to show an image
-  static void ShowImage(cv::Mat& image);
-  static void ShowImageNoPause(cv::Mat& image, const char* name);
+  static void ShowImage(const cv::Mat& image);
+  static void ShowImageNoPause(const cv::Mat& image, const char* name);
 private:
 };
 

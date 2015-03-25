@@ -61,8 +61,15 @@ protected:
 private:
   virtual void LoadTrainingData() = 0;
   virtual void CreateTrainingData() = 0;
+  virtual void PerformPostTrainingVerification() = 0;
   std::string CreateDictionaryName(int channel = 0);
+  std::string CreateSVMName();
+  std::string CreateAuxiliaryFilename();
+
   int GetTotalChannels() const;
+
+  void LoadAuxiliaryData();
+  void SaveAuxiliaryData();
 
   std::string datasetName;
   bool isTraining;

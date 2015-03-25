@@ -164,7 +164,7 @@ PtrLeaguePlayerData LeagueImageAnalyzer::AnalyzePlayerData(uint idx, ELeagueTeam
   newPlayer->name = AnalyzePlayerName(idx, team);
   AnalyzePlayerScore(idx, team, &newPlayer->kills, &newPlayer->deaths, &newPlayer->assists, &newPlayer->cs);
   for (uint i = 0; i < 7; ++i) {
-    newPlayer->items[i] = AnalyzePlayerItem_SVM(idx, team, i);
+    //newPlayer->items[i] = AnalyzePlayerItem_SVM(idx, team, i);
   }
   return newPlayer;
 }
