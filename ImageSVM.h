@@ -55,7 +55,7 @@ protected:
 
   int kClusters;
   int maxSpatialPyramidLevel;
-  cv::Ptr<cv::ORB> orb;
+  cv::Ptr<cv::Feature2D> featureDetector;
   TRAINER_IMAGE_TYPE imageType;
 
 private:
@@ -65,6 +65,7 @@ private:
   std::string CreateDictionaryName(int channel = 0);
   std::string CreateSVMName();
   std::string CreateAuxiliaryFilename();
+  cv::Mat PreprocessImage(cv::Mat inImage);
 
   int GetTotalChannels() const;
 

@@ -78,7 +78,13 @@ void LeagueItemSVM::LoadLabelMapping() {
 }
 
 void LeagueItemSVM::CreateOrb() {
-  orb = cv::ORB::create(250, 1.2f, 8, 15, 0, 2, cv::ORB::HARRIS_SCORE, 15, 20);
+#if USE_SIFT
+  ImageSVM::CreateOrb();
+#elif USE_SURF
+  ImageSVM::CreateOrb();
+#else
+  featureDetector = cv::ORB::create(250, 1.2f, 8, 15, 0, 2, cv::ORB::HARRIS_SCORE, 15, 20);
+#endif
 }
 
 void LeagueItemSVM::PerformPostTrainingVerification() {

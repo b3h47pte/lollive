@@ -11,7 +11,8 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LocalDebuggerCommandArguments>-train league_items -svm_type svc -kernel_type linear -clusters 250 -spatial 1 -image 1</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>
+    </LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>$(GSTREAMER_1_0_ROOT_X86)\bin</LocalDebuggerWorkingDirectory>
   </PropertyGroup>

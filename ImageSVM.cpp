@@ -2,10 +2,13 @@
 #include "FileUtility.h"
 #include "CvWrapper.h"
 #include "CommandParser.h"
-
 #include <fstream>
+#include <algorithm>
+#include <assert.h>
 
 #define REUSE_DICTIONARY_TRAINING 0
+#define USE_SIFT 0
+#define USE_SURF 0
 
 #define VERIFY_SVM_PARAM_EQ(x, y, var) if(x->var != y->var) { std::cout << "  PARAM UNEQ -- " << x->var << ": " << y->var << " " << #var << std::endl;}
 #define VERIFY_SVM_PARAM_APPROX_EQ(x, y, var) if(fabs(x->var - y->var) > 1e-6 || (isnan(x->var) ^ isnan(y->var))) { std::cout << "  PARAM UNEQ -- " << x->var << ": " << y->var << " " << #var << std::endl;}
@@ -57,7 +60,11 @@ void ImageSVM::ParseOptions(CommandParser* parser) {
 }
 
 void ImageSVM::CreateOrb() {
-  orb = cv::ORB::create();
+#if USE_SIFT
+#elif USE_SURF
+#else
+  featureDetector = cv::ORB::create();
+#endif
 }
 
 ImageSVM::~ImageSVM() {
@@ -97,6 +104,47 @@ void ImageSVM::LoadAuxiliaryData() {
   imageType = (TRAINER_IMAGE_TYPE)tmpImageType;
 
   inFile.close();
+}
+
+cv::Mat ImageSVM::PreprocessImage(cv::Mat inImage) {
+  assert(inImage.channels() == 1);
+  
+  cv::Mat typedImage;
+  inImage.convertTo(typedImage, CV_32F);
+
+  cv::Mat logImage;
+  cv::GaussianBlur(typedImage, logImage, cv::Size(3, 3), 1.0);
+  cv::Laplacian(logImage, logImage, CV_32F, 3);
+  
+  double tmax = 0.0;
+  double tmin = 0.0;
+  cv::minMaxLoc(logImage, &tmin, &tmax);
+  for (int c = 0; c < logImage.cols; ++c) {
+    for (int r = 0; r < logImage.rows; ++r) {
+      logImage.at<float>(r, c) = (logImage.at<float>(r, c) - tmin ) * 255.f / (tmax - tmin);
+    }
+  }
+  logImage.convertTo(logImage, CV_32F);
+
+  cv::Mat retImage;
+  cv::add(typedImage, logImage, retImage);
+  cv::minMaxLoc(retImage, &tmin, &tmax);
+  for (int c = 0; c < retImage.cols; ++c) {
+    for (int r = 0; r < retImage.rows; ++r) {
+      retImage.at<float>(r, c) = (retImage.at<float>(r, c) - tmin) * 255.f / (tmax - tmin);
+    }
+  }
+  retImage.convertTo(retImage, CV_8U);
+
+  CvWrapper::ShowImage(inImage);
+
+  cv::Mat tmpImage;
+  logImage.convertTo(tmpImage, CV_8U);
+  CvWrapper::ShowImage(tmpImage);
+
+  CvWrapper::ShowImage(retImage);
+
+  return retImage;
 }
 
 void ImageSVM::Execute() {
@@ -191,7 +239,8 @@ void ImageSVM::SetupImageTrainingData(int imageIndex, cv::Mat image, int label) 
 void ImageSVM::BatchComputeImageFeatures(cv::Mat image, std::vector<cv::KeyPoint>& keypoints, cv::Mat& features, int channel) {
   if (imageType == TIT_GRAYSCALE) {
     cv::Mat grayImage = CvWrapper::FilterImage_Grayscale(image);
-    ComputeImageFeatures(grayImage, keypoints, features);
+    cv::Mat sharpenedImage = PreprocessImage(grayImage);
+    ComputeImageFeatures(sharpenedImage, keypoints, features);
   } else {
     cv::Mat channeledImage;
     if (imageType == TIT_RGB) {
@@ -204,7 +253,7 @@ void ImageSVM::BatchComputeImageFeatures(cv::Mat image, std::vector<cv::KeyPoint
       if (channel != -1 && i != channel) continue;
       std::vector<cv::KeyPoint> channelKeypoints;
       cv::Mat channelFeatures;
-      ComputeImageFeatures(CvWrapper::FilterImage_Channel(channeledImage, i), channelKeypoints, channelFeatures); 
+      ComputeImageFeatures(PreprocessImage(CvWrapper::FilterImage_Channel(channeledImage, i)), channelKeypoints, channelFeatures); 
 
       keypoints.insert(keypoints.end(), channelKeypoints.begin(), channelKeypoints.end());
       features.push_back(channelFeatures);
@@ -213,7 +262,7 @@ void ImageSVM::BatchComputeImageFeatures(cv::Mat image, std::vector<cv::KeyPoint
 }
 
 void ImageSVM::ComputeImageFeatures(cv::Mat image, std::vector<cv::KeyPoint>& keypoints, cv::Mat& features) {
-  orb->detectAndCompute(image, cv::Mat(), keypoints, features);
+  featureDetector->detectAndCompute(image, cv::Mat(), keypoints, features);
 }
 
 std::string ImageSVM::CreateDictionaryName(int channel) {
