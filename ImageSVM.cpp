@@ -121,7 +121,7 @@ cv::Mat ImageSVM::PreprocessImage(cv::Mat inImage) {
   cv::minMaxLoc(logImage, &tmin, &tmax);
   for (int c = 0; c < logImage.cols; ++c) {
     for (int r = 0; r < logImage.rows; ++r) {
-      logImage.at<float>(r, c) = (logImage.at<float>(r, c) - tmin ) * 255.f / (tmax - tmin);
+      logImage.at<float>(r, c) = (logImage.at<float>(r, c) - (float)tmin) * 255.f / ((float)tmax - (float)tmin);
     }
   }
   logImage.convertTo(logImage, CV_32F);
@@ -131,7 +131,7 @@ cv::Mat ImageSVM::PreprocessImage(cv::Mat inImage) {
   cv::minMaxLoc(retImage, &tmin, &tmax);
   for (int c = 0; c < retImage.cols; ++c) {
     for (int r = 0; r < retImage.rows; ++r) {
-      retImage.at<float>(r, c) = (retImage.at<float>(r, c) - tmin) * 255.f / (tmax - tmin);
+      retImage.at<float>(r, c) = (retImage.at<float>(r, c) - (float)tmin) * 255.f / ((float)tmax - (float)tmin);
     }
   }
   retImage.convertTo(retImage, CV_8U);
