@@ -24,6 +24,7 @@ bool WebLeagueHandler::handleGet(CivetServer *server, struct mg_connection *conn
   // Make sure we specified a valid mode
   if (inMode == "lcs") {
   } else if (inMode == "spec") {
+    return false;
   } else if (inMode == "game") {
     return false; // not yet implemented
   } else {
