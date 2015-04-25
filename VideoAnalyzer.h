@@ -33,6 +33,8 @@ public:
   virtual std::string GetCurrentDataJSON() { return mDataJSON; }
   virtual std::string ParseJSON() = 0;
 
+  void AddJsonCallback(std::function<void(const std::string&)> f);
+
 protected:
   virtual std::shared_ptr<class ImageAnalyzer> CreateImageAnalyzer(std::string& path, const std::string& configPath) = 0;
   virtual void LoadImagePropertyFile() {}
@@ -63,8 +65,11 @@ protected:
   // Image Properties (These are the various things that we look for on the image).
   std::shared_ptr<std::unordered_map<std::string, T_EMPTY>> relevantProperties;
 
+  void NotifyAllJsonCallbacks(const std::string& json);
 private:
   std::string configPath;
+
+  std::vector<std::function<void(const std::string&)> > jsonCallbacks;
 };
 
 #endif

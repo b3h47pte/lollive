@@ -35,7 +35,17 @@ void VideoAnalyzer::NotifyNewFrame(IMAGE_PATH_TYPE path, IMAGE_FRAME_COUNT_TYPE 
     std::cerr << "ANALYZE UNCAUGHT EXCEPTION 2" << std::endl;
   }
   mDataJSON = ParseJSON(); // update the JSON because there's no better place to do it than here.
+  NotifyAllJsonCallbacks(mDataJSON);
   ++mFrameCount;
   mDataCV.notify_all();  
 }
 
+void VideoAnalyzer::AddJsonCallback(std::function<void(const std::string&)> f) {
+  jsonCallbacks.push_back(f);
+}
+
+void VideoAnalyzer::NotifyAllJsonCallbacks(const std::string& json) {
+  for (size_t i = 0; i < json.size(); ++i) {
+    jsonCallbacks[i](json);
+  }
+}

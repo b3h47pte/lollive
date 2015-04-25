@@ -3,6 +3,8 @@
 #include "LeagueVideoAnalyzer.h"
 #include "VideoFetcher.h"
 #include "TestVideoFetch.h"
+#include "Poco/Net/HTTPClientSession.h"
+
 #include <functional>
 #include <ctime>
 #include <iomanip>
@@ -19,39 +21,26 @@ Dispatch::~Dispatch() {
 }
 
 /*
- * Retrieves current data that is fetched from the stream. 
- * If the stream wasn't already being analyzed, then return a "waiting" 
- * status meaning that the user should try again soon. 
- * 
- * Otherwise, return JSON describing the game's state.
+ * Create a new "DispatchObject" state object and starts off a new thread to begin processing the input stream.
  */
-std::string Dispatch::GetJSONResponse(const std::string& game, const std::string& configPath, const std::string& url, bool bIsDebug) {
-  bool bJustMade = false;
-  std::shared_ptr<DispatchObject> dispatchObj;
+void Dispatch::BeginNewDispatch(const std::string& game, const std::string& configPath, const std::string& streamUrl, const std::string& apiUrl, uint16_t apiPort, bool bIsDebug) {
+  std::shared_ptr<DispatchObject> dispatchObject;
   mMappingMutex.lock();
   try {
-    dispatchObj = mMapping.at(url);
+    dispatchObject = mMapping.at(streamUrl);
+    mMappingMutex.unlock();
+    return;
   } catch (...) {
-    // not found so we make a new object
-    bJustMade = true;
-    std::shared_ptr<DispatchObject> newObj(new DispatchObject);
-    mMapping[url] = newObj;
-    std::thread newThread = std::thread(std::bind(&Dispatch::Thread_StartNewDispatch, this, newObj, game, configPath, url, bIsDebug));
+    dispatchObject = std::shared_ptr<DispatchObject>(new DispatchObject(apiUrl, apiPort));
+    mMapping[streamUrl] = dispatchObject;
+    std::thread newThread = std::thread(std::bind(&Dispatch::Thread_StartNewDispatch, this, dispatchObject, game, configPath, streamUrl, bIsDebug));
     newThread.detach();
   }
   mMappingMutex.unlock();
-
-  if (bJustMade) {
-    return ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_GENERAL_FILENAME, DispatchSection, std::string("JustMadeResponse"), std::string(""));
-  }
-
-  // The dispatcher doesn't know about the data the analyzer has so we need the analyzer
-  // to return the data in JSON format for us.
-  return dispatchObj->mAnalyze->GetCurrentDataJSON();
 }
 
 void Dispatch::Thread_StartNewDispatch(std::shared_ptr<DispatchObject> newObj, std::string& game, std::string& configPath, std::string& url, bool bIsDebug) {
-  newObj->mAnalyze = CreateAnalyzer(game, configPath, bIsDebug);
+  newObj->mAnalyze = CreateAnalyzer(newObj, game, configPath, bIsDebug);
   newObj->mFetch = CreateVideoFetcher(url, game, configPath, std::bind(&VideoAnalyzer::NotifyNewFrame, newObj->mAnalyze,
     std::placeholders::_1, std::placeholders::_2), bIsDebug); // This starts the process of analyzing the video so it must be made last.
 
@@ -60,11 +49,13 @@ void Dispatch::Thread_StartNewDispatch(std::shared_ptr<DispatchObject> newObj, s
   mMappingMutex.unlock();
 }
 
-std::shared_ptr<class VideoAnalyzer> Dispatch::CreateAnalyzer(std::string& game, std::string& configPath, bool bIsDebug) {
+std::shared_ptr<class VideoAnalyzer> Dispatch::CreateAnalyzer(std::shared_ptr<DispatchObject> newObj, std::string& game, std::string& configPath, bool bIsDebug) {
+  std::shared_ptr<class VideoAnalyzer> analyzer = NULL;
   if (game == "league") {
-      return std::shared_ptr<VideoAnalyzer>(new LeagueVideoAnalyzer(configPath, !bIsDebug));
+    analyzer = std::shared_ptr<VideoAnalyzer>(new LeagueVideoAnalyzer(configPath, !bIsDebug));
   }
-  return NULL;
+  analyzer->AddJsonCallback(std::bind(&Dispatch::SendJSONDataToAPI, this, newObj, std::placeholders::_1));
+  return analyzer;
 }
 
 std::shared_ptr<class VideoFetcher> Dispatch::CreateVideoFetcher(std::string& url, std::string& game, std::string& configPath, std::function<void(IMAGE_PATH_TYPE, IMAGE_FRAME_COUNT_TYPE)> cb, bool bIsDebug) {
@@ -85,4 +76,8 @@ std::shared_ptr<class VideoFetcher> Dispatch::CreateVideoFetcher(std::string& ur
   }
   newFetch->BeginFetch();
   return newFetch;
+}
+
+void Dispatch::SendJSONDataToAPI(std::shared_ptr<DispatchObject> newObj, const std::string& json) {
+  
 }
