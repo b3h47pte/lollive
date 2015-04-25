@@ -3,7 +3,11 @@
 #include "LeagueVideoAnalyzer.h"
 #include "VideoFetcher.h"
 #include "TestVideoFetch.h"
+
+#include "Poco/Foundation.h"
+#include "Poco/URI.h"
 #include "Poco/Net/HTTPClientSession.h"
+#include "Poco/Net/HTTPRequest.h"
 
 #include <functional>
 #include <ctime>
@@ -31,7 +35,16 @@ void Dispatch::BeginNewDispatch(const std::string& game, const std::string& conf
     mMappingMutex.unlock();
     return;
   } catch (...) {
-    dispatchObject = std::shared_ptr<DispatchObject>(new DispatchObject(apiUrl, apiPort));
+    dispatchObject = std::shared_ptr<DispatchObject>(new DispatchObject);
+
+    Poco::URI uri(apiUrl);
+    dispatchObject->apiHost = uri.getHost();
+    dispatchObject->apiPath = uri.getPathAndQuery();
+    if (dispatchObject->apiPath.empty()) {
+      dispatchObject->apiPath = "/";
+    }
+    dispatchObject->apiPort = apiPort;
+
     mMapping[streamUrl] = dispatchObject;
     std::thread newThread = std::thread(std::bind(&Dispatch::Thread_StartNewDispatch, this, dispatchObject, game, configPath, streamUrl, bIsDebug));
     newThread.detach();
@@ -79,5 +92,7 @@ std::shared_ptr<class VideoFetcher> Dispatch::CreateVideoFetcher(std::string& ur
 }
 
 void Dispatch::SendJSONDataToAPI(std::shared_ptr<DispatchObject> newObj, const std::string& json) {
-  
+  Poco::Net::HTTPClientSession session(newObj->apiHost, (Poco::UInt16)newObj->apiPort);
+  Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_POST, newObj->apiPath);
+  session.sendRequest(request);
 }

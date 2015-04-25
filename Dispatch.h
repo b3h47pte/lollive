@@ -14,11 +14,9 @@ struct DispatchObject {
   std::shared_ptr<class VideoFetcher> mFetch;
   std::shared_ptr<class VideoAnalyzer> mAnalyze;
 
-  const std::string apiHost;
-  const uint16_t apiPort;
-
-  DispatchObject(const std::string& host, uint16_t port) :apiHost(host), apiPort(port) {
-  }
+  std::string apiHost;
+  std::string apiPath;
+  uint16_t apiPort;
 };
 
 /*
