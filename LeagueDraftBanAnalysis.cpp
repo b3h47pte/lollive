@@ -78,7 +78,8 @@ GetBans(std::string* outArray, ELeagueTeams team) {
       continue;
     }
     cv::Mat img = FilterImage_Section(mImage, banSection);
-    outArray[i] = FindMatchingChampion_SVM(img);
+    bool tmpIsLow, tmpIsDead;
+    outArray[i] = FindMatchingChampion_Histogram(img, tmpHints, tmpIsLow, tmpIsDead, true);
   }
 }
 
