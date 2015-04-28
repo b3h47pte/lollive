@@ -8,7 +8,7 @@
 
 typedef std::shared_ptr<struct LeagueTeamData> PtrLeagueTeamData;
 struct LeagueTeamData {
-  LeagueTeamData() : team(ELT_BLUE), teamName(""), teamScore(-1), kills(-1), gold(-1), towerKills(-1) {
+  LeagueTeamData() : team(ELT_BLUE), teamName(""), teamScore(-1), kills(-1), gold(-1), towerKills(-1), currentDragonCount(0), totalDragonCount(0), baronCount(0), inhibCount(0) {
   }
 
   ELeagueTeams team;
@@ -19,6 +19,10 @@ struct LeagueTeamData {
   int gold;
   int towerKills;
   PtrLeaguePlayerData players[5];
+  int currentDragonCount;
+  int totalDragonCount;
+  int baronCount;
+  int inhibCount;
 
   // Champion bans -- useful when we actually get to see the draft stage
   std::string bans[3];
@@ -29,6 +33,9 @@ struct LeagueTeamData {
     std::cout << "Team Gold: " << gold << std::endl;
     std::cout << "Team Tower Kills: " << towerKills << std::endl;
     std::cout << "Team Bans: " << bans[0] << " " << bans[1] << " " << bans[2] << std::endl;
+    std::cout << "Dragon Count: " << currentDragonCount << " " << totalDragonCount << std::endl;
+    std::cout << "Baron Count: " << baronCount << std::endl;
+    std::cout << "Inhibitors: " << inhibCount << std::endl;
     for (int i = 0; i < 5; ++i) players[i]->Print();
   }
 
@@ -40,13 +47,17 @@ struct LeagueTeamData {
   
   // Config Constants
   const std::string TeamDataSection = "TeamData";
+  const std::string JsonTeamNameName = "JsonTeamNameName";
+  const std::string JsonTeamPlayersName = "JsonTeamPlayersName";
   const std::string JsonTeamKillsName = "JsonTeamKillsName";
   const std::string JsonTeamGoldName = "JsonTeamGoldName";
   const std::string JsonTeamTowersName = "JsonTeamTowersName";
-  const std::string JsonTeamNameName = "JsonTeamNameName";
+  const std::string JsonTeamTotalDragonsName = "JsonTeamTotalDragonsName";
+  const std::string JsonTeamCurrentDragonsName = "JsonTeamCurrentDragonsName";
+  const std::string JsonTeamBaronsName = "JsonTeamBaronsName"; 
+  const std::string JsonTeamInhibitorsName = "JsonTeamInhibitorsName";
   const std::string JsonTeamGamesWonName = "JsonTeamGamesWonName";
-  const std::string JsonTeamBansName = "JsonTeamBansName";
-  const std::string JsonTeamPlayersName = "JsonTeamPlayersName";
+  
 };
 
 // Given a location, tell us which side of the map we are on (blue/purple)

@@ -157,39 +157,52 @@ std::string LeagueVideoAnalyzer::ParseJSON() {
   cJSON* newJson = cJSON_CreateObject();
   // Game status field to let the user know which part of the game we're in}
   if (isMatchOver) {
-    cJSON_AddStringToObject(newJson, "gamestatus", "matchover");
+    cJSON_AddNumberToObject(newJson, "mode", 2);
   } else if (isDraftPhase) {
-    cJSON_AddStringToObject(newJson, "gamestatus", "draft");
+    cJSON_AddNumberToObject(newJson, "mode", 1);
   } else if (isWaitingToStart) {
-    cJSON_AddStringToObject(newJson, "gamestatus", "waiting");
+    cJSON_AddNumberToObject(newJson, "mode", 5);
   } else {
-    cJSON_AddStringToObject(newJson, "gamestatus", "inprogress");
+    cJSON_AddNumberToObject(newJson, "mode", 0);
   }
-
+  
+  cJSON* globalObject = cJSON_CreateObject();
   if (DataExists(mData, std::string("CurrentTime"))) {
-    cJSON_AddNumberToObject(newJson, "timestamp", RetrieveData<int>(mData, std::string("CurrentTime")));
+    cJSON_AddNumberToObject(globalObject, "time", RetrieveData<int>(mData, std::string("CurrentTime")));
+  } else {
+    cJSON_AddNumberToObject(globalObject, "time", -1);
   }
+  // TODO: TEMPORARY UNTIL THESE STATS IS TRACKED
+  cJSON_AddNumberToObject(globalObject, "time", 0);
+  cJSON_AddNumberToObject(globalObject, "time", 0);
+  cJSON_AddItemToObject(newJson, "global", globalObject);
 
+  cJSON* teamArray = cJSON_CreateArray();
   if (DataExists(mData, std::string("BlueTeam"))) {
-    cJSON_AddItemToObject(newJson, "blueteam", RetrieveData<PtrLeagueTeamData>(mData, std::string("BlueTeam"))->CreateJSON());
+    cJSON_AddItemToArray(teamArray, RetrieveData<PtrLeagueTeamData>(mData, std::string("BlueTeam"))->CreateJSON());
+  } else {
+    cJSON_AddItemToArray(teamArray, cJSON_CreateObject());
   }
 
   if (DataExists(mData, std::string("PurpleTeam"))) {
-    cJSON_AddItemToObject(newJson, "purpleteam", RetrieveData<PtrLeagueTeamData>(mData, std::string("PurpleTeam"))->CreateJSON());
+    cJSON_AddItemToArray(teamArray, RetrieveData<PtrLeagueTeamData>(mData, std::string("PurpleTeam"))->CreateJSON());
+  } else {
+    cJSON_AddItemToArray(teamArray, cJSON_CreateObject());
   }
+  cJSON_AddItemToObject(newJson, "teams", teamArray);
 
+  cJSON* eventsArray = cJSON_CreateArray();
   if (DataExists(mData, std::string("Announcement"))) {
-    cJSON_AddItemToObject(newJson, "announce", RetrieveData<PtrLeagueEvent>(mData, std::string("Announcement"))->CreateJSON());
+    cJSON_AddItemToArray(newJson, RetrieveData<PtrLeagueEvent>(mData, std::string("Announcement"))->CreateJSON());
   }
 
   if (DataExists(mData, std::string("MinibarEvents"))) {
     MapPtrLeagueEvent eventMapping = RetrieveData<MapPtrLeagueEvent>(mData, std::string("MinibarEvents"));
-    cJSON* eventMappingJson = cJSON_CreateArray();
     for (auto& e : eventMapping) {
-      cJSON_AddItemToArray(eventMappingJson, e.second->CreateJSON());
+      cJSON_AddItemToArray(eventsArray, e.second->CreateJSON());
     }
-    cJSON_AddItemToObject(newJson, "events", eventMappingJson);
   }
+  cJSON_AddItemToObject(newJson, "events", eventsArray);
 
   char* retChar = cJSON_PrintUnformatted(newJson);
   cJSON_Delete(newJson);

@@ -1,4 +1,6 @@
 *.exe
+*.sdf
+*.opensdf
 *.swp
 /x64/*
 *.suo
