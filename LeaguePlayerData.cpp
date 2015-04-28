@@ -85,9 +85,14 @@ cJSON* LeaguePlayerData::CreateJSON() {
   cJSON_AddNumberToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonAssistsName, std::string("")).c_str(), assists);
   cJSON_AddNumberToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonCSName, std::string("")).c_str(), cs);
   cJSON_AddNumberToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonLevelName, std::string("")).c_str(), level);
+
+  cJSON_AddNumberToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonTowersName, std::string("")).c_str(), towers);
+  cJSON_AddNumberToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonInhibsName, std::string("")).c_str(), inhibs);
+  cJSON_AddNumberToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonBaronsName, std::string("")).c_str(), barons);
+  cJSON_AddNumberToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonDragonsName, std::string("")).c_str(), dragons);
+
   cJSON_AddBoolToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonIsDeadName, std::string("")).c_str(), isDead);
   cJSON_AddBoolToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonLowHealthName, std::string("")).c_str(), isLowHealth);
-  cJSON_AddStringToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonNameName, std::string("")).c_str(), name.c_str());
   cJSON_AddStringToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonChampionName, std::string("")).c_str(), champion.c_str());
 
   cJSON* itemsArr = cJSON_CreateArray();
@@ -95,6 +100,7 @@ cJSON* LeaguePlayerData::CreateJSON() {
     cJSON_AddItemToArray(itemsArr, cJSON_CreateString(items[i].c_str()));
   }
   cJSON_AddItemToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonItemsName, std::string("")).c_str(), itemsArr);
+  cJSON_AddStringToObject(newJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_LEAGUE_FILENAME, PlayerDataSection, JsonNameName, std::string("")).c_str(), name.c_str());
 
   return newJson;
 }
