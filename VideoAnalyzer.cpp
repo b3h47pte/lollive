@@ -45,7 +45,7 @@ void VideoAnalyzer::AddJsonCallback(std::function<void(const std::string&)> f) {
 }
 
 void VideoAnalyzer::NotifyAllJsonCallbacks(const std::string& json) {
-  for (size_t i = 0; i < json.size(); ++i) {
+  for (size_t i = 0; i < jsonCallbacks.size(); ++i) {
     jsonCallbacks[i](json);
   }
 }

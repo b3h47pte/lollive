@@ -1,3 +1,4 @@
+#include "CompileTimeSettings.h"
 #include "Dispatch.h"
 #include "VideoAnalyzer.h"
 #include "LeagueVideoAnalyzer.h"
@@ -36,7 +37,7 @@ void Dispatch::BeginNewDispatch(const std::string& game, const std::string& conf
     return;
   } catch (...) {
     dispatchObject = std::shared_ptr<DispatchObject>(new DispatchObject);
-
+    
     Poco::URI uri(apiUrl);
     dispatchObject->apiHost = uri.getHost();
     dispatchObject->apiPath = uri.getPathAndQuery();
@@ -65,7 +66,7 @@ void Dispatch::Thread_StartNewDispatch(std::shared_ptr<DispatchObject> newObj, s
 std::shared_ptr<class VideoAnalyzer> Dispatch::CreateAnalyzer(std::shared_ptr<DispatchObject> newObj, std::string& game, std::string& configPath, bool bIsDebug) {
   std::shared_ptr<class VideoAnalyzer> analyzer = NULL;
   if (game == "league") {
-    analyzer = std::shared_ptr<VideoAnalyzer>(new LeagueVideoAnalyzer(configPath, !bIsDebug));
+    analyzer = std::shared_ptr<VideoAnalyzer>(new LeagueVideoAnalyzer(configPath, USE_REMOTE_CONFIG_PATH));
   }
   analyzer->AddJsonCallback(std::bind(&Dispatch::SendJSONDataToAPI, this, newObj, std::placeholders::_1));
   return analyzer;
@@ -93,6 +94,10 @@ std::shared_ptr<class VideoFetcher> Dispatch::CreateVideoFetcher(std::string& ur
 
 void Dispatch::SendJSONDataToAPI(std::shared_ptr<DispatchObject> newObj, const std::string& json) {
   Poco::Net::HTTPClientSession session(newObj->apiHost, (Poco::UInt16)newObj->apiPort);
-  Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_POST, newObj->apiPath);
-  session.sendRequest(request);
+  Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_POST, newObj->apiPath); 
+  try {
+    session.sendRequest(request);
+  } catch (...) {
+    std::cout << "WARNING: Failed to send JSON data to the API server -- " << newObj->apiHost << "/" << newObj->apiPath << ":" << newObj->apiPort << std::endl;
+  }
 }

@@ -10,17 +10,20 @@
 #include "LeagueConstants.h"
 #include "LeagueItemData.h"
 #include "LeagueEventDatabase.h"
+#include "CompileTimeSettings.h"
 
 LeagueImageAnalyzer::LeagueImageAnalyzer(IMAGE_PATH_TYPE ImagePath, const std::string& configPath, std::shared_ptr<std::unordered_map<std::string, T_EMPTY>> relevantProperties):
   ImageAnalyzer(ImagePath, configPath, relevantProperties) {
   ChampionDatabase = LeagueChampionDatabase::Get();
   ItemDatabase = LeagueItemDatabase::Get();
 
-  championSVM = std::shared_ptr<LeagueChampionSVM>(new LeagueChampionSVM(false));
-  championSVM->Execute();
+  if (USE_SVM) {
+    championSVM = std::shared_ptr<LeagueChampionSVM>(new LeagueChampionSVM(false));
+    championSVM->Execute();
 
-  itemSVM = std::shared_ptr<LeagueItemSVM>(new LeagueItemSVM(false));
-  itemSVM->Execute();
+    itemSVM = std::shared_ptr<LeagueItemSVM>(new LeagueItemSVM(false));
+    itemSVM->Execute();
+  }
 
   originalWidth = mImage.cols;
   originalHeight = mImage.rows;

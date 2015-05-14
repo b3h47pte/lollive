@@ -17,14 +17,14 @@ public:
 protected:
   // The generalized league video analyzer should be able to do some of the update itself
   // since some properties are common to all league games.
-  virtual bool StoreData(std::shared_ptr<class ImageAnalyzer> img);
+  virtual bool StoreData(std::shared_ptr<class ImageAnalyzer> img) override;
 
   // Get JSON
   virtual std::string ParseJSON();
 
 protected:
-  virtual std::shared_ptr<class ImageAnalyzer> CreateImageAnalyzer(std::string& path, const std::string& configPath);
-  virtual void PostCreateImageAnalyzer(std::shared_ptr<class ImageAnalyzer> img);
+  virtual std::shared_ptr<class ImageAnalyzer> CreateImageAnalyzer(std::string& path, const std::string& configPath) override;
+  virtual void PostCreateImageAnalyzer(std::shared_ptr<class ImageAnalyzer> img) override;
 
   virtual void LoadImagePropertyFile();
 

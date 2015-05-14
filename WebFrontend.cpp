@@ -4,8 +4,10 @@
 
 WebFrontend::WebFrontend() {
   // Create and start the server
+  std::string listeningPort = ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_GENERAL_FILENAME, FrontendSection, std::string("ListeningPorts"), std::string(""));
   const char *options[] = {
-    "listening_ports", ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_GENERAL_FILENAME, FrontendSection, std::string("ListeningPorts"), std::string("")).c_str(),
+    "listening_ports", 
+    listeningPort.c_str(),
     NULL
   };
   mServer = std::shared_ptr<CivetServer>(new CivetServer(options, NULL));

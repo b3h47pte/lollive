@@ -28,7 +28,7 @@ bool TestVideoFetch::BeginStreamPlayback(std::string& streamUrl) {
   bool bFoundInitial = false;
   int frameCount = 0;
   for (int i = 0;; ++i) {
-    std::string path = streamUrl + "/frame" + std::to_string(i) + ".png";
+    std::string path = streamUrl + "/frame_" + std::to_string(i) + ".png";
     std::cout << "ANALYZE " << path << std::endl;
     std::ifstream infile(path);
     if (!infile.good()) {

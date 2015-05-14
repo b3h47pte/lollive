@@ -2,10 +2,14 @@
 #include "ImageAnalyzer.h"
 #include "LeagueImageAnalyzer.h"
 #include "LeagueTeamData.h"
+#include "PropertyManager.h"
 #include "cjson/cJSON.h"
 
 LeagueVideoAnalyzer::LeagueVideoAnalyzer(const std::string& configPath, bool isRemoteConfigPath) : 
   VideoAnalyzer(configPath, isRemoteConfigPath), continuousInvalidFrameCount(0), isMatchOver(false), isDraftPhase(false) {
+
+  // TODO: Make this load properties based on input.
+  relevantProperties = PropertyManager::Get()->GetProperties(EGI_League);
 }
 
 LeagueVideoAnalyzer::~LeagueVideoAnalyzer() {
