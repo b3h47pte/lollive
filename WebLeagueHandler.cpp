@@ -16,9 +16,7 @@ bool WebLeagueHandler::handleGet(CivetServer *server, struct mg_connection *conn
   std::string inStream;
   std::string inHost;
   std::string inPort;
-  if (!CivetServer::getParam(conn, "mode", inMode)) {
-    return false;
-  }
+  std::string eventId;
 
   if (!CivetServer::getParam(conn, "stream", inStream)) {
     return false;
@@ -32,6 +30,10 @@ bool WebLeagueHandler::handleGet(CivetServer *server, struct mg_connection *conn
     return false;
   }
 
+  if (!CivetServer::getParam(conn, "eventId", eventId)) {
+    return false;
+  }
+
   uint16_t port = 0;
   try {
     port = (uint16_t)std::stoul(inPort, nullptr);
@@ -39,17 +41,8 @@ bool WebLeagueHandler::handleGet(CivetServer *server, struct mg_connection *conn
     return false;
   }
 
-  // Make sure we specified a valid mode
-  std::string configPath;
-  if (inMode == "lcs") {
-    configPath = GetRelativeFilePath("Config/League/lcs.ini");
-  } else if (inMode == "spec") {
-    return false;
-  } else if (inMode == "game") {
-    return false; // not yet implemented
-  } else {
-    return false;
-  }
+  // TODO: Pull config path from the specified config path in the URL parameters.
+  std::string configPath = GetRelativeFilePath("Config/League/lcs.ini");
 
   // At this point we should have a stream URL and the game mode which is enough for the
   // dispatcher to begin analyzing.
@@ -58,9 +51,9 @@ bool WebLeagueHandler::handleGet(CivetServer *server, struct mg_connection *conn
   bool bIsDebug = false;
   std::string tmpStore;
   bIsDebug = CivetServer::getParam(conn, "debug", tmpStore);
-  ds->BeginNewDispatch(std::string("league"), configPath, inStream, inHost, port, bIsDebug);
+  ds->BeginNewDispatch(eventId, std::string("league"), configPath, inStream, inHost, port, bIsDebug);
 #else
-  ds->BeginNewDispatch(std::string("league"), configPath, inStream, inHost, port, false);
+  ds->BeginNewDispatch(eventId, std::string("league"), configPath, inStream, inHost, port, false);
 #endif
 
   

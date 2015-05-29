@@ -10,7 +10,7 @@
  */
 class LeagueVideoAnalyzer: public VideoAnalyzer {
 public:
-  LeagueVideoAnalyzer(const std::string& configPath, bool isRemoteConfigPath);
+  LeagueVideoAnalyzer(const std::string& configPath, const std::string& eventId, const std::string& gameShorthand, bool isRemoteConfigPath);
   virtual ~LeagueVideoAnalyzer();
 
   static std::string LEAGUE_PROPERTY_FILENAME;

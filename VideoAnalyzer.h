@@ -23,7 +23,7 @@
  */
 class VideoAnalyzer {
 public:
-  VideoAnalyzer(const std::string& configPath, bool isRemoteConfigPath);
+  VideoAnalyzer(const std::string& configPath, const std::string& eventId, const std::string& gameShorthand, bool isRemoteConfigPath);
   virtual ~VideoAnalyzer();
 
   // Callback function to notify us about a new frame
@@ -36,6 +36,10 @@ public:
   void AddJsonCallback(std::function<void(const std::string&)> f);
 
 protected:
+  // Need to add some items to the JSON that only the VideoAnalyzer class has...
+  // TODO: Make the JSON creation a function that takes in a JSON object pointer...
+  void BaseModifyJSON(struct cJSON* json);
+
   virtual std::shared_ptr<class ImageAnalyzer> CreateImageAnalyzer(std::string& path, const std::string& configPath) = 0;
   virtual void LoadImagePropertyFile() {}
 
@@ -45,6 +49,10 @@ protected:
   // Overridden by subclasses so that they can do what is necessary to 
   // modify the data. Returns whether or not this frame was used. 
   virtual bool StoreData(std::shared_ptr<class ImageAnalyzer> img) = 0;
+
+  // Data that we need to send back to the live stats API
+  std::string eventId;
+  std::string gameShorthand;
 
   // Frame count. We aren't allowed to call StoreData until this frame count matches the input image's frame count.
   size_t mFrameCount;

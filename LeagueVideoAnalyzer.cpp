@@ -5,8 +5,8 @@
 #include "PropertyManager.h"
 #include "cjson/cJSON.h"
 
-LeagueVideoAnalyzer::LeagueVideoAnalyzer(const std::string& configPath, bool isRemoteConfigPath) : 
-  VideoAnalyzer(configPath, isRemoteConfigPath), continuousInvalidFrameCount(0), isMatchOver(false), isDraftPhase(false) {
+LeagueVideoAnalyzer::LeagueVideoAnalyzer(const std::string& configPath, const std::string& eventId, const std::string& gameShorthand, bool isRemoteConfigPath) :
+  VideoAnalyzer(configPath, eventId, gameShorthand, isRemoteConfigPath), continuousInvalidFrameCount(0), isMatchOver(false), isDraftPhase(false) { 
 
   // TODO: Make this load properties based on input.
   relevantProperties = PropertyManager::Get()->GetProperties(EGI_League);
@@ -157,8 +157,11 @@ std::string LeagueVideoAnalyzer::ParseJSON() {
   if (!mData) {
     return "";
   }
-
   cJSON* newJson = cJSON_CreateObject();
+
+  // Things that must automatically get sent back.
+  VideoAnalyzer::BaseModifyJSON(newJson);
+
   // Game status field to let the user know which part of the game we're in}
   if (isMatchOver) {
     cJSON_AddNumberToObject(newJson, "mode", 2);

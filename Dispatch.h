@@ -17,6 +17,9 @@ struct DispatchObject {
   std::string apiHost;
   std::string apiPath;
   uint16_t apiPort;
+
+  std::string eventId;
+  std::string gameShorthand;
 };
 
 /*
@@ -33,7 +36,7 @@ public:
   static std::shared_ptr<class Dispatch> Get() { return Singleton; }
   ~Dispatch();
 
-  void BeginNewDispatch(const std::string& game, const std::string& configPath, const std::string& streamUrl, const std::string& apiUrl, uint16_t apiPort, bool bIsDebug);
+  void BeginNewDispatch(const std::string& eventId, const std::string& game, const std::string& configPath, const std::string& streamUrl, const std::string& apiUrl, uint16_t apiPort, bool bIsDebug);
 
   friend class WebFrontend;
 protected:
@@ -47,13 +50,13 @@ private:
   std::map < std::string, std::shared_ptr<DispatchObject>> mMapping;
 
   // Helper function to create the right analyzer
-  std::shared_ptr<class VideoAnalyzer> CreateAnalyzer(std::shared_ptr<DispatchObject> newObj, std::string& game, std::string& configPath, bool bIsDebug);
+  std::shared_ptr<class VideoAnalyzer> CreateAnalyzer(std::shared_ptr<DispatchObject> newObj, const std::string& eventId, const std::string& game, const std::string& configPath, bool bIsDebug);
 
   // Helper function to create the video fetcher. This also starts the process of pulling the video.
-  std::shared_ptr<class VideoFetcher> CreateVideoFetcher(std::string& url, std::string& game, std::string& configPath, std::function<void(IMAGE_PATH_TYPE, IMAGE_FRAME_COUNT_TYPE)> cb, bool bIsDebug);
+  std::shared_ptr<class VideoFetcher> CreateVideoFetcher(const std::string& eventId, const std::string& url, const std::string& game, const std::string& configPath, std::function<void(IMAGE_PATH_TYPE, IMAGE_FRAME_COUNT_TYPE)> cb, bool bIsDebug);
 
   // Helper function to spin up a thread to begin the video analysis
-  void Thread_StartNewDispatch(std::shared_ptr<DispatchObject> newObj, std::string& game, std::string& configPath, std::string& url, bool bIsDebug);
+  void Thread_StartNewDispatch(std::shared_ptr<DispatchObject> newObj, const std::string& eventId, const std::string& game, const std::string& configPath, const std::string& url, bool bIsDebug);
 
   // Callback Function that gets some JSON information and sends it back out
   void SendJSONDataToAPI(std::shared_ptr<DispatchObject> newObj, const std::string& json);

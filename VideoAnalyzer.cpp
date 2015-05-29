@@ -1,9 +1,10 @@
 #include "VideoAnalyzer.h"
 #include "ImageAnalyzer.h"
 #include "ConfigManager.h"
+#include "cjson/cJSON.h"
 
-VideoAnalyzer::VideoAnalyzer(const std::string& configPath, bool isRemoteConfigPath) :
-  mFrameCount(0), mDataLock(mDataMutex), mData(NULL), configPath(configPath) {
+VideoAnalyzer::VideoAnalyzer(const std::string& configPath, const std::string& eventId, const std::string& gameShorthand, bool isRemoteConfigPath) :
+  eventId(eventId), gameShorthand(gameShorthand), mFrameCount(0), mDataLock(mDataMutex), mData(NULL), configPath(configPath) {
     ConfigManager::Get()->LoadExternalConfig(configPath, isRemoteConfigPath);
     LoadImagePropertyFile();
 }
@@ -48,4 +49,9 @@ void VideoAnalyzer::NotifyAllJsonCallbacks(const std::string& json) {
   for (size_t i = 0; i < jsonCallbacks.size(); ++i) {
     jsonCallbacks[i](json);
   }
+}
+
+void VideoAnalyzer::BaseModifyJSON(struct cJSON* json) {
+  cJSON_AddStringToObject(json, "eventId", eventId.c_str());
+  cJSON_AddStringToObject(json, "gameShortname", gameShorthand.c_str());
 }
