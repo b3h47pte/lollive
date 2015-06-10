@@ -4,8 +4,10 @@
 
 #ifdef __PRODUCTION__
 static const bool USE_REMOTE_CONFIG_PATH = true;
+static const bool ALLOW_DEBUG_VIDEO_FETCH = false;
 #else
 static const bool USE_REMOTE_CONFIG_PATH = false;
+static const bool ALLOW_DEBUG_VIDEO_FETCH = true;
 #endif
 
 #ifdef __USE_SVM__

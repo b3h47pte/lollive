@@ -6,6 +6,7 @@ std::string ConfigManager::CONFIG_FILE_DIRECTORY = "Config/";
 // Some global constants for easy access to configurations
 std::string ConfigManager::CONFIG_GENERAL_FILENAME = "general.ini";
 std::string ConfigManager::CONFIG_LEAGUE_FILENAME = "league.ini";
+std::string ConfigManager::CONFIG_SERVER_FILENAME = "server.ini";
 
 std::shared_ptr<ConfigManager> ConfigManager::mSingleton = std::shared_ptr<ConfigManager>(new ConfigManager);
 
@@ -20,6 +21,9 @@ ConfigManager::ConfigManager() {
 
   std::shared_ptr<INIReader> league = std::shared_ptr<INIReader>(new INIReader(GenerateFilePath(CONFIG_LEAGUE_FILENAME)));
   mINIMapping[CONFIG_LEAGUE_FILENAME] = league;
+
+  std::shared_ptr<INIReader> server = std::shared_ptr<INIReader>(new INIReader(GenerateFilePath(CONFIG_SERVER_FILENAME)));
+  mINIMapping[CONFIG_SERVER_FILENAME] = server;
 }
 
 ConfigManager::~ConfigManager() {

@@ -2,6 +2,7 @@
 #include "civetweb/civetweb.h"
 #include "Dispatch.h"
 #include "FileUtility.h"
+#include "CompileTimeSettings.h"
 
 WebLeagueHandler::WebLeagueHandler() {
 
@@ -47,15 +48,14 @@ bool WebLeagueHandler::handleGet(CivetServer *server, struct mg_connection *conn
   // At this point we should have a stream URL and the game mode which is enough for the
   // dispatcher to begin analyzing.
   std::shared_ptr<Dispatch> ds = Dispatch::Get();
-#ifdef _DEBUG
-  bool bIsDebug = false;
-  std::string tmpStore;
-  bIsDebug = CivetServer::getParam(conn, "debug", tmpStore);
-  ds->BeginNewDispatch(eventId, std::string("league"), configPath, inStream, inHost, port, bIsDebug);
-#else
-  ds->BeginNewDispatch(eventId, std::string("league"), configPath, inStream, inHost, port, false);
-#endif
-
+  if (ALLOW_DEBUG_VIDEO_FETCH) {
+    bool bIsDebug = false;
+    std::string tmpStore;
+    bIsDebug = CivetServer::getParam(conn, "debug", tmpStore);
+    ds->BeginNewDispatch(eventId, std::string("league"), configPath, inStream, inHost, port, bIsDebug);
+  } else {
+    ds->BeginNewDispatch(eventId, std::string("league"), configPath, inStream, inHost, port, false);
+  }
   
   mg_printf(conn, "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n");
   mg_printf(conn, "OKAY");  

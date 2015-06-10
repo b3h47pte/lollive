@@ -16,6 +16,7 @@ public:
   // Some global constants for easy access to configurations
   static std::string CONFIG_GENERAL_FILENAME;
   static std::string CONFIG_LEAGUE_FILENAME;
+  static std::string CONFIG_SERVER_FILENAME;
 
   ConfigManager();
   ~ConfigManager();

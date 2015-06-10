@@ -88,6 +88,9 @@
     <Filter Include="Core\OpenCV">
       <UniqueIdentifier>{1de83253-1f4e-46d7-96a9-9270d398169b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Authentication">
+      <UniqueIdentifier>{db2d2748-10ad-419b-87a9-201b29331685}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VideoFetcher.h">
@@ -213,6 +216,9 @@
     <ClInclude Include="CompileTimeSettings.h">
       <Filter>VideoAnalyze</Filter>
     </ClInclude>
+    <ClInclude Include="Authentication.h">
+      <Filter>Core\Authentication</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VideoFetcher.cpp">
@@ -316,6 +322,9 @@
     </ClCompile>
     <ClCompile Include="CvWrapper.cpp">
       <Filter>Core\OpenCV</Filter>
+    </ClCompile>
+    <ClCompile Include="Authentication.cpp">
+      <Filter>Core\Authentication</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -4,11 +4,14 @@
 #include "LeagueVideoAnalyzer.h"
 #include "VideoFetcher.h"
 #include "TestVideoFetch.h"
+#include "Authentication.h"
 
 #include "Poco/Foundation.h"
 #include "Poco/URI.h"
 #include "Poco/Net/HTTPClientSession.h"
 #include "Poco/Net/HTTPRequest.h"
+
+#include "cjson/cJSON.h"
 
 #include <functional>
 #include <ctime>
@@ -95,11 +98,32 @@ std::shared_ptr<class VideoFetcher> Dispatch::CreateVideoFetcher(const std::stri
 }
 
 void Dispatch::SendJSONDataToAPI(std::shared_ptr<DispatchObject> newObj, const std::string& json) {
+  // Attach the HMAC to the message to verify that the data is coming from the server.
+  cJSON* sendJson = NULL;
+  std::string toParseJson = json;
+  if (json == "") {
+    sendJson = cJSON_CreateObject();
+    toParseJson = "{}";
+  } else {
+    sendJson = cJSON_Parse(json.c_str());
+  }
+
+  std::string signature = Authentication::Get()->CalculateHMAC(toParseJson, ConfigManager::Get()->GetStringFromINI(ConfigManager::CONFIG_SERVER_FILENAME, "Keys", "PrivateKey", ""));
+  cJSON_AddStringToObject(sendJson, "signature", signature.c_str());
+
+  char* retChar = cJSON_PrintUnformatted(sendJson);
+  std::string authedJson(retChar);
+  delete[] retChar;
+
   Poco::Net::HTTPClientSession session(newObj->apiHost, (Poco::UInt16)newObj->apiPort);
-  Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_POST, newObj->apiPath); 
+  Poco::Net::HTTPRequest request(Poco::Net::HTTPRequest::HTTP_POST, newObj->apiPath);
+  request.setContentType("application/json");
+  request.setContentLength(authedJson.size());
   try {
-    session.sendRequest(request);
+    std::ostream& output = session.sendRequest(request);
+    output << authedJson;
   } catch (...) {
     std::cout << "WARNING: Failed to send JSON data to the API server -- " << newObj->apiHost << "/" << newObj->apiPath << ":" << newObj->apiPort << std::endl;
   }
+  cJSON_Delete(sendJson);
 }

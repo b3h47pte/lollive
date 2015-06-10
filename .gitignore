@@ -12,3 +12,4 @@
 /build/*
 .sconsign*
 SVM_*
+/Config/server.ini
