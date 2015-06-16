@@ -10,6 +10,7 @@
 #include <vector>
 #include "ConfigManager.h"
 #include "GameConstants.h"
+#include "CvWrapper.h"
 
 typedef std::string& IMAGE_PATH_TYPE;
 typedef uint64_t IMAGE_FRAME_COUNT_TYPE;

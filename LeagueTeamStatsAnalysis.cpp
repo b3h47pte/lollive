@@ -149,6 +149,10 @@ std::string LeagueImageAnalyzer::GetTeamName(ELeagueTeams team) {
 
 cv::Rect LeagueImageAnalyzer::GetTeamNameSection(ELeagueTeams team) {
   cv::Rect rect;
-  GetCastedPropertyValue<cv::Rect>((team == ELT_BLUE) ? LEAGUE_TEAM_NAME_BLUE : LEAGUE_TEAM_NAME_RED, rect, CreateRectFromString);
+  if (!bIsDraftBan) {
+    GetCastedPropertyValue<cv::Rect>((team == ELT_BLUE) ? LEAGUE_TEAM_NAME_BLUE : LEAGUE_TEAM_NAME_RED, rect, CreateRectFromString);
+  } else {
+    GetCastedPropertyValue<cv::Rect>((team == ELT_BLUE) ? LEAGUE_DRAFT_TEAM_NAME_BLUE : LEAGUE_DRAFT_TEAM_NAME_RED, rect, CreateRectFromString);
+  }
   return GetRealRectangle(rect);
 }

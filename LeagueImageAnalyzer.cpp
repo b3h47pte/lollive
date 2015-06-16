@@ -145,6 +145,7 @@ bool LeagueImageAnalyzer::Analyze() {
  */
 PtrLeagueTeamData LeagueImageAnalyzer::AnalyzeTeamData(ELeagueTeams team) {
   PtrLeagueTeamData newTeam(new LeagueTeamData);
+  newTeam->teamName = GetTeamName(team);
   newTeam->team = team;
   newTeam->kills = AnalyzeTeamKills(team);
   newTeam->gold = AnalyzeTeamGold(team);
@@ -154,6 +155,7 @@ PtrLeagueTeamData LeagueImageAnalyzer::AnalyzeTeamData(ELeagueTeams team) {
   }
   return newTeam;
 }
+
 
 /*
  * Gets all the information we can gather about this player. Obviously the index is kind of vague
