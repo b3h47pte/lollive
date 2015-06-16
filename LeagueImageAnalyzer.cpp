@@ -124,6 +124,7 @@ bool LeagueImageAnalyzer::Analyze() {
   // At this point we know whether or not this was a valid frame..if so get the map position
   std::cout << "Is Valid Frame: " << IsValidFrame() << std::endl;
   std::cout << "Is Replay Frame: " << GetIsReplayFrame() << std::endl;
+  std::cout << "Is Draft-Ban Frame: " << GetIsDraftBan() << std::endl;
   if (IsValidFrame()) {
     // Camera Location
     AnalyzeMapPosition(mapLocX, mapLocY);

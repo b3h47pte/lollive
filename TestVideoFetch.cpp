@@ -1,7 +1,8 @@
 #include "TestVideoFetch.h"
 #include <fstream>
 
-TestVideoFetch::TestVideoFetch(std::string Id, std::string Url, std::function<void(IMAGE_PATH_TYPE, IMAGE_FRAME_COUNT_TYPE)> Callback): VideoFetcher(Id, Url, Callback) {
+TestVideoFetch::TestVideoFetch(std::string Id, std::string Url, std::function<void(IMAGE_PATH_TYPE, IMAGE_FRAME_COUNT_TYPE)> Callback): VideoFetcher(Id, Url, Callback),
+  startFrame(0) {
 
 }
 
@@ -27,7 +28,8 @@ bool TestVideoFetch::BeginStreamPlayback(std::string& streamUrl) {
   // Since this is just debug, I assume this folder already exists
   bool bFoundInitial = false;
   int frameCount = 0;
-  for (int i = 0;; ++i) {
+
+  for (int i = startFrame;; ++i) {
     std::string path = streamUrl + "/frame_" + std::to_string(i) + ".png";
     std::cout << "ANALYZE " << path << std::endl;
     std::ifstream infile(path);

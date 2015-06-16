@@ -92,6 +92,9 @@ std::shared_ptr<class VideoFetcher> Dispatch::CreateVideoFetcher(const std::stri
     newFetch = std::shared_ptr<VideoFetcher>(new VideoFetcher(id, url, cb));
   } else{
     newFetch = std::shared_ptr<VideoFetcher>(new TestVideoFetch(id, url, cb));
+
+    // THIS IS PURELY FOR DEBUGGING -- Change number as necessary
+    std::dynamic_pointer_cast<TestVideoFetch>(newFetch)->SetStartFrame(948);
   }
   newFetch->BeginFetch();
   return newFetch;

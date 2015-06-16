@@ -180,8 +180,8 @@ std::string LeagueVideoAnalyzer::ParseJSON() {
     cJSON_AddNumberToObject(globalObject, "time", -1);
   }
   // TODO: TEMPORARY UNTIL THESE STATS IS TRACKED
-  cJSON_AddNumberToObject(globalObject, "time", 0);
-  cJSON_AddNumberToObject(globalObject, "time", 0);
+  cJSON_AddNumberToObject(globalObject, "timeToDragon", 0);
+  cJSON_AddNumberToObject(globalObject, "timeToBaron", 0);
   cJSON_AddItemToObject(newJson, "global", globalObject);
 
   cJSON* teamArray = cJSON_CreateArray();
@@ -200,7 +200,7 @@ std::string LeagueVideoAnalyzer::ParseJSON() {
 
   cJSON* eventsArray = cJSON_CreateArray();
   if (DataExists(mData, std::string("Announcement"))) {
-    cJSON_AddItemToArray(newJson, RetrieveData<PtrLeagueEvent>(mData, std::string("Announcement"))->CreateJSON());
+    cJSON_AddItemToArray(eventsArray, RetrieveData<PtrLeagueEvent>(mData, std::string("Announcement"))->CreateJSON());
   }
 
   if (DataExists(mData, std::string("MinibarEvents"))) {

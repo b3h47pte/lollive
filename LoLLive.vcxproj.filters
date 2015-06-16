@@ -46,12 +46,6 @@
     <Filter Include="Frontend\Dispatch">
       <UniqueIdentifier>{9ce4392a-0df3-4634-9fb9-5b56029bbcd1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="VideoAnalyze\Video">
-      <UniqueIdentifier>{dcfb1677-3a4b-45bd-913f-f8bd2a6764c4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="VideoAnalyze\Video\LoL">
-      <UniqueIdentifier>{ea951057-ba8c-4c1d-915a-b5e39fb67278}</UniqueIdentifier>
-    </Filter>
     <Filter Include="External\cjson">
       <UniqueIdentifier>{80afa1f7-8181-4e04-8c00-32df28e3385a}</UniqueIdentifier>
     </Filter>
@@ -90,6 +84,12 @@
     </Filter>
     <Filter Include="Core\Authentication">
       <UniqueIdentifier>{db2d2748-10ad-419b-87a9-201b29331685}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VideoAnalyze\Video">
+      <UniqueIdentifier>{dcfb1677-3a4b-45bd-913f-f8bd2a6764c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VideoAnalyze\Video\LoL">
+      <UniqueIdentifier>{ea951057-ba8c-4c1d-915a-b5e39fb67278}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
