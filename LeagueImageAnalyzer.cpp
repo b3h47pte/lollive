@@ -117,7 +117,9 @@ bool LeagueImageAnalyzer::Analyze() {
   std::shared_ptr<GenericData<MapPtrLeagueEvent>> minibarEventsProp(new GenericData<MapPtrLeagueEvent>(*minibarEvents));
 
   mDataMutex.lock();
-  (*mData)["Announcement"] = annouceEventProp;
+  if (announcementEvent->EventId != ELEI_UNKNOWN) {
+    (*mData)["Announcement"] = annouceEventProp;
+  }
   (*mData)["MinibarEvents"] = minibarEventsProp;
   mDataMutex.unlock();
 
@@ -153,6 +155,11 @@ PtrLeagueTeamData LeagueImageAnalyzer::AnalyzeTeamData(ELeagueTeams team) {
   for (uint i = 0; i < 5; ++i) {
     newTeam->players[i] = AnalyzePlayerData(i, team);
   }
+
+  if (bIsDraftBan) {
+    GetBans(newTeam->bans, team);
+  }
+
   return newTeam;
 }
 

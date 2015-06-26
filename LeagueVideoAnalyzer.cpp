@@ -161,17 +161,6 @@ std::string LeagueVideoAnalyzer::ParseJSON() {
 
   // Things that must automatically get sent back.
   VideoAnalyzer::BaseModifyJSON(newJson);
-
-  // Game status field to let the user know which part of the game we're in}
-  if (isMatchOver) {
-    cJSON_AddNumberToObject(newJson, "mode", 2);
-  } else if (isDraftPhase) {
-    cJSON_AddNumberToObject(newJson, "mode", 1);
-  } else if (isWaitingToStart) {
-    cJSON_AddNumberToObject(newJson, "mode", 5);
-  } else {
-    cJSON_AddNumberToObject(newJson, "mode", 0);
-  }
   
   cJSON* globalObject = cJSON_CreateObject();
   if (DataExists(mData, std::string("CurrentTime"))) {
@@ -185,15 +174,20 @@ std::string LeagueVideoAnalyzer::ParseJSON() {
   cJSON_AddItemToObject(newJson, "global", globalObject);
 
   cJSON* teamArray = cJSON_CreateArray();
+  PtrLeagueTeamData allTeams[2];
   if (DataExists(mData, std::string("BlueTeam"))) {
-    cJSON_AddItemToArray(teamArray, RetrieveData<PtrLeagueTeamData>(mData, std::string("BlueTeam"))->CreateJSON());
+    allTeams[0] = RetrieveData<PtrLeagueTeamData>(mData, std::string("BlueTeam"));
+    cJSON_AddItemToArray(teamArray, allTeams[0] ->CreateJSON());
   } else {
+    allTeams[0] = NULL;
     cJSON_AddItemToArray(teamArray, cJSON_CreateObject());
   }
 
   if (DataExists(mData, std::string("PurpleTeam"))) {
-    cJSON_AddItemToArray(teamArray, RetrieveData<PtrLeagueTeamData>(mData, std::string("PurpleTeam"))->CreateJSON());
+    allTeams[1] = RetrieveData<PtrLeagueTeamData>(mData, std::string("PurpleTeam"));
+    cJSON_AddItemToArray(teamArray, allTeams[1]->CreateJSON());
   } else {
+    allTeams[1] = NULL;
     cJSON_AddItemToArray(teamArray, cJSON_CreateObject());
   }
   cJSON_AddItemToObject(newJson, "teams", teamArray);
@@ -211,6 +205,44 @@ std::string LeagueVideoAnalyzer::ParseJSON() {
   }
   cJSON_AddItemToObject(newJson, "events", eventsArray);
 
+  // Game status field to let the user know which part of the game we're in}
+  if (isMatchOver) {
+    cJSON_AddNumberToObject(newJson, "mode", 2);
+  } else if (isDraftPhase) {
+    cJSON_AddNumberToObject(newJson, "mode", 1);
+    cJSON* picksArray = cJSON_CreateArray();
+    cJSON* bansArray = cJSON_CreateArray();
+    for (int i = 0; i < 2; ++i) {
+      cJSON* teamPickArray = cJSON_CreateArray(); 
+      for (int j = 0; j < 5; ++j) {
+        if (allTeams[i]) {
+          cJSON_AddItemToArray(teamPickArray, cJSON_CreateString(allTeams[i]->players[j]->champion.c_str()));
+        } else {
+          cJSON_AddItemToArray(teamPickArray, cJSON_CreateString(""));
+        }
+      }
+
+      cJSON* teamBanArray = cJSON_CreateArray();
+      for (int j = 0; j < 3; ++j) {
+        if (allTeams[i]) {
+          cJSON_AddItemToArray(teamBanArray, cJSON_CreateString(allTeams[i]->bans[j].c_str()));
+        } else {
+          cJSON_AddItemToArray(teamBanArray, cJSON_CreateString(""));
+        }
+      }
+
+      cJSON_AddItemToObject(picksArray, "picks", teamPickArray);
+      cJSON_AddItemToObject(bansArray, "bans", teamBanArray);
+    }
+    cJSON_AddItemToObject(newJson, "picks", picksArray);
+    cJSON_AddItemToObject(newJson, "bans", bansArray);
+
+  } else if (isWaitingToStart) {
+    cJSON_AddNumberToObject(newJson, "mode", 5);
+  } else {
+    cJSON_AddNumberToObject(newJson, "mode", 0);
+  }
+  
   char* retChar = cJSON_PrintUnformatted(newJson);
   cJSON_Delete(newJson);
   std::string newRet(retChar);
