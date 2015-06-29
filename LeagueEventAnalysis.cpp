@@ -89,7 +89,6 @@ std::shared_ptr<MapPtrLeagueEvent> LeagueImageAnalyzer::GetMinibarEvents() {
   for (int i = 0; i < GetMinibarEventMax(); ++i) {
     cv::Rect eventSection = GetMinibarSection(i);
     cv::Mat filterImage = FilterImage_Section(mImage, eventSection);
-
     // What's the background color?
     cv::Vec3b bgColor = filterImage.at<cv::Vec3b>(cv::Point((int)(filterImage.cols*GetBackgroundColorXPercentage()), GetBackgroundColorY()));
     cv::Point killIconLocation;
