@@ -114,11 +114,11 @@ bool LeagueVideoAnalyzer::StoreData(std::shared_ptr<ImageAnalyzer> img) {
   purpleOld->Update(purpleNew, *oldTimeStamp, mDataHistory);
 
   // Update Events
-  PtrLeagueEvent announceEventNew = std::static_pointer_cast<GenericData<PtrLeagueEvent>>((*newData)["Announcement"])->value;
-  PtrLeagueEvent announceEventOld = std::static_pointer_cast<GenericData<PtrLeagueEvent>>((*mData)["Announcement"])->value;
-  if (announceEventNew->GetIdentifier() == announceEventOld->GetIdentifier()) {
+  PtrLeagueEvent announceEventNew = RetrieveData<PtrLeagueEvent>(newData, std::string("Announcement"));
+  PtrLeagueEvent announceEventOld = RetrieveData<PtrLeagueEvent>(mData, std::string("Announcement"));
+  if (announceEventNew && announceEventOld && announceEventNew->GetIdentifier() == announceEventOld->GetIdentifier()) {
     announceEventOld->Update(announceEventNew, *curTimeStamp);
-  } else {
+  } else if (announceEventOld) {
     announceEventOld->Copy(announceEventNew, *curTimeStamp);
   }
 

@@ -31,6 +31,9 @@ inline bool DataExists(std::shared_ptr<TGenericDataStore<K>> inStore, const K& k
 
 template<typename T,typename K = std::string>
 inline T RetrieveData(std::shared_ptr<TGenericDataStore<K>> inStore, const K& key) {
+  if (!DataExists(inStore, key)) {
+    return T();
+  }
   return std::static_pointer_cast<GenericData<T>>((*inStore)[key])->value;
 }
 
