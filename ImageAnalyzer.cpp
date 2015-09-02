@@ -2,6 +2,8 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/imgproc.hpp"
+#include <tesseract/strngs.h>
+#include <tesseract/genericvector.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <locale>

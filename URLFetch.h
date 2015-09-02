@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <curl/curl.h>
+#include <cstring>
 
 // TODO: Maybe develop this into a class someday.
 struct MemoryStruct {

@@ -17,7 +17,20 @@ env = Environment(CC = 'gcc',
 		CXXFLAGS = ['-std=c++11'],
     CPPFLAGS = ['-Wall', '-Wno-unknown-pragmas', '-Wno-deprecated-register', '-Wno-format-security'])
 
-env.Append(LIBS = ['dl', 'opencv_core', 'opencv_highgui', 'opencv_imgproc', 'opencv_imgcodecs', 'tesseract'])
+env.Append(LIBS = ['dl', 'pthread'])
+
+# OpenCV Parameters
+env.Append(LIBS = ['opencv_core', 'opencv_highgui', 'opencv_imgproc', 'opencv_imgcodecs', 'opencv_features2d', 'opencv_flann'])
+
+# Poco Parameters
+env.Append(LIBS = ['PocoNet', 'PocoFoundation'])
+
+# Tesseract Parameters 
+env.Append(LIBS = ['tesseract', 'lept'])
+
+# Crypto++ Paramters
+env.Append(CXXFLAGS = ['-I/usr/include/cryptopp'])
+env.Append(LIBS = ['cryptopp'])
 
 # CURL Paramters
 curlCFlags = subprocess.check_output(["curl-config", "--cflags"])
@@ -32,6 +45,9 @@ ParseCPPFlags(env, gstreamerCFlags)
 
 gstreamerLFlags = subprocess.check_output(["pkg-config", "--libs", "gstreamer-1.0"])
 ParseLibFlags(env, gstreamerLFlags)
+
+# LibSVM Parameters (TODO: Remove)
+env.Append(LIBS = ['svm'])
 
 envDebug = env.Clone()
 
