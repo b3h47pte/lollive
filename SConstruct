@@ -14,8 +14,8 @@ def ParseLibFlags(env, flagString):
 
 env = Environment(CC = 'gcc', 
 		CXX = 'g++',
-		CXXFLAGS = ['-std=c++11'],
-    CPPFLAGS = ['-Wall', '-Wno-unknown-pragmas', '-Wno-deprecated-register', '-Wno-format-security'])
+		CXXFLAGS = ['-std=c++14'],
+    CPPFLAGS = ['-Wall', '-Wno-unknown-pragmas', '-Wno-format-security'])
 
 env.Append(LIBS = ['dl', 'pthread'])
 
