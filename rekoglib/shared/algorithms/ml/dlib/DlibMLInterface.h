@@ -3,6 +3,7 @@
 // Author: Michael Bao
 // Date: 9/3/2015
 //
+#pragma once
 
 #include "shared/algorithms/ml/MLInterface.h"
 #include "dlib/opencv/cv_image.h"
@@ -17,5 +18,4 @@ public:
         dlib::cv_image<ImagePixelType> newImage(inputImage);
         return newImage;
     }
-private:
 };

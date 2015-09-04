@@ -8,3 +8,4 @@
 #include "shared/utility/log/RekogLogging.h"
 #include <memory>
 #include <cassert>
+#include <type_traits>

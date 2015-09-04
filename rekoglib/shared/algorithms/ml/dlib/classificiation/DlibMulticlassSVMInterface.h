@@ -3,8 +3,10 @@
 // Author: Michael Bao
 // Date: 9/3/2015
 //
+#pragma once
 
-#include "shared/algorithms/ml/dlib/DlibMLInterface.h"
+#include "shared/algorithms/ml/dlib/DlibClassificationInterface.h"
+
 #include "dlib/svm_threaded.h"
 #include "dlib/matrix/matrix.h"
 #include "dlib/serialize.h"
@@ -12,7 +14,7 @@
 template<typename ImagePixelType = unsigned char,
     typename ClassificationFeatureType = dlib::matrix<double, 3, 1>,
     typename ClassificationResultType = int>
-class DlibMulticlassSVMInterface: public DlibMLInterface<ImagePixelType>
+class DlibMulticlassSVMInterface: public DlibClassificationInterface<ImagePixelType>
 {
 public:
     virtual void InitializeInterface() override
@@ -35,7 +37,6 @@ public:
         InitializeInterface();
         dlib::deserialize(filename) >> *multiclassSVM;
     }
-
 private:
     using DlibSvmType = dlib::svm_multiclass_linear_trainer<dlib::linear_kernel<ClassificationFeatureType>, ClassificationResultType>;
     std::unique_ptr<DlibSvmType> multiclassSVM;
