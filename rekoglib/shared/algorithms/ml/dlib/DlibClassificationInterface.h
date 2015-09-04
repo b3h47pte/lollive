@@ -7,10 +7,11 @@
 
 #include "shared/algorithms/ml/dlib/DlibMLInterface.h"
 #include "shared/algorithms/ml/MLClassificationInterface.h"
-#include "dlib/opencv/cv_image.h"
 
-template<typename ImagePixelType = unsigned char>
-class DlibClassificationInterface: public MLClassificationInterface<DlibMLInterface<ImagePixelType>>
+template<typename ImagePixelType, 
+    typename ClassificationFeatureExtractor,
+    typename ClassificationResultType>
+class DlibClassificationInterface: public MLClassificationInterface<DlibMLInterface<ImagePixelType>, ClassificationFeatureExtractor, ClassificationResultType>
 {
 public:
 };

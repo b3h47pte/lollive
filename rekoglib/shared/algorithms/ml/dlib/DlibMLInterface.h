@@ -8,7 +8,7 @@
 #include "shared/algorithms/ml/MLInterface.h"
 #include "dlib/opencv/cv_image.h"
 
-template<typename ImagePixelType = unsigned char>
+template<typename ImagePixelType>
 class DlibMLInterface: public MLInterface<dlib::cv_image<ImagePixelType>>
 {
 public:
