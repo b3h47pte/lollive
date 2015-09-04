@@ -5,9 +5,8 @@
 //
 #pragma once
 
-#include "shared/RecognitionTrainingParameters.h"
 #include "shared/utility/RekogObject.h"
-#include <opencv2/core.hpp>
+#include "opencv2/core.hpp"
 #include <vector>
 #include <utility>
 
@@ -23,13 +22,14 @@
 // Steps for TRAINING using a RecognitionInterface:
 //  1) Construct the appropriate interface. Note that the interface can and should be reused.
 //  2) Pass in a std::vector that contains std::pair's. Each std::pair contains the image (cv::Mat) and its label (T).
-// Additionally, you may pass a 'RecognitionTrainingParameters' object to fine-tune the parameters for training.
+// Additionally, you may pass a 'RecognitionTrainingParameters' object to fine-tune the parameters for training as well as a 'RecognitionTrainingOutput' to get the results of training.
 //
 template<typename T>
 class RecognitionInterface: public RekogObject
 {
 public:
-    virtual T RequestDetection(cv::Mat& inputImage) = 0;
-    virtual void RequestTraining(const std::vector<std::pair<const cv::Mat&, T>>& inputTraining, std::unique_ptr<const RecognitionTrainingParameters> params = nullptr) = 0;
+    virtual T RequestDetection(const cv::Mat& inputImage) const = 0;
+    virtual void RequestTraining(const std::vector<std::pair<const cv::Mat&, T>>& inputTraining, const class RecognitionTrainingParameters* params = nullptr,
+        const class RecognitionTrainingOutput* output = nullptr) = 0;
 private:
 };
