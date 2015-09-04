@@ -5,7 +5,7 @@
 //
 #pragma once
 
-#include <memory>
+#include "shared/utility/RekogCommon.h"
 
 class RekogObject: public std::enable_shared_from_this<RekogObject>
 {
