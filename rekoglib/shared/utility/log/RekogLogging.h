@@ -12,8 +12,6 @@
 #define REKOG_LOG(MSG) GENERIC_REKOG_LOG("INFO: ", MSG, boost::log::trivial::info)
 #define REKOG_WARN(MSG) GENERIC_REKOG_LOG("WARNING: ", MSG, boost::log::trivial::warning)
 #define REKOG_ERROR(MSG) GENERIC_REKOG_LOG("ERROR: ", MSG, boost::log::trivial::error)
-#undef GENERIC_REKOG_LOG
-
 #include <string>
 
 class RekogLogging
