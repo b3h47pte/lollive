@@ -6,6 +6,7 @@
 #pragma once
 
 #include "shared/utility/log/RekogLogging.h"
+#include <utility>
 #include <memory>
 #include <cassert>
 #include <type_traits>

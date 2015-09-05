@@ -21,7 +21,7 @@ public:
         return ClassificationFeatureExtractor(image)();
     }
 
-    virtual ClassificationResultType Classify(const ImageType&) const = 0;
-    virtual void Train(const std::vector<ImageType, ClassificationResultType>&) = 0;
+    virtual ClassificationResultType Classify(const ImageType&,double* = nullptr) const = 0;
+    virtual void Train(const std::vector<std::pair<ImageType, ClassificationResultType>>&) = 0;
 
 };

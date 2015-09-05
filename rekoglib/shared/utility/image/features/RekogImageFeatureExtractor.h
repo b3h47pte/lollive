@@ -14,7 +14,7 @@ class RekogImageFeatureExtractor: public RekogObject
 public:
     using FeatureType = OutputFeatureType;
 
-    RekogImageFeatureExtractor(const ImageType inputImage):
+    RekogImageFeatureExtractor(const ImageType& inputImage):
         storedImage(inputImage)
     {
     }
