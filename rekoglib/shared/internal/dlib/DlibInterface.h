@@ -1,15 +1,15 @@
 //
-// DlibMLInterface.h
+// DlibInterface.h
 // Author: Michael Bao
-// Date: 9/3/2015
+// Date: 9/6/2015
 //
 #pragma once
 
-#include "shared/algorithms/ml/interfaces/MLInterface.h"
+#include "shared/internal/InternalInterface.h"
 #include "dlib/opencv/cv_image.h"
 
 template<typename ImagePixelType>
-class DlibMLInterface: public MLInterface<dlib::cv_image<ImagePixelType>>
+class DlibInterface: public InternalInterface<dlib::cv_image<ImagePixelType>>
 {
 public:
     virtual dlib::cv_image<ImagePixelType> ConvertImageToInternalRepresentation(const cv::Mat inputImage) override
@@ -19,3 +19,4 @@ public:
         return newImage;
     }
 };
+

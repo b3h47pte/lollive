@@ -5,16 +5,12 @@
 //
 #pragma once
 
-#include "shared/utility/RekogObject.h"
-#include "opencv2/core.hpp"
+#include "shared/internal/InternalInterface.h"
 
-template<typename InternalImageType>
-class MLInterface: public RekogObject
+template<typename InternalInterface>
+class MLInterface: public InternalInterface
 {
 public:
-    using ImageType = InternalImageType;
-    virtual ImageType ConvertImageToInternalRepresentation(const cv::Mat inputImage) = 0;
-
     virtual void InitializeInterface() = 0;                     // Create a new interface from scratch.
     virtual void SaveInterface(const std::string&) = 0;         // Save the inferface to a file.
     virtual void InitializeInterface(const std::string&) = 0;   // Load a saved interface from the specified file.

@@ -11,7 +11,7 @@
 template<typename BaseInterface, 
     typename ClassificationFeatureExtractor,
     typename ClassificationResultType>
-class MLClassificationInterface: public RekogForceDerivedTemplate<BaseInterface, MLInterface<typename BaseInterface::ImageType>>
+class MLClassificationInterface: public MLInterface<BaseInterface>
 {
     using ImageType = typename BaseInterface::ImageType;
 public:

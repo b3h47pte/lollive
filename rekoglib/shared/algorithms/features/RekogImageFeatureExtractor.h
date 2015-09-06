@@ -13,7 +13,12 @@ class RekogImageFeatureExtractor: public RekogObject
 {
 public:
     using FeatureType = std::array<double, N>;
-    const static int FeatureCount = N;
+    constexpr static int FeatureCount = N;
+
+    virtual void Initialize() {}
+    virtual void Initialize(const std::string&) {}
+    virtual void SaveToFile(const std::string&) {}
+
     virtual FeatureType operator()(const ImageType& inputImage) const
     {
         return ExtractFeature(inputImage);

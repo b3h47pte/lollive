@@ -5,13 +5,13 @@
 //
 #pragma once
 
-#include "shared/algorithms/ml/interfaces/dlib/DlibMLInterface.h"
+#include "shared/internal/dlib/DlibInterface.h"
 #include "shared/algorithms/ml/interfaces/MLClassificationInterface.h"
 
 template<typename ImagePixelType, 
     typename ClassificationFeatureExtractor,
     typename ClassificationResultType>
-class DlibClassificationInterface: public MLClassificationInterface<DlibMLInterface<ImagePixelType>, ClassificationFeatureExtractor, ClassificationResultType>
+class DlibClassificationInterface: public MLClassificationInterface<DlibInterface<ImagePixelType>, ClassificationFeatureExtractor, ClassificationResultType>
 {
 public:
 };
