@@ -5,9 +5,13 @@
 //
 #pragma once
 
+#include "dlib/matrix.h"
+#include <array>
+
 template<typename T, int N>
 dlib::matrix<T,N,1> ConvertToDlibMatrix(const std::array<T, N>& input)
 {
-    return dlib::matrix<T,N,1>(input.data());
+    T (&arr)[N] = *input.data();
+    return dlib::matrix<T,N,1>(arr);
 }
 
