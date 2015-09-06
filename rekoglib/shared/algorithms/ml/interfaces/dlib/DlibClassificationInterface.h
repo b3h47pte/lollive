@@ -5,8 +5,8 @@
 //
 #pragma once
 
-#include "shared/algorithms/ml/dlib/DlibMLInterface.h"
-#include "shared/algorithms/ml/MLClassificationInterface.h"
+#include "shared/algorithms/ml/interfaces/dlib/DlibMLInterface.h"
+#include "shared/algorithms/ml/interfaces/MLClassificationInterface.h"
 
 template<typename ImagePixelType, 
     typename ClassificationFeatureExtractor,

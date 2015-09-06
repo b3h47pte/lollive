@@ -5,7 +5,7 @@
 //
 #pragma once
 
-#include "shared/algorithms/ml/MLInterface.h"
+#include "shared/algorithms/ml/interfaces/MLInterface.h"
 #include "dlib/opencv/cv_image.h"
 
 template<typename ImagePixelType>
