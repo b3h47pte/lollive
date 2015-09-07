@@ -8,12 +8,21 @@
 #include "shared/algorithms/features/RekogImageFeatureExtractor.h"
 #include <limits>
 
-template<typename InternalInterface, int N>
+template<typename ClusteringInterface,
+    typename InternalInterface, 
+    int N>
 class SURFInterface: public RekogImageFeatureExtractor<InternalInterface, N>
 {
     using Base = RekogImageFeatureExtractor<InternalInterface, N>;
     using FeatureType = typename Base::FeatureType;
     using SurfFeatureType = Eigen::Matrix<double, 64, 1>;
+
+protected:
+    struct SURFAggregate {
+        tbb::concurrent_vector<cv::Point2d> points;
+        tbb::concurrent_vector<SurfFeatureType> features;
+    };
+
 public:
     virtual void LoadFromFile(const std::string& path)
     {
@@ -31,15 +40,18 @@ public:
 
     virtual void SetupFeatureExtractor(const std::vector<cv::Mat>& allImages)
     {
-        std::vector<std::pair<cv::Point2d, SurfFeatureType>> completeSURF;
+        SURFAggregate completeSURF;
         // Compute SURF features for this image using whatever library we want.
         // Note that for now we don't use the location of the SURF features, but in the future, it will be useful to split the image up and just work on smaller sub-regions.
-        for (auto& image: allImages) {
+        tbb::parallel_do(allImages.begin(), allImages.end(), [&](const cv::Mat& image) {
             ComputeSURFFeatures(image, completeSURF);
-        }
+        });
 
-        // Perform K-Means Clustering on the features to get our 'dictionary'. After we load the dictionary, we 
+        // Perform clustering on the features to get our 'dictionary'. After we load the dictionary, we 
         // are then able to extract features from images.
+        ClusteringInterface::Cluster(completeSURF.features, dictionary);
+
+        isSetup = true;
     }
 
     virtual FeatureType ExtractFeature(const cv::Mat& inputImage) const
@@ -48,14 +60,14 @@ public:
             return;
         }
 
-        std::vector<std::pair<cv::Point2d, FeatureType>> completeSURF;
+        SURFAggregate completeSURF;
         ComputeSURFFeatures(inputImage, completeSURF);
 
         // Create normalized histogram and return it.
         // Go through every SURF feature detected, find the closest item in the dictionary
         std::array<std::atomic<double>, N> histogram{};
-        tbb::parallel_do(completeSURF.begin(), completeSURF.end(), [&](const decltype(*completeSURF.begin())& feature) {
-            int match = FindClosestMatchInDictionary(feature.second);
+        tbb::parallel_do(completeSURF.features.begin(), completeSURF.features.end(), [&](const SurfFeatureType& feature) {
+            int match = FindClosestMatchInDictionary(feature);
             ++histogram[match];
         });
 
@@ -66,7 +78,7 @@ public:
     }
 
 private:
-    virtual void ComputeSURFFeatures(const cv::Mat& image, std::vector<std::pair<cv::Point2d, SurfFeatureType>>&) = 0;
+    virtual void ComputeSURFFeatures(const cv::Mat&, SURFAggregate&) = 0;
 
     int FindClosestMatchInDictionary(const SurfFeatureType& inputFeature)
     {
