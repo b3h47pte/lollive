@@ -10,3 +10,7 @@
 #include <memory>
 #include <cassert>
 #include <type_traits>
+#include <atomic>
+
+// Intel TBB
+#include "tbb/tbb.h"

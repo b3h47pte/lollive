@@ -8,7 +8,7 @@
 #include "shared/algorithms/ml/interfaces/dlib/DlibClassificationInterface.h"
 #include "shared/algorithms/features/RekogImageFeatureExtractor.h"
 #include "shared/utility/type/STLVectorUtility.h"
-#include "shared/utility/type/dlib/DlibSTLInterop.h"
+#include "shared/utility/type/dlib/DlibEigenInterop.h"
 
 #include "dlib/svm_threaded.h"
 #include "dlib/matrix/matrix.h"

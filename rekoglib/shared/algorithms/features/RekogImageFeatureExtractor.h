@@ -7,23 +7,24 @@
 
 #include "shared/utility/RekogObject.h"
 #include "opencv2/core.hpp"
+#include "Eigen/Core"
 
-template<typename ImageType, int N>
-class RekogImageFeatureExtractor: public RekogObject
+template<typename InternalInterface, int N>
+class RekogImageFeatureExtractor: public InternalInterface
 {
 public:
-    using FeatureType = std::array<double, N>;
+    using FeatureType = Eigen::Matrix<double, N, 1>;
     constexpr static int FeatureCount = N;
 
-    virtual void Initialize() {}
-    virtual void Initialize(const std::string&) {}
+    virtual void LoadFromFile(const std::string&) {}
     virtual void SaveToFile(const std::string&) {}
+    virtual void SetupFeatureExtractor(const std::vector<cv::Mat>&) {}
 
-    virtual FeatureType operator()(const ImageType& inputImage) const
+    virtual FeatureType operator()(const cv::Mat& inputImage) const
     {
         return ExtractFeature(inputImage);
     }
 
-    virtual FeatureType ExtractFeature(const ImageType& inputImage) const = 0;
+    virtual FeatureType ExtractFeature(const cv::Mat&) const = 0;
 protected:
 };
