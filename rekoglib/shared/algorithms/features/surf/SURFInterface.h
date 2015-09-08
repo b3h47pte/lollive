@@ -40,6 +40,11 @@ public:
 
     virtual void SetupFeatureExtractor(const std::vector<cv::Mat>& allImages)
     {
+        if (!clusterer) {
+            REKOG_WARN("The SURF Extractor requires a mechanism to cluster samples together. Please provide a clusterer via 'SetClusterer'.");
+            return;
+        }
+
         SURFAggregate completeSURF;
         // Compute SURF features for this image using whatever library we want.
         // Note that for now we don't use the location of the SURF features, but in the future, it will be useful to split the image up and just work on smaller sub-regions.
@@ -49,7 +54,7 @@ public:
 
         // Perform clustering on the features to get our 'dictionary'. After we load the dictionary, we 
         // are then able to extract features from images.
-        ClusteringInterface::Cluster(completeSURF.features, dictionary);
+        clusterer->Cluster(completeSURF.features, dictionary);
 
         isSetup = true;
     }
@@ -57,6 +62,7 @@ public:
     virtual FeatureType ExtractFeature(const cv::Mat& inputImage) const
     {
         if (!isSetup) {
+            REKOG_WARN("SURF Feature Extractor is not yet setup. Please train or load from file.");
             return;
         }
 
@@ -75,6 +81,10 @@ public:
         FeatureType mappedHistogram = ConvertToEigenMatrix_NoCopy(nonatomicHistogram);
         mappedHistogram.normalize();
         return mappedHistogram;
+    }
+
+    virtual void SetClusterer(std::unique_ptr<ClusteringInterface> inputClusterer) {
+        clusterer = std::move(inputClusterer);        
     }
 
 private:
@@ -108,4 +118,6 @@ private:
 
     std::array<SurfFeatureType, N> dictionary;
     bool isSetup;
+
+    std::unique_ptr<ClusteringInterface> clusterer;
 };
