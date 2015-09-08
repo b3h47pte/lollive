@@ -9,7 +9,7 @@
 #include "dlib/opencv/cv_image.h"
 
 template<typename ImagePixelType>
-class DlibInterface: public InternalInterface<dlib::cv_image<ImagePixelType>, dlib::matrix>
+class DlibInterface: public InternalInterface<dlib::cv_image<ImagePixelType>>
 {
 public:
     virtual dlib::cv_image<ImagePixelType> ConvertImageToInternalRepresentation(const cv::Mat inputImage) override

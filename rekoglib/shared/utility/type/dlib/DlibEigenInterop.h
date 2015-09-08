@@ -17,7 +17,7 @@ dlib::matrix<T, N, M> ConvertToDlibMatrix(const Eigen::Matrix<T, N, M>& input)
 }
 
 template<typename T, int N, int M = 1>
-Eigen::Matrix<T, N, M> CovnertToEigenMatrix_Copy(const dlib::matrix<T, N, M>& input)
+Eigen::Matrix<T, N, M> ConvertToEigenMatrix_Copy(const dlib::matrix<T, N, M>& input)
 {
     Eigen::Matrix<T,N,M> matrix;
     for (int r = 0; r < N; ++r) {
