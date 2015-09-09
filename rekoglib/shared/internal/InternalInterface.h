@@ -9,7 +9,7 @@
 #include "opencv2/core.hpp"
 
 template<typename InternalImageType>
-class InternalInteface: public virtual RekogObject
+class InternalInterface: public virtual RekogObject
 {
 public:
     using ImageType = InternalImageType;

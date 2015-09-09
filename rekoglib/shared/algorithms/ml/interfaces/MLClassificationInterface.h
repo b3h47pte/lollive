@@ -6,7 +6,6 @@
 #pragma once
 
 #include "shared/algorithms/ml/interfaces/MLInterface.h"
-#include "shared/utility/type/RekogForceDerivedTemplate.h"
 
 template<typename BaseInterface, 
     typename ClassificationFeatureExtractor,
