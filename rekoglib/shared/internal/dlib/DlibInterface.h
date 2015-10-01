@@ -7,16 +7,22 @@
 
 #include "shared/internal/InternalInterface.h"
 #include "dlib/opencv/cv_image.h"
+#include "dlib/opencv/to_open_cv.h"
 
 template<typename ImagePixelType>
 class DlibInterface: public InternalInterface<dlib::cv_image<ImagePixelType>>
 {
 public:
-    virtual dlib::cv_image<ImagePixelType> ConvertImageToInternalRepresentation(const cv::Mat inputImage) override
+    static dlib::cv_image<ImagePixelType> ConvertImageToInternalRepresentation(cv::Mat inputImage)
     {
 
         dlib::cv_image<ImagePixelType> newImage(inputImage);
         return newImage;
+    }
+
+    static cv::Mat ConvertInternalRepresentationToCV(dlib::cv_image<ImagePixelType> inputImage)
+    {
+        return dlib::toMat(inputImage);
     }
 };
 

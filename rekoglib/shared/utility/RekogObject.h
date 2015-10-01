@@ -10,7 +10,7 @@
 class RekogObject: public std::enable_shared_from_this<RekogObject>
 {
 public:
-    // NO CONSTRUCTOR --> This allows inherited class to disable the default constructor should they implement their own constructor.
+    RekogObject() = default;
     // Virtual Destructor for inheritance
     virtual ~RekogObject() = default;
 

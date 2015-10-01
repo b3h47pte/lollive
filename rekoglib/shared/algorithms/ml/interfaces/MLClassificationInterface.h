@@ -12,6 +12,7 @@ template<typename BaseInterface,
     typename ClassificationResultType>
 class MLClassificationInterface: public MLInterface<BaseInterface>
 {
+protected:
     using ImageType = typename BaseInterface::ImageType;
 public:
     using ClassificationFeatureType = typename ClassificationFeatureExtractor::FeatureType;
@@ -21,7 +22,7 @@ public:
             REKOG_WARN("Please set the feature extractor using SetFeatureExtractor. Returning a value-initialized result, you will see wrong results.");
             return ClassificationFeatureType();
         }
-        return (*featureExtractor)(image);
+        return (*featureExtractor)(BaseInterface::ConvertInternalRepresentationToCV(image));
     }
 
     virtual ClassificationResultType Classify(const cv::Mat& image,double* = nullptr) const = 0;

@@ -59,11 +59,11 @@ public:
         auto prediction = decisionFunction->predict(features);
 
         if (weight) {
-            // prediction->second is a scalar type so we can definitely cast it to double.
-            *weight = static_cast<double>(prediction->second);
+            // prediction.second is a scalar type so we can definitely cast it to double.
+            *weight = static_cast<double>(prediction.second);
         }
 
-        return prediction->first;
+        return prediction.first;
     }
 
     virtual void Train(const std::vector<std::pair<cv::Mat, ClassificationResultType>>& trainingData) override

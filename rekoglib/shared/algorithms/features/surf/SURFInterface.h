@@ -13,17 +13,19 @@ template<typename ClusteringInterface,
     int N>
 class SURFInterface: public RekogImageFeatureExtractor<InternalInterface, N>
 {
+protected:
     using Base = RekogImageFeatureExtractor<InternalInterface, N>;
-    using FeatureType = typename Base::FeatureType;
     using SurfFeatureType = Eigen::Matrix<double, 64, 1>;
 
-protected:
     struct SURFAggregate {
         tbb::concurrent_vector<cv::Point2d> points;
         tbb::concurrent_vector<SurfFeatureType> features;
     };
 
 public:
+    using FeatureType = typename Base::FeatureType;
+
+
     virtual void LoadFromFile(const std::string& path)
     {
         (void)path;

@@ -13,5 +13,13 @@ class InternalInterface: public virtual RekogObject
 {
 public:
     using ImageType = InternalImageType;
-    virtual ImageType ConvertImageToInternalRepresentation(const cv::Mat inputImage) = 0;
+    static ImageType ConvertImageToInternalRepresentation(cv::Mat)
+    {
+        return ImageType();
+    }
+
+    static cv::Mat ConvertInternalRepresentationToCV(ImageType)
+    {
+        return cv::Mat();
+    }
 };
